@@ -7,6 +7,7 @@ const NavbarLinks = ({ desktop }) => (
     <AnchorLink href="#projects">Projects</AnchorLink>
     <AnchorLink href="#skills">Skills</AnchorLink>
     <AnchorLink href="#contact">Contact</AnchorLink>
+    <a href="https://inf.ufrgs.br/~rbaudibert/blog">Blog</a>
   </Wrapper>
 );
 
