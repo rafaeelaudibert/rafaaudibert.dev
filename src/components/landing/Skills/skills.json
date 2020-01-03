@@ -9,27 +9,27 @@
     },
     {
         "id": 2,
-        "icon": "fab fa-css3-alt",
-        "name": "CSS3",
-        "color": "#0099E5",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 3,
-        "icon": "fab fa-html5",
-        "name": "HTML5",
-        "color": "#E34F26",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 4,
         "icon": "far fa-gem",
         "name": "Ruby",
         "color": "#EC1622",
         "level": "+HIGH",
         "percentage": "90"
+    },
+    {
+        "id": 3,
+        "icon": "fas fa-train",
+        "name": "Ruby on Rails",
+        "color": "#CC0000",
+        "level": "HIGH",
+        "percentage": "80"
+    },
+    {
+        "id": 4,
+        "icon": "fab fa-github",
+        "name": "Git",
+        "color": "#9D25BB",
+        "level": "HIGH",
+        "percentage": "80"
     },
     {
         "id": 5,
@@ -49,54 +49,6 @@
     },
     {
         "id": 7,
-        "icon": "fa fa-database",
-        "name": "PostgreSQL",
-        "color": "#31648C",
-        "level": "-MEDIUM",
-        "percentage": "50"
-    },
-    {
-        "id": 8,
-        "icon": "fab fa-aws",
-        "name": "AWS",
-        "color": "#FF9900",
-        "level": "MEDIUM",
-        "percentage": "55"
-    },
-    {
-        "id": 9,
-        "icon": "fas fa-laptop",
-        "name": "C/C++",
-        "color": "#794F4C",
-        "level": "-HIGH",
-        "percentage": "70"
-    },
-    {
-        "id": 10,
-        "icon": "fab fa-python",
-        "name": "Python",
-        "color": "#FFD43B",
-        "level": "+HIGH",
-        "percentage": "90"
-    },
-    {
-        "id": 11,
-        "icon": "fab fa-github",
-        "name": "Git",
-        "color": "#9D25BB",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 12,
-        "icon": "fas fa-train",
-        "name": "Ruby on Rails",
-        "color": "#CC0000",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 13,
         "icon": "fab fa-react",
         "name": "React",
         "color": "#00D8FF",
@@ -104,12 +56,60 @@
         "percentage": "50"
     },
     {
-        "id": 14,
+        "id": 8,
+        "icon": "fa fa-database",
+        "name": "PostgreSQL",
+        "color": "#31648C",
+        "level": "-MEDIUM",
+        "percentage": "50"
+    },
+    {
+        "id": 9,
+        "icon": "fab fa-python",
+        "name": "Python",
+        "color": "#FFD43B",
+        "level": "+HIGH",
+        "percentage": "90"
+    },
+    {
+        "id": 10,
+        "icon": "fab fa-html5",
+        "name": "HTML5",
+        "color": "#E34F26",
+        "level": "HIGH",
+        "percentage": "80"
+    },
+    {
+        "id": 11,
+        "icon": "fab fa-css3-alt",
+        "name": "CSS3",
+        "color": "#0099E5",
+        "level": "HIGH",
+        "percentage": "80"
+    },
+    {
+        "id": 12,
+        "icon": "fas fa-laptop",
+        "name": "C/C++",
+        "color": "#794F4C",
+        "level": "-HIGH",
+        "percentage": "70"
+    },
+    {
+        "id": 13,
         "icon": "fab fa-google",
         "name": "Dart",
         "color": "#0175C2",
         "level": "+MEDIUM",
         "percentage": "65"
+    },
+    {
+        "id": 14,
+        "icon": "fab fa-aws",
+        "name": "AWS",
+        "color": "#FF9900",
+        "level": "MEDIUM",
+        "percentage": "55"
     },
     {
         "id": 15,
