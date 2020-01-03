@@ -1,10 +1,9 @@
-import React from 'react'
-import Helmet from 'react-helmet'
-import Thumbnail from 'assets/thumbnail/thumbnail.png'
+import React from 'react';
+import Helmet from 'react-helmet';
+import Thumbnail from 'assets/thumbnail/thumbnail.png';
 import {
   url,
   defaultDescription,
-  social,
   defaultTitle,
   socialLinks,
   address,
@@ -12,13 +11,9 @@ import {
   legalName,
   foundingDate,
   logo,
-} from 'data/config'
+} from 'data/config';
 
-export const SEO = ({
-  title = defaultTitle,
-  description = defaultDescription,
-  location = '',
-}) => {
+export const SEO = ({ title = defaultTitle, description = defaultDescription, location = '' }) => {
   const structuredDataOrganization = `{ 
 		"@context": "http://schema.org",
 		"@type": "Organization",
@@ -44,14 +39,11 @@ export const SEO = ({
 			"postalCode": "${address.zipCode}"
 		},
 		"sameAs": [
-			"${socialLinks.twitter}",
-			"${socialLinks.google}",
-			"${socialLinks.youtube}",
 			"${socialLinks.linkedin}",
 			"${socialLinks.instagram}",
 			"${socialLinks.github}"
 		]
-  	}`
+  	}`;
 
   return (
     <Helmet>
@@ -63,18 +55,16 @@ export const SEO = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={Thumbnail} />
-      <meta property="fb:app_id" content={social.facebook} />
 
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:creator" content={socialLinks.twitter} />
-      <meta name="twitter:site" content={social.twitter} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image:src" content={Thumbnail} />
       <script type="application/ld+json">{structuredDataOrganization}</script>
-      <link rel="publisher" href={socialLinks.google} />
       <title>{title}</title>
       <html lang="en" dir="ltr" />
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"></link>
     </Helmet>
-  )
-}
+  );
+};
