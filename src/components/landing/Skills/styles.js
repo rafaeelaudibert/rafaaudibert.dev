@@ -19,21 +19,6 @@ export const SkillsWrapper = styled.div`
   }
 `;
 
-export const SkillsWrapperRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  width: 100%;
-  margin-bottom: 1rem;
-`;
-
-export const SkillsWrapperColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100%;
-  flex: 1;
-`;
-
 export const Details = styled.div`
   flex: 1;
   padding-left: 2rem;
