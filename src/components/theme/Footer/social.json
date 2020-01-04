@@ -3,24 +3,24 @@
     "id": 0,
     "name": "Telegram",
     "link": "https://t.me/rafaAudibert",
-    "icon": "/icons/telegram.svg"
+    "icon": "telegram.svg"
   },
   {
     "id": 1,
     "name": "Github",
     "link": "https://github.com/rafaeelaudibert",
-    "icon": "/icons/github.svg"
+    "icon": "github.svg"
   },
   {
     "id": 2,
     "name": "StackOverflow",
     "link": "https://stackoverflow.com/users/story/9347193",
-    "icon": "/icons/stackoverflow.svg"
+    "icon": "stackoverflow.svg"
   },
   {
     "id": 3,
     "name": "LeagueOfLegends",
     "link": "https://br.op.gg/summoner/userName=tyg+yeux",
-    "icon": "/icons/riot.svg"
+    "icon": "riot.svg"
   }
 ]

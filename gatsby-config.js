@@ -5,6 +5,7 @@ require('dotenv').config({
 });
 
 module.exports = {
+  pathPrefix: `/~rbaudibert`,
   siteMetadata: {
     title: config.defaultTitle,
     description: config.defaultDescription,
