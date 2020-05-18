@@ -2,13 +2,22 @@ import styled from 'styled-components';
 import detailsIllustration from 'assets/illustrations/details.svg';
 
 export const Wrapper = styled.div`
-  background-image: url(${detailsIllustration});
-  background-size: contain;
-  background-position: left top;
-  background-repeat: no-repeat;
+  ::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url(${detailsIllustration});
+    background-size: contain;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+  }
 `;
 
-export const SkillsWrapper = styled.div`
+export const ExperiencesWrapper = styled.div`
   padding: 4rem 0;
   display: flex;
   align-items: center;
@@ -49,6 +58,7 @@ export const Thumbnail = styled.div`
   @media (max-width: 960px) {
     width: 100%;
     margin-bottom: 2rem;
+    display: none;
   }
 
   img {

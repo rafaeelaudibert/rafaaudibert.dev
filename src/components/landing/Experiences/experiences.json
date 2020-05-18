@@ -1,0 +1,41 @@
+[
+    {
+        "id": 1,
+        "name": "Backend Engineer Intern",
+        "where": "Tag Livros",
+        "whereLink": "https://taglivros.com",
+        "yearStart": "11/2019",
+        "icon": "tag.jpg",
+        "description": "Currently interning at Tag Livros, developing solutions for the company internal workflow. Working with frameworks such as Django, NodeJS and React, interacting consistently with AWS Tools for Serverless Computing such as S3, Api Gateway and Lambda."
+    },
+    {
+        "id": 2,
+        "name": "AI/DL Researcher",
+        "where": "CNPq/UFRGS",
+        "whereLink": "https://www.cnpq.br",
+        "yearStart": "02/2019",
+        "yearEnd": "11/2019",
+        "icon": "CNPq.png",
+        "description": "Researched about Machine Learning during my undergraduation , more specifically about Graph Neural Networks and their applications. In the laboratory, worked with Python (Tensorflow and PyTorch) to achieve the high paralelism needed to train models in a satisfatory time (it's still weeks), using NVIDIA graphic processing units. Also focused on data analysis and community identification."
+    },
+    {
+        "id": 3,
+        "where": "FEENG/UFRGS",
+        "whereLink": "https://www.ufrgs.br/engenharia/wp/feeng/",
+        "name": "Rails (Web) Developer",
+        "yearStart": "08/2018",
+        "yearEnd": "02/2019",
+        "icon": "feeng.jpg",
+        "description": "Developed platform for the Brazilian Health Ministry for a cooperation between them and UFRGS. The plataform was used in 2 fronts: Help solving companies problems when trying to computerize the brazilian UBS; and being able to hold a plataform responsible for solving complaints between companies, cities and UBS's. Using Rails 5 and Docker on Linux, using the MVC software engineering model and some modern techniques to boost produtivity, the team achieved to build a full web app in around 6 months."
+    },
+    {
+        "id": 4,
+        "where": "UFRGS",
+        "whereLink": "https://ufrgs.br",
+        "name": "Algorithms Monitor",
+        "yearStart": "01/2018",
+        "yearEnd": "07/2018",
+        "icon": "ufrgs.jpeg",
+        "description": "Helped new Computer Science undergratues to complete the subject challenges each week, using C language. With this, acquired a big knowledge in algorithms, such as sorting, hash, search, data structures, git, console manipulation, etc..."
+    }
+]

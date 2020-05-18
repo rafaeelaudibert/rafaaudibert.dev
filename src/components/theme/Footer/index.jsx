@@ -1,3 +1,5 @@
+/* eslint-disable global-require, import/no-dynamic-require */
+
 import React from 'react';
 import { Container } from 'components/common';
 import { Wrapper, Flex, Links, Details } from './styles';
@@ -14,17 +16,21 @@ export const Footer = () => (
             💖
           </span>{' '}
           by{' '}
-          <a href="https://inf.ufrgs.br/~rbaudibert" rel="noopener noreferrer" target="_blank">
+          <a href="https://rafaaudibert.dev" rel="noopener noreferrer" target="_blank">
             RafaAudibert
           </a>
         </span>
       </Details>
       <Links>
-        {social.map(({ id, name, link, icon }) => (
-          <a key={id} href={link} target="_blank" rel="noopener noreferrer" aria-label={`follow me on ${name}`}>
-            <img width="24" src={icon} alt={name} />
-          </a>
-        ))}
+        {social.map(({ id, name, link, icon }) => {
+          const img = require(`assets/img/${icon}`);
+
+          return (
+            <a key={id} href={link} target="_blank" rel="noopener noreferrer" aria-label={`Follow me on ${name}`}>
+              <img width="24" src={img} alt={name} />
+            </a>
+          );
+        })}
       </Links>
     </Flex>
   </Wrapper>

@@ -1,9 +1,9 @@
 {
-  "name": "portfolio",
+  "name": "rafaaudibert-website",
   "private": true,
-  "description": "A simple portfolio for developers",
-  "version": "0.1.2",
-  "author": "Smakosh <ismai23l@hotmail.com>",
+  "description": "My portfolio",
+  "version": "1.0.0",
+  "author": "RafaAudibert <rafaeelaudibert@gmail.com>",
   "dependencies": {
     "dotenv": "^6.2.0",
     "formik": "^1.4.1",
@@ -20,7 +20,7 @@
     "gatsby-plugin-sitemap": "^2.0.3",
     "gatsby-plugin-styled-components": "^3.0.4",
     "gatsby-source-filesystem": "^2.1.35",
-    "gatsby-source-graphql": "^2.1.21",
+    "gatsby-source-graphql": "^2.1.28",
     "gatsby-transformer-sharp": "2.2.7",
     "prop-types": "^15.6.2",
     "react": "^16.11.0",
@@ -42,8 +42,7 @@
     "start": "gatsby develop -o",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "reset": "rm -rf .cache/ public/",
-    "test": "echo \"Write tests! -> https://gatsby.app/unit-testing\""
+    "reset": "rm -rf .cache/ public/"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
@@ -62,9 +61,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:smakosh/gatsby-portfolio-dev.git"
-  },
-  "bugs": {
-    "url": "https://github.com/smakosh/gatsby-portfolio-dev/issues"
+    "url": "git@github.com:rafaeelaudibert/rafaaudibert.dev.git"
   }
 }
