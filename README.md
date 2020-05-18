@@ -1,11 +1,11 @@
 # Portfolio
 
+![Deploy Website](https://github.com/rafaeelaudibert/rafaaudibert.dev/workflows/Deploy%20Website/badge.svg)
+
 This is my current website and/or portfolio and/or resume.
 It is built with Gatsby and React, fully configurable.
 
-In the `dev` branch we have the code, and it is deployed
-to `master` whenever there are changes, so that we can keep
-[the website](https://rafaeelaudibert.github.io) up to date.
+It is currently available at [https://rafaaudibert.dev](https://rafaaudibert.dev).
 
 ## Theme
 
@@ -13,4 +13,4 @@ to `master` whenever there are changes, so that we can keep
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
