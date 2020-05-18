@@ -1,8 +1,8 @@
 module.exports = {
   defaultTitle: 'Rafa Audibert',
-  logo: 'https://inf.ufrgs.br/~rbaudibert/logo.png',
+  logo: 'https://rafaaudibert.dev/logo.png',
   author: 'Rafa Audibert',
-  url: 'https://inf.ufrgs.br/~rbaudibert/',
+  url: 'https://rafaaudibert.dev',
   legalName: 'Rafael Audibert',
   defaultDescription: 'I’m Rafael and I’m a Junior Backend engineer!',
   socialLinks: {

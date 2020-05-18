@@ -16,7 +16,7 @@ export const Footer = () => (
             💖
           </span>{' '}
           by{' '}
-          <a href="https://inf.ufrgs.br/~rbaudibert" rel="noopener noreferrer" target="_blank">
+          <a href="https://rafaaudibert.dev" rel="noopener noreferrer" target="_blank">
             RafaAudibert
           </a>
         </span>
@@ -26,7 +26,7 @@ export const Footer = () => (
           const img = require(`assets/img/${icon}`);
 
           return (
-            <a key={id} href={link} target="_blank" rel="noopener noreferrer" aria-label={`follow me on ${name}`}>
+            <a key={id} href={link} target="_blank" rel="noopener noreferrer" aria-label={`Follow me on ${name}`}>
               <img width="24" src={img} alt={name} />
             </a>
           );
