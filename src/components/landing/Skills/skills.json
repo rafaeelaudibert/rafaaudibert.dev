@@ -22,30 +22,30 @@
         "color": "#CC0000",
         "level": "HIGH",
         "percentage": "80"
-    },
+    },    
     {
         "id": 4,
-        "icon": "fas fa-laptop",
-        "name": "C/C++",
-        "color": "#794F4C",
-        "level": "-HIGH",
-        "percentage": "70"
+        "icon": "fab fa-node-js",
+        "name": "Node.js",
+        "color": "#44883E",
+        "level": "HIGH",
+        "percentage": "80"
     },
     {
         "id": 5,
-        "icon": "fab fa-google",
-        "name": "Dart",
-        "color": "#0175C2",
-        "level": "+MEDIUM",
-        "percentage": "65"
-    },
-    {
-        "id": 6,
         "icon": "fab fa-react",
         "name": "React",
         "color": "#00D8FF",
         "level": "-HIGH",
         "percentage": "70"
+    },
+    {
+        "id": 6,
+        "icon": "fab fa-google",
+        "name": "Dart",
+        "color": "#0175C2",
+        "level": "+MEDIUM",
+        "percentage": "65"
     },
     {
         "id": 7,
@@ -86,8 +86,7 @@
         "color": "#FF9900",
         "level": "HIGH",
         "percentage": "80"
-    },
-    
+    },    
     {
         "id": 12,
         "icon": "fab fa-github",
@@ -95,13 +94,12 @@
         "color": "#9D25BB",
         "level": "HIGH",
         "percentage": "80"
-    },
-    
+    },    
     {
         "id": 13,
-        "icon": "fab fa-node-js",
-        "name": "Node.js",
-        "color": "#44883E",
+        "icon": "fas fa-laptop",
+        "name": "C/C++",
+        "color": "#794F4C",
         "level": "-HIGH",
         "percentage": "70"
     },
