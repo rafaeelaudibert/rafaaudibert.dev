@@ -6,9 +6,9 @@ module.exports = {
   legalName: 'Rafael Audibert',
   defaultDescription: 'I’m Rafael and I’m a Junior Backend engineer!',
   socialLinks: {
-    github: 'https://github.com/rafaeelaudibert',
-    linkedin: 'https://www.linkedin.com/in/rbaudibert/',
-    instagram: 'https://www.instagram.com/rafaaudibeert/',
+    github: 'https://url.rafaaudibert.dev/r/github',
+    linkedin: 'https://url.rafaaudibert.dev/r/linkedin',
+    instagram: 'https://url.rafaaudibert.dev/r/instagram',
   },
   googleAnalyticsID: 'UA-133407132-1',
   themeColor: '#6b63ff',

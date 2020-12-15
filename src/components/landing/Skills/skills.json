@@ -25,35 +25,35 @@
     },
     {
         "id": 4,
-        "icon": "fab fa-github",
-        "name": "Git",
-        "color": "#9D25BB",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 5,
-        "icon": "fab fa-node-js",
-        "name": "Node.js",
-        "color": "#44883E",
+        "icon": "fas fa-laptop",
+        "name": "C/C++",
+        "color": "#794F4C",
         "level": "-HIGH",
         "percentage": "70"
     },
     {
+        "id": 5,
+        "icon": "fab fa-google",
+        "name": "Dart",
+        "color": "#0175C2",
+        "level": "+MEDIUM",
+        "percentage": "65"
+    },
+    {
         "id": 6,
+        "icon": "fab fa-react",
+        "name": "React",
+        "color": "#00D8FF",
+        "level": "-HIGH",
+        "percentage": "70"
+    },
+    {
+        "id": 7,
         "icon": "fab fa-docker",
         "name": "Docker",
         "color": "#0DB7ED",
         "level": "MEDIUM",
-        "percentage": "55"
-    },
-    {
-        "id": 7,
-        "icon": "fab fa-react",
-        "name": "React",
-        "color": "#00D8FF",
-        "level": "-MEDIUM",
-        "percentage": "50"
+        "percentage": "60"
     },
     {
         "id": 8,
@@ -74,42 +74,44 @@
     {
         "id": 10,
         "icon": "fab fa-html5",
-        "name": "HTML5",
+        "name": "HTML5 + CSS3",
         "color": "#E34F26",
-        "level": "HIGH",
-        "percentage": "80"
+        "level": "+HIGH",
+        "percentage": "85"
     },
     {
         "id": 11,
-        "icon": "fab fa-css3-alt",
-        "name": "CSS3",
-        "color": "#0099E5",
+        "icon": "fab fa-aws",
+        "name": "AWS",
+        "color": "#FF9900",
         "level": "HIGH",
         "percentage": "80"
     },
+    
     {
         "id": 12,
-        "icon": "fas fa-laptop",
-        "name": "C/C++",
-        "color": "#794F4C",
+        "icon": "fab fa-github",
+        "name": "Git",
+        "color": "#9D25BB",
+        "level": "HIGH",
+        "percentage": "80"
+    },
+    
+    {
+        "id": 13,
+        "icon": "fab fa-node-js",
+        "name": "Node.js",
+        "color": "#44883E",
         "level": "-HIGH",
         "percentage": "70"
     },
     {
-        "id": 13,
-        "icon": "fab fa-google",
-        "name": "Dart",
+        "id": 14,
+        "icon": "fab fa-phoenix-framework",
+        "name": "Elixir",
         "color": "#0175C2",
         "level": "+MEDIUM",
         "percentage": "65"
-    },
-    {
-        "id": 14,
-        "icon": "fab fa-aws",
-        "name": "AWS",
-        "color": "#FF9900",
-        "level": "MEDIUM",
-        "percentage": "55"
     },
     {
         "id": 15,
@@ -125,6 +127,6 @@
         "name": "MongoDB",
         "color": "#13A54E",
         "level": "LOW",
-        "percentage": "40"
+        "percentage": "30"
     }
 ]

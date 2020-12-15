@@ -8,19 +8,19 @@
   {
     "id": 1,
     "name": "Github",
-    "link": "https://github.com/rafaeelaudibert",
+    "link": "https://url.rafaaudibert.dev/r/github",
     "icon": "github.svg"
   },
   {
     "id": 2,
     "name": "StackOverflow",
-    "link": "https://stackoverflow.com/users/story/9347193",
+    "link": "https://url.rafaaudibert.dev/r/stackoverflow",
     "icon": "stackoverflow.svg"
   },
   {
     "id": 3,
     "name": "LeagueOfLegends",
-    "link": "https://br.op.gg/summoner/userName=tyg+yeux",
+    "link": "https://url.rafaaudibert.dev/r/opgg",
     "icon": "riot.svg"
   }
 ]

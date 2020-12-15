@@ -6,7 +6,7 @@
         "whereLink": "https://taglivros.com",
         "yearStart": "11/2019",
         "icon": "tag.jpg",
-        "description": "Currently interning at Tag Livros, developing solutions for the company internal workflow. Working with frameworks such as Django, NodeJS and React, interacting consistently with AWS Tools for Serverless Computing such as S3, Api Gateway and Lambda."
+        "description": "Currently interning at TAG Livros, developing solutions for the company internal workflow. Working with frameworks such as Django, NodeJS and React, interacting consistently with AWS Tools for Serverless Computing such as S3, API Gateway, Lambda, SQS, RDS and DynamoDB. Responsible for building new internal projects such as a common interface for the company bots (Slack and Discord), as well as a CLI to enable faster production deployment of the company digital products."
     },
     {
         "id": 2,
