@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-node@v2-beta
+      with:
+        node-version: '12'
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
