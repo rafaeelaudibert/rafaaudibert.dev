@@ -2,8 +2,8 @@ import React from 'react';
 import { Container, Row, Column } from 'components/common';
 import dev from 'assets/illustrations/experiences.svg';
 import { ExperienceCard } from 'components/landing/ExperienceCard';
+import experiences from 'data/experiences.json';
 import { Wrapper, ExperiencesWrapper, Details, Thumbnail } from './styles';
-import experiences from './experiences.json';
 
 export const Experiences = () => (
   <Wrapper id="experiences">
@@ -19,7 +19,7 @@ export const Experiences = () => (
         </Row>
       </Details>
       <Thumbnail>
-        <img src={dev} alt="I’m Rafa and I’m a Junior Backend engineer!" />
+        <img src={dev} alt="I’m Rafa and I’m a Backend engineer!" />
       </Thumbnail>
     </ExperiencesWrapper>
   </Wrapper>

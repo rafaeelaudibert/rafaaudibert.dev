@@ -2,14 +2,14 @@ import React from 'react';
 import { Container, Row, Column } from 'components/common';
 import dev from 'assets/illustrations/skills.svg';
 import { Skill } from 'components/landing/Skill';
+import skills from 'data/skills.json';
 import { Wrapper, SkillsWrapper, Details, Thumbnail } from './styles';
-import skills from './skills.json';
 
 export const Skills = () => (
   <Wrapper id="skills">
     <SkillsWrapper as={Container}>
       <Thumbnail>
-        <img src={dev} alt="I’m Rafa and I’m a Junior Backend engineer!" />
+        <img src={dev} alt="I’m Rafa and I’m a Backend engineer!" />
       </Thumbnail>
       <Details>
         <h1>My hard skills</h1>
