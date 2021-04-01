@@ -18,12 +18,12 @@ export const Wrapper = styled.div`
 `;
 
 export const ExperiencesWrapper = styled.div`
-  padding: 4rem 0;
+  padding: 2.5rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  @media (max-width: 960px) {
+  @media (max-width: 1200px) {
     flex-direction: column;
   }
 `;
@@ -32,7 +32,7 @@ export const Details = styled.div`
   flex: 1;
   padding-left: 2rem;
 
-  @media (max-width: 960px) {
+  @media (max-width: 1200px) {
     padding-left: unset;
     width: 100%;
   }
@@ -55,7 +55,7 @@ export const Details = styled.div`
 export const Thumbnail = styled.div`
   flex: 1;
 
-  @media (max-width: 960px) {
+  @media (max-width: 1200px) {
     width: 100%;
     margin-bottom: 2rem;
     display: none;
