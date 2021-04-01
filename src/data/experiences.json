@@ -4,7 +4,7 @@
         "name": "Mid-Level Backend Engineer",
         "where": "LeadSimple",
         "whereLink": "https://leadsimple.com",
-        "yearEnd": "03/2021",
+        "yearStart": "03/2021",
         "icon": "leadsimple.png",
         "description": "Currently working at Leadsimple, a CRM and Operations management software purposefuly built for property managers, helping to sustain a brand new React UI backed by a Rails + GraphQL API backend, with full test coverage (RSpec) and a fully functioning CI/CD workflow connected with Heroku. Also, working on a new software built with Elixir + Phoenix to handle the synchronization between the company data and external property management softwares."
     },
