@@ -25,3 +25,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GRAPHQL }}
     - name: Deploy static website to S3 bucket
       run: aws s3 sync ./public s3://rafaaudibert-website --delete
+    - name: Invalidate Cloudfront Cache
+      uses: chetan/invalidate-cloudfront-action@master
+      env:
+        DISTRIBUTION: ${{ secrets.DISTRIBUTION }}
+        PATHS: '/index.html'
+        AWS_REGION: 'us-east-1'
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY_ID }}
