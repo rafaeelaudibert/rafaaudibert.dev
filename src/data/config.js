@@ -24,4 +24,23 @@ module.exports = {
   },
   foundingDate: '2020',
   recaptchaKey: '6LfG48sUAAAAAHy2pQAI_X2zWbkbPmgLtYmrYKTG',
+  minymon: {
+    enableFeed: true,
+    enableTalk: true,
+    idsString: 'MWFkZmVkMjctYmM0Ny00ZjgyLWEwMGQtYjI2ODUyOWUzY2JkLmxrMXNMOTFmQTY2ZUJpRlhSY3FmeQ==',
+    infoTitle: 'Hi there!',
+    themeColor: 'purple',
+    questions: [
+      {
+        question: 'Who you?',
+        answer:
+          'A cool 21 years old Brazilian guy which loves to develop meaningful software, especially with JS, Ruby and Elixir :)',
+      },
+    ],
+    feedback: {
+      text: 'Your message will be sent to the owner of this site.',
+      mid: '1adfed27-bc47-4f82-a00d-b268529e3cbd',
+      uid: 'lk1sL91fA66eBiFXRcqfy',
+    },
+  },
 };
