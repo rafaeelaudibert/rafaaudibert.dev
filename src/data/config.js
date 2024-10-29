@@ -4,11 +4,11 @@ module.exports = {
   author: 'Rafa Audibert',
   url: 'https://rafaaudibert.dev',
   legalName: 'Rafael Audibert',
-  defaultDescription: 'I’m Rafael and I’m a Backend engineer!',
+  defaultDescription: 'I’m Rafa, a Senior Software engineer!',
   socialLinks: {
-    github: 'https://url.rafaaudibert.dev/r/github',
-    linkedin: 'https://url.rafaaudibert.dev/r/linkedin',
-    instagram: 'https://url.rafaaudibert.dev/r/instagram',
+    github: 'https://github.com/rafaeelaudibert',
+    linkedin: 'https://www.linkedin.com/in/rbaudibert/',
+    instagram: 'https://www.instagram.com/rafaaudibeert/',
   },
   googleAnalyticsID: 'UA-133407132-1',
   themeColor: '#6b63ff',
@@ -16,7 +16,7 @@ module.exports = {
   address: {
     city: 'Porto Alegre',
     country: 'Brazil',
-    zipCode: '90660900',
+    zipCode: '90035121',
   },
   contact: {
     email: 'rafaeelaudibert@gmail.com',

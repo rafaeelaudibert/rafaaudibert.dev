@@ -34,7 +34,6 @@ export const ExperienceWrapper = styled.div`
     justify-content: center;
 
     img {
-      width: 45px;
       min-height: 45px;
       height: auto;
     }

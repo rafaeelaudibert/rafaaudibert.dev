@@ -22,7 +22,7 @@ export const Projects = () => {
             ... on GitHub_ProfileOwner {
               pinnedItemsRemaining
               itemShowcase {
-                items(first: 10) {
+                items(first: 6) {
                   totalCount
                   edges {
                     node {
@@ -35,13 +35,14 @@ export const Projects = () => {
                           totalCount
                         }
                         forkCount
-                        object(expression: "master") {
+
+                        commits: object(expression: "master") {
                           ... on GitHub_Commit {
                             history {
                               totalCount
                             }
                           }
-                        }
+                        }                        
                       }
                     }
                   }
@@ -73,7 +74,7 @@ export const Projects = () => {
                 </div>
                 <div>
                   <img src={commitIcon} alt="commits" />
-                  <span>{node.object.history.totalCount}</span>
+                  <span>{node.commits.history.totalCount}</span>
                 </div>
               </Stats>
             </Card>

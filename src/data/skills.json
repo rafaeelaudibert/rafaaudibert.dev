@@ -1,130 +1,86 @@
 [
-    {
-        "id": 1,
-        "icon": "fab fa-js-square",
-        "name": "Javascript",
-        "color": "#F7DF1E",
-        "level": "++HIGH",
-        "percentage": "95"
-    },
-    {
-        "id": 2,
-        "icon": "far fa-gem",
-        "name": "Ruby",
-        "color": "#EC1622",
-        "level": "+HIGH",
-        "percentage": "90"
-    },
-    {
-        "id": 3,
-        "icon": "fas fa-train",
-        "name": "Ruby on Rails",
-        "color": "#CC0000",
-        "level": "HIGH",
-        "percentage": "80"
-    },    
-    {
-        "id": 4,
-        "icon": "fab fa-node-js",
-        "name": "Node.js",
-        "color": "#44883E",
-        "level": "HIGH",
-        "percentage": "80"
-    },
-    {
-        "id": 5,
-        "icon": "fab fa-react",
-        "name": "React",
-        "color": "#00D8FF",
-        "level": "-HIGH",
-        "percentage": "70"
-    },
-    {
-        "id": 6,
-        "icon": "fab fa-google",
-        "name": "Dart",
-        "color": "#0175C2",
-        "level": "+MEDIUM",
-        "percentage": "65"
-    },
-    {
-        "id": 7,
-        "icon": "fab fa-docker",
-        "name": "Docker",
-        "color": "#0DB7ED",
-        "level": "MEDIUM",
-        "percentage": "60"
-    },
-    {
-        "id": 8,
-        "icon": "fa fa-database",
-        "name": "PostgreSQL",
-        "color": "#31648C",
-        "level": "-MEDIUM",
-        "percentage": "50"
-    },
-    {
-        "id": 9,
-        "icon": "fab fa-python",
-        "name": "Python",
-        "color": "#FFD43B",
-        "level": "+HIGH",
-        "percentage": "90"
-    },
-    {
-        "id": 10,
-        "icon": "fab fa-html5",
-        "name": "HTML5 + CSS3",
-        "color": "#E34F26",
-        "level": "+HIGH",
-        "percentage": "85"
-    },
-    {
-        "id": 11,
-        "icon": "fab fa-aws",
-        "name": "AWS",
-        "color": "#FF9900",
-        "level": "HIGH",
-        "percentage": "80"
-    },    
-    {
-        "id": 12,
-        "icon": "fab fa-github",
-        "name": "Git",
-        "color": "#9D25BB",
-        "level": "HIGH",
-        "percentage": "80"
-    },    
-    {
-        "id": 13,
-        "icon": "fas fa-laptop",
-        "name": "C/C++",
-        "color": "#794F4C",
-        "level": "-HIGH",
-        "percentage": "70"
-    },
-    {
-        "id": 14,
-        "icon": "fab fa-phoenix-framework",
-        "name": "Elixir",
-        "color": "#0175C2",
-        "level": "+MEDIUM",
-        "percentage": "65"
-    },
-    {
-        "id": 15,
-        "icon": "fab fa-firefox",
-        "name": "Rust",
-        "color": "#000000",
-        "level": "-MEDIUM",
-        "percentage": "50"
-    },
-    {
-        "id": 16,
-        "icon": "fa fa-database",
-        "name": "MongoDB",
-        "color": "#13A54E",
-        "level": "LOW",
-        "percentage": "30"
-    }
+  {
+    "icon": "fab fa-js-square",
+    "name": "Typescript",
+    "color": "#3178C6",
+    "level": "++HIGH",
+    "percentage": "95"
+  },
+  {
+    "icon": "fas fa-train",
+    "name": "Ruby on Rails",
+    "color": "#CC0000",
+    "level": "++HIGH",
+    "percentage": "95"
+  },
+  {
+    "icon": "fab fa-react",
+    "name": "React",
+    "color": "#00D8FF",
+    "level": "+HIGH",
+    "percentage": "90"
+  },
+  {
+    "icon": "fa fa-database",
+    "name": "PostgreSQL",
+    "color": "#31648C",
+    "level": "+HIGH",
+    "percentage": "90"
+  },
+  {
+    "icon": "fab fa-python",
+    "name": "Python",
+    "color": "#FFD43B",
+    "level": "+HIGH",
+    "percentage": "90"
+  },
+  {
+    "icon": "fab fa-aws",
+    "name": "AWS",
+    "color": "#FF9900",
+    "level": "HIGH",
+    "percentage": "85"
+  },
+  {
+    "icon": "fab fa-github",
+    "name": "Git",
+    "color": "#9D25BB",
+    "level": "HIGH",
+    "percentage": "80"
+  },
+  {
+    "icon": "fab fa-node-js",
+    "name": "Node.js",
+    "color": "#44883E",
+    "level": "HIGH",
+    "percentage": "80"
+  },
+  {
+    "icon": "fab fa-phoenix-framework",
+    "name": "Elixir",
+    "color": "#7A0DD9",
+    "level": "-HIGH",
+    "percentage": "75"
+  },
+  {
+    "icon": "fab fa-docker",
+    "name": "Docker",
+    "color": "#0DB7ED",
+    "level": "-HIGH",
+    "percentage": "70"
+  },
+  {
+    "icon": "fab fa-twitter",
+    "name": "Flutter",
+    "color": "#0175C2",
+    "level": "-MEDIUM",
+    "percentage": "65"
+  },
+  {
+    "icon": "fab fa-firefox",
+    "name": "Rust",
+    "color": "#000000",
+    "level": "-MEDIUM",
+    "percentage": "50"
+  }
 ]

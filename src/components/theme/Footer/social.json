@@ -8,19 +8,13 @@
   {
     "id": 1,
     "name": "Github",
-    "link": "https://url.rafaaudibert.dev/r/github",
+    "link": "https://github.com/rafaeelaudibert",
     "icon": "github.svg"
   },
   {
     "id": 2,
-    "name": "StackOverflow",
-    "link": "https://url.rafaaudibert.dev/r/stackoverflow",
-    "icon": "stackoverflow.svg"
-  },
-  {
-    "id": 3,
     "name": "LeagueOfLegends",
-    "link": "https://url.rafaaudibert.dev/r/opgg",
+    "link": "https://www.op.gg/summoners/br/Rafa-AUDI",
     "icon": "riot.svg"
   }
 ]

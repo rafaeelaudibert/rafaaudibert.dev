@@ -21,6 +21,7 @@ export const Footer = () => (
           </a>
         </span>
       </Details>
+
       <Links>
         {social.map(({ id, name, link, icon }) => {
           const img = require(`assets/img/${icon}`);

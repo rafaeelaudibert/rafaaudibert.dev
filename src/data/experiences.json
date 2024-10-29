@@ -1,51 +1,41 @@
 [
-    {
-        "id": 1,
-        "name": "Mid-Level Backend Engineer",
-        "where": "LeadSimple",
-        "whereLink": "https://leadsimple.com",
-        "yearStart": "03/2021",
-        "icon": "leadsimple.png",
-        "description": "Currently working at Leadsimple, a CRM and Operations management software purposefuly built for property managers, helping to sustain a brand new React UI backed by a Rails + GraphQL API backend, with full test coverage (RSpec) and a fully functioning CI/CD workflow connected with Heroku. Also, working on a new software built with Elixir + Phoenix to handle the synchronization between the company data and external property management softwares."
-    },
-    {
-        "id": 2,
-        "name": "Junior Backend Engineer",
-        "where": "Tag Livros",
-        "whereLink": "https://taglivros.com",
-        "yearStart": "11/2019",
-        "yearEnd": "02/2021",
-        "icon": "tag.jpg",
-        "description": "Junior Backend Enginner at TAG Livros, developing solutions for the company internal workflow. Working with frameworks such as Django, NodeJS and React, interacting consistently with AWS Tools for Serverless Computing such as S3, API Gateway, Lambda, SQS, RDS and DynamoDB. Responsible for building new internal projects such as a common interface for the company bots (Slack and Discord), as well as a CLI to enable faster production deployment of the company digital products."
-    },
-    {
-        "id": 3,
-        "name": "AI/DL Researcher",
-        "where": "CNPq/UFRGS",
-        "whereLink": "https://www.cnpq.br",
-        "yearStart": "02/2019",
-        "yearEnd": "11/2019",
-        "icon": "CNPq.png",
-        "description": "Researched about Machine Learning during my undergraduation , more specifically about Graph Neural Networks and their applications. In the laboratory, worked with Python (Tensorflow and PyTorch) to achieve the high paralelism needed to train models in a satisfatory time (it's still weeks), using NVIDIA graphic processing units. Also focused on data analysis and community identification."
-    },
-    {
-        "id": 4,
-        "where": "FEENG/UFRGS",
-        "whereLink": "https://www.ufrgs.br/engenharia/wp/feeng/",
-        "name": "Rails (Web) Developer",
-        "yearStart": "08/2018",
-        "yearEnd": "02/2019",
-        "icon": "feeng.jpg",
-        "description": "Developed platform for the Brazilian Health Ministry for a cooperation between them and UFRGS. The plataform was used in 2 fronts: Help solving companies problems when trying to computerize the brazilian UBS; and being able to hold a plataform responsible for solving complaints between companies, cities and UBS's. Using Rails 5 and Docker on Linux, using the MVC software engineering model and some modern techniques to boost produtivity, the team achieved to build a full web app in around 6 months."
-    },
-    {
-        "id": 5,
-        "where": "UFRGS",
-        "whereLink": "https://ufrgs.br",
-        "name": "Algorithms Monitor",
-        "yearStart": "01/2018",
-        "yearEnd": "07/2018",
-        "icon": "ufrgs.jpeg",
-        "description": "Helped new Computer Science undergratues to complete the subject challenges each week, using C language. With this, acquired a big knowledge in algorithms, such as sorting, hash, search, data structures, git, console manipulation, etc..."
-    }
+  {
+    "id": 1,
+    "name": "Senior Software Engineer",
+    "where": "LeadSimple",
+    "whereLink": "https://leadsimple.com",
+    "yearStart": "03/2021",
+    "icon": "leadsimple.png",
+    "description": "Currently working at LeadSimple, a US-based seed-stage Saas startup, the leading CRM and Operations software for property management companies in the United States. <br/><br/> Rails + GraphQL in the backend, React + Typescript + Relay in the Frontend. Also, working on a new software built with Elixir + Phoenix to handle the synchronization between the company data and external property management software."
+  },
+  {
+    "id": 2,
+    "name": "Software Engineer",
+    "where": "Tag Livros",
+    "whereLink": "https://taglivros.com",
+    "yearStart": "11/2019",
+    "yearEnd": "01/2021",
+    "icon": "tag.png",
+    "description": "Backend Software Engineer, working with technologies such as NodeJS, Python+Django, SLS Framework (with AWS, using Lambda, SQS, and Dynamo)."
+  },
+  {
+    "id": 3,
+    "name": "AI/DL Researcher",
+    "where": "CNPq/UFRGS",
+    "whereLink": "https://www.cnpq.br",
+    "yearStart": "02/2019",
+    "yearEnd": "11/2019",
+    "icon": "CNPq.png",
+    "description": "Worked with machine learning-related research, more specifically in the Graph Neural Networks field, with a CNPq scholarship, supervised by Prof. Dr. Luis Lamb and Prof. Dr. Anderson Rocha Tavares. <br/><br/> My undergraduate thesis titled \"On the Evolution of AI and Machine Learning: Analyses of Impact, Leadership and Influence over the Last Decades\" was written during this scholarship. I've published my academic research at the Brazilian Conference on Intelligent Systems and the Journal of Applied Logics."
+  },
+  {
+    "id": 4,
+    "where": "FEENG/UFRGS",
+    "whereLink": "https://www.ufrgs.br/engenharia/wp/feeng/",
+    "name": "Software Engineer",
+    "yearStart": "07/2017",
+    "yearEnd": "01/2019",
+    "icon": "feeng.jpg",
+    "description": "Developed the PIUBS Portal for a Cooperation Project between UFRGS and the Brazilian Health Ministry. <br/><br/> The portal consisted of 2 different services intended to solve conflicts between companies and UBS's (Brazilian health centers) which might occur during the implementation of the PIUBS system countrywide."
+  }
 ]

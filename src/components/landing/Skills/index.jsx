@@ -5,32 +5,38 @@ import { Skill } from 'components/landing/Skill';
 import skills from 'data/skills.json';
 import { Wrapper, SkillsWrapper, Details, Thumbnail } from './styles';
 
-export const Skills = () => (
-  <Wrapper id="skills">
-    <SkillsWrapper as={Container}>
-      <Thumbnail>
-        <img src={dev} alt="I’m Rafa and I’m a Backend engineer!" />
-      </Thumbnail>
-      <Details>
-        <h1>My hard skills</h1>
-        <Row as={Container}>
-          <Column as={Container}>
-            {[...skills].splice(0, (skills.length + 1) / 2).map(({ id, name, icon, color, level, percentage }) => (
-              <Skill key={id} name={name} icon={icon} color={color} level={level} percentage={percentage} />
-            ))}
-          </Column>
-          <Column as={Container}>
-            {[...skills].splice((skills.length + 1) / 2).map(({ id, name, icon, color, level, percentage }) => (
-              <Skill key={id} name={name} icon={icon} color={color} level={level} percentage={percentage} />
-            ))}
-          </Column>
-        </Row>
+export const Skills = () => {
 
-        <p>
-          Few stuff that I've learned through the years, heavily focusing on backend technologies, but with a lot of
-          curiosities on new trends (like React and Dart).
-        </p>
-      </Details>
-    </SkillsWrapper>
-  </Wrapper>
-);
+  const evenSkills = [...skills].filter((_skill, idx) => idx % 2 === 0)
+  const oddSkills = [...skills].filter((_skill, idx) => idx % 2 === 1)
+  
+  return (
+    <Wrapper id="skills">
+      <SkillsWrapper as={Container}>
+        <Thumbnail>
+          <img src={dev} alt="I’m Rafa and I’m a Backend engineer!" />
+        </Thumbnail>
+        <Details>
+          <h1>My hard skills</h1>
+          <Row as={Container}>
+            <Column as={Container}>
+              {evenSkills.map(({ name, icon, color, level, percentage }) => (
+                <Skill key={name} name={name} icon={icon} color={color} level={level} percentage={percentage} />
+              ))}
+            </Column>
+            <Column as={Container}>
+              {oddSkills.map(({ name, icon, color, level, percentage }) => (
+                <Skill key={name} name={name} icon={icon} color={color} level={level} percentage={percentage} />
+              ))}
+            </Column>
+          </Row>
+
+          <p>
+            Few stuff that I've learned through the years, heavily focusing on backend technologies, but with a lot of
+            curiosities on new trends (like Dart, Rust, NextJS).
+          </p>
+        </Details>
+      </SkillsWrapper>
+    </Wrapper>
+  )
+};

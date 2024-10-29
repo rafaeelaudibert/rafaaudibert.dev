@@ -19,7 +19,7 @@ export const ExperienceCard = ({ name, where, whereLink, yearStart, yearEnd = 'c
       <div className="icon">
         <img src={img} alt={name} />
       </div>
-      <p className="description">{description}</p>
+      <p className="description" dangerouslySetInnerHTML={{ __html: description.trim() }}/>
     </ExperienceWrapper>
   );
 };
