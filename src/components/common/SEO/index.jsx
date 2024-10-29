@@ -65,13 +65,6 @@ export const SEO = ({ title = defaultTitle, description = defaultDescription, lo
       <html lang="en" dir="ltr" />
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"></link>
-
-      {/* Minymon */}
-      <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.8/lottie_svg.min.js"
-        type="text/javascript"
-      ></script>
-      <script src="https://api.minymon.com/minymon.js" defer type="text/javascript"></script>
     </Helmet>
   );
 };
