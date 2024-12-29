@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: bun install
       - name: Build website
-        run: bun build
+        run: bun run build
       - name: Deploy static website to S3 bucket
         run: aws s3 sync ./dist s3://rafaaudibert-website --delete
       - name: Invalidate Cloudfront Cache
