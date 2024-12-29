@@ -56,9 +56,9 @@ typings/
 .env.development
 .env.production
 
-# gatsby files
-public/
-.cache/
+# Astro stuff
+dist/
+.astro/
 
 # Mac files
 .DS_Store

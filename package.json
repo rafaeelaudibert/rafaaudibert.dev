@@ -1,65 +1,26 @@
 {
-  "name": "rafaaudibert-website",
-  "private": true,
-  "description": "My portfolio",
-  "version": "2.0.0",
-  "author": "RafaAudibert <rafaeelaudibert@gmail.com>",
-  "dependencies": {
-    "dotenv": "^6.2.0",
-    "formik": "^1.4.1",
-    "gatsby": "^2.23.0",
-    "gatsby-image": "^2.2.30",
-    "gatsby-plugin-canonical-urls": "^2.0.8",
-    "gatsby-plugin-google-analytics": "^2.0.8",
-    "gatsby-plugin-manifest": "^3.2.0",
-    "gatsby-plugin-nprogress": "^2.0.7",
-    "gatsby-plugin-offline": "3.0.14",
-    "gatsby-plugin-react-helmet": "^3.0.2",
-    "gatsby-plugin-sharp": "^3.2.0",
-    "gatsby-plugin-sitemap": "^2.0.3",
-    "gatsby-plugin-styled-components": "^3.0.4",
-    "gatsby-source-filesystem": "^2.1.35",
-    "gatsby-source-graphql": "^3.2.0",
-    "gatsby-transformer-sharp": "^3.2.0",
-    "prop-types": "^15.6.2",
-    "react": "^16.11.0",
-    "react-anchor-link-smooth-scroll": "^1.0.12",
-    "react-dom": "^16.11.0",
-    "react-google-recaptcha": "^1.0.5",
-    "react-helmet": "^5.2.0",
-    "styled-components": "^4.1.3",
-    "yup": "^0.26.6"
-  },
-  "keywords": [
-    "gatsby",
-    "portfolio",
-    "developer"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "build": "gatsby build",
-    "start": "gatsby develop -o",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "reset": "rm -rf .cache/ public/"
-  },
-  "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "babel-plugin-styled-components": "^1.10.6",
-    "eslint": "^5.14.1",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-config-wesbos": "0.0.19",
-    "eslint-plugin-html": "^5.0.3",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-react-hooks": "^1.3.0",
-    "prettier": "^1.19.1"
-  },
+  "name": "rafaaudibert.dev",
+  "author": "Rafael Audibert",
+  "description": "Rafael Audibert's personal website",
+  "homepage": "https://rafaaudibert.dev",
   "repository": {
     "type": "git",
-    "url": "git@github.com:rafaeelaudibert/rafaaudibert.dev.git"
+    "url": "https://github.com/rafaaudibert/rafaaudibert.dev.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rafaaudibert/rafaaudibert.dev/issues"
+  },
+  "type": "module",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.1.1",
+    "astro-compressor": "^1.0.0"
   }
 }

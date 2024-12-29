@@ -1,0 +1,87 @@
+---
+// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
+import BaseLayout from "../layouts/BaseLayout.astro"
+
+// Component Imports
+import Hero from "../components/Hero.astro"
+import Icon from "../components/Icon.astro"
+import Pill from "../components/Pill.astro"
+
+// Page section components
+import ContactCTA from "../components/ContactCTA.astro"
+import Skills from "../components/Skills.astro"
+import { Image } from "astro:assets"
+
+// Images
+import portrait from "../assets/portrait.jpg"
+---
+
+<BaseLayout>
+  <div class="stack gap-20 lg:gap-48">
+    <div class="wrapper stack gap-8 lg:gap-20">
+      <header class="hero">
+        <Hero
+          title="Hello, my name is Rafa Audibert"
+          tagline="I am a Software Engineer who is currently based in Porto Alegre, Brazil."
+          align="start"
+        >
+          <div class="roles">
+            <Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
+            <Pill><Icon icon="paper-plane-tilt" size="1.33em" /> Traveler</Pill>
+          </div>
+        </Hero>
+
+        <Image
+          alt="Rafa Audibert smiling with a blue beanie and a black jacket in front of the Big Ben in London, UK"
+          src={portrait}
+        />
+      </header>
+
+      <Skills />
+    </div>
+
+    <ContactCTA />
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .roles {
+    display: none;
+  }
+
+  .hero img {
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 50em) {
+    .hero {
+      display: grid;
+      grid-template-columns: 6fr 4fr;
+      padding-inline: 2.5rem;
+      gap: 3.75rem;
+    }
+
+    .roles {
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .hero img {
+      aspect-ratio: 3 / 4;
+      border-radius: 4.5rem;
+      object-fit: cover;
+    }
+  }
+</style>

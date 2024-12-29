@@ -1,0 +1,304 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+
+import ContactCTA from "../components/ContactCTA.astro"
+import Hero from "../components/Hero.astro"
+
+import changelogImage from "../assets/changelog.jpg"
+
+import { Image } from "astro:assets"
+import Link from "../components/Link.astro"
+---
+
+<BaseLayout
+  title="Changelog | Rafa Audibert"
+  description="Rafa Audibert's Changelog"
+>
+  <div class="stack gap-20 mb-4">
+    <main class="wrapper changelog">
+      <Hero
+        title="Changelog"
+        tagline="A timeline of what's going on in my life."
+      >
+        <Image
+          src={changelogImage}
+          alt="Rafa Audibert and his beautiful fiancée at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
+          class="hero-image"
+        />
+      </Hero>
+
+      <section>
+        <h2 class="section-year">2024</h2>
+        <h3 class="section-month">November</h3>
+        <div class="content">
+          <p>
+            Started working at <Link href="https://posthog.com">PostHog</Link> 🦔,
+            one of my dream jobs. I'm working on the Web Analytics team for now.
+          </p>
+          <p>Visited part of my team in London 🇬🇧.</p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">October</h3>
+        <div class="content">
+          <p>I got engaged 💍 to my beautiful fiancée, Liliane Basso.</p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">July</h3>
+        <div class="content">
+          <p>
+            3-week trip of a lifetime to the East Coast of the United States 🇺🇸
+            and Canada 🇨🇦. New York City 🗽, Washington D.C. 🕴🏻, Philadelphia
+            🗞️, Chicago 🌆, Montreal 🍁, and Toronto 🚀.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">April</h3>
+        <div class="content">
+          <p>
+            Visited Puerto Rico 🇵🇷 for a LeadSimple offsite. Spent a week in the
+            east coast, 3 days in San Juan, and 3 days in Rincón on the West
+            Coast.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">February</h3>
+        <div class="content">
+          <p>
+            My 24th birthday 🎂. Spent a week in Punta del Este 🇺🇾 and a week in
+            Curaçao 🇨🇼 with my girlfriend. The Carribean Sea is really one of a
+            kind, can't wait to go back.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-year">2023</h2>
+        <h3 class="section-month">December</h3>
+        <div class="content">
+          <p>
+            Attended the <Link href="https://www.leadsimple.com"
+              >LeadSimple</Link
+            >
+            user conference in Austin, Texas 🇺🇸. This was my first time speaking
+            in English to a crowd. I was extremely nervous and couldn't stop shaking,
+            but it went extremely well, it was a highlight of the year.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">April</h3>
+        <div class="content">
+          <p>
+            First time in the US for the first LeadSimple off-site in Austin,
+            Texas 🇺🇸.
+          </p>
+          <p>
+            Went to Florida for the first time! Loved Disney World 🎢, Miami and
+            Key West 🌴.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-year">2022</h2>
+        <h3 class="section-month">July</h3>
+        <div class="content">
+          <p>Aura 😻 joined our lives.</p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">April</h3>
+        <div class="content">
+          <p>
+            Moved 🏠 to Porto Alegre 🇧🇷 with my now-fiancée-then-girlfriend.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">January</h3>
+        <div class="content">
+          <p>
+            Came back to Brazil 🇧🇷 after an exchange year in Germany 🇩🇪. Spent 4
+            months at the beach 🌴.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-year">2021</h2>
+        <h3 class="section-month">September</h3>
+        <div class="content">
+          <p>Visited some friends studying in Grenoble 🇫🇷.</p>
+          <p>Visited Luxembourg 🇱🇺 with a couple of German friends.</p>
+          <p>
+            My first trip totally on my own. Visited Switzerland 🇨🇭 albeit only
+            for a single day.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">July</h3>
+        <div class="content">
+          <p>
+            Visited one of my best friends in the Balearic Islands 🇪🇸. Also
+            spent some time in Barcelona.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">March</h3>
+        <div class="content">
+          <p>
+            Moved to Germany 🇩🇪 for an exchange year at the Technische
+            Universität Kaiserslautern (TUK).
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">February</h3>
+        <div class="content">
+          <p>
+            Started working at <Link href="https://leadsimple.com"
+              >LeadSimple</Link
+            > 🏠.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-year">2020</h2>
+        <h3 class="section-month">March</h3>
+        <div class="content">
+          <p>March 15th, 2020. The world changed. 🦠</p>
+          <p>
+            I moved back to my home town with my parents and younger brother.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-year">2019</h2>
+        <h3 class="section-month">September</h3>
+        <div class="content">
+          <p>
+            Started working at <Link href="https://site.taglivros.com"
+              >Tag Livros</Link
+            > 📚.
+          </p>
+        </div>
+      </section>
+      <section>
+        <h2 class="section-year">2017</h2>
+        <h3 class="section-month">July</h3>
+        <div class="content">
+          <p>
+            Started studying at the Federal University of Rio Grande do Sul
+            (UFRGS) 🇧🇷 🚌.
+          </p>
+        </div>
+      </section>
+      <section>
+        <h2 class="section-year">2015</h2>
+        <h3 class="section-month">December</h3>
+        <div class="content">
+          <p>Started dating my now-fiancée, Lili 🌹.</p>
+        </div>
+      </section>
+      <section>
+        <h2 class="section-year">2000</h2>
+        <h3 class="section-month">February</h3>
+        <div class="content">
+          <p>👶🏻🍼</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  kbd {
+    background-color: var(--gray-500);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.25rem;
+  }
+
+  .changelog {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .changelog section:has(.section-year) {
+    margin-top: 3rem;
+  }
+
+  img .hero-image {
+    margin-top: 1.5rem;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--gray-200);
+  }
+
+  .section-year {
+    grid-column-start: 1;
+    font-size: var(--text-xl);
+    color: var(--gray-0);
+  }
+
+  .section-month {
+    grid-column-start: 2;
+    font-size: var(--text-lg);
+    color: var(--gray-0);
+  }
+
+  .content {
+    grid-column: 3 / 5;
+  }
+
+  .content :global(a) {
+    text-decoration: 1px solid underline transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--theme-transition);
+  }
+
+  .content :global(a:hover),
+  .content :global(a:focus) {
+    text-decoration-color: currentColor;
+  }
+
+  @media (min-width: 50em) {
+    .changelog {
+      display: grid;
+      grid-template-columns: 1fr 1fr 60% 1fr;
+    }
+
+    .changelog > :global(:first-child) {
+      grid-column-start: 3;
+    }
+
+    section {
+      display: contents;
+      font-size: var(--text-lg);
+    }
+  }
+</style>
