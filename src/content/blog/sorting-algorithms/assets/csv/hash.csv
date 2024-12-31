@@ -1,0 +1,19 @@
+Table Size,Method,Collisions
+200,Open Linear Insertion,208
+200,Open Rehashing Insertion,134
+200,Closed List Insertion,0
+500,Open Linear Insertion,22
+500,Open Rehashing Insertion,28
+500,Closed List Insertion,0
+1000,Open Linear Insertion,11
+1000,Open Rehashing Insertion,13
+1000,Closed List Insertion,0
+200,Open Linear Search,60
+200,Open Rehashing Search,37
+200,Closed List Search,70
+500,Open Linear Search,10
+500,Open Rehashing Search,5
+500,Closed List Search,2
+1000,Open Linear Search,0
+1000,Open Rehashing Search,0
+1000,Closed List Search,0

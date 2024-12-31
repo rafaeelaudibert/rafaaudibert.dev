@@ -4,11 +4,11 @@ import { getCollection } from "astro:content"
 import BaseLayout from "../layouts/BaseLayout.astro"
 
 import ContactCTA from "../components/ContactCTA.astro"
-import PortfolioPreview from "../components/PortfolioPreview.astro"
+import PostPreview from "../components/PostPreview.astro"
 import Hero from "../components/Hero.astro"
 import Grid from "../components/Grid.astro"
 
-const projects = (await getCollection("blog")).sort(
+const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
 )
 ---
@@ -24,12 +24,11 @@ const projects = (await getCollection("blog")).sort(
         tagline="See what I've been writing about recently."
         align="start"
       />
-      <h1>THIS IS WIP</h1>
       <Grid variant="offset">
         {
-          projects.map((project) => (
+          posts.map((post) => (
             <li>
-              <PortfolioPreview project={project} />
+              <PostPreview post={post} />
             </li>
           ))
         }

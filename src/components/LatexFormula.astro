@@ -1,0 +1,13 @@
+---
+// This component should only be used in rare exceptions where inline math isn't working inside our mdx files - such as inside nested parenthesis.
+import katex from "katex"
+
+type Props = {
+  formula: string
+}
+
+const { formula = "" }: Props = Astro.props
+const html = katex.renderToString(formula, { throwOnError: false })
+---
+
+<span set:html={html} class="" />

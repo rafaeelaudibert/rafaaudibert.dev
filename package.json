@@ -1,26 +1,40 @@
 {
   "name": "rafaaudibert.dev",
+  "version": "2.0.0",
   "author": "Rafael Audibert",
-  "description": "Rafael Audibert's personal website",
-  "homepage": "https://rafaaudibert.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/rafaaudibert/rafaaudibert.dev.git"
   },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.3",
+    "@astrojs/react": "^4.1.2",
+    "@astrojs/sitemap": "^3.2.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.3.0",
+    "@mui/x-charts": "^7.23.2",
+    "@rollup/plugin-dsv": "^3.0.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "astro": "^5.1.1",
+    "astro-compressor": "^1.0.0",
+    "katex": "^0.16.19",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  },
   "bugs": {
     "url": "https://github.com/rafaaudibert/rafaaudibert.dev/issues"
   },
-  "type": "module",
-  "version": "2.0.0",
+  "description": "Rafael Audibert's personal website",
+  "homepage": "https://rafaaudibert.dev",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
-  "dependencies": {
-    "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.1.1",
-    "astro-compressor": "^1.0.0"
-  }
+  "type": "module"
 }

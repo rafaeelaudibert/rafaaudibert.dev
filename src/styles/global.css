@@ -279,3 +279,14 @@ h5 {
     gap: 12rem;
   }
 }
+
+/* Dark mode warning*/
+.dark-mode-warning {
+  display: none;
+  height: 0;
+}
+
+:root.theme-dark .dark-mode-warning {
+  display: block;
+  height: auto;
+}

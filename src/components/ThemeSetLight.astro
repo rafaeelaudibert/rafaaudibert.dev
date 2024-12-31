@@ -1,0 +1,64 @@
+---
+import Icon from "./Icon.astro"
+---
+
+<span id="theme-set-light">
+  <Icon icon="sun" />
+</span>
+
+<style>
+  span {
+    cursor: pointer;
+  }
+
+  .icon {
+    z-index: 1;
+    position: relative;
+    display: flex;
+    padding: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+    color: var(--accent-overlay);
+  }
+
+  .icon.light::before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    inset: 0;
+    background-color: var(--accent-regular);
+    border-radius: 999rem;
+  }
+
+  :global(.theme-dark) .icon.light::before {
+    transform: translateX(100%);
+  }
+
+  :global(.theme-dark) .icon.dark,
+  :global(html:not(.theme-dark)) .icon.light,
+  button[aria-pressed="false"] .icon.light {
+    color: var(--accent-text-over);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .icon,
+    .icon.light::before {
+      transition:
+        transform var(--theme-transition),
+        color var(--theme-transition);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .icon.light::before {
+      background-color: SelectedItem;
+    }
+  }
+</style>
+
+<script>
+  document.getElementById("theme-set-light")?.addEventListener("click", () => {
+    document.documentElement.classList.remove("theme-dark")
+  })
+</script>
