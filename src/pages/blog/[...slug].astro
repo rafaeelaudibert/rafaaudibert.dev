@@ -50,9 +50,12 @@ if (!images[pathFor(entry.data.img)])
               <div class="tags">
                 {entry.data.tags.map((t) => <Pill>{t}</Pill>)}
               </div>
-              <p class="description">{entry.data.description}</p>
+              <div class="description">
+                <p>{entry.data.description}</p>
+              </div>
             </div>
-            <p class="description muted">
+
+            <p class="muted">
               {
                 entry.data.publishDate.toLocaleDateString("en-US", {
                   year: "numeric",
@@ -73,6 +76,7 @@ if (!images[pathFor(entry.data.img)])
               <Image
                 src={images[pathFor(entry.data.img)]()}
                 alt={entry.data.img_alt || ""}
+                loading="eager"
               />
             )
           }
@@ -99,14 +103,16 @@ if (!images[pathFor(entry.data.img)])
   .details {
     display: flex;
     flex-direction: column;
-    padding: 0.5rem;
     gap: 1.5rem;
+    padding: 0.5rem;
     justify-content: space-between;
     align-items: center;
   }
 
   .tags {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem;
   }
 
@@ -121,6 +127,7 @@ if (!images[pathFor(entry.data.img)])
   }
 
   .content {
+    width: 100%;
     max-width: 65ch;
     margin-inline: auto;
   }
@@ -175,7 +182,13 @@ if (!images[pathFor(entry.data.img)])
 
     .details {
       flex-direction: row;
+      flex-wrap: wrap;
       gap: 2.5rem;
+    }
+
+    .tags {
+      flex: 1;
+      justify-content: flex-start;
     }
 
     .content :global(blockquote) {
