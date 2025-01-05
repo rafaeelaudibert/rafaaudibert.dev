@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rafaaudibert.dev/sitemap-index.xml
