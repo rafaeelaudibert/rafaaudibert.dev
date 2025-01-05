@@ -1,7 +1,5 @@
-import React, { useState } from 'react'
-
-// TODO: Change to typed environment variable
-const AMAZON_API = ' https://m9qx1gsg88.execute-api.sa-east-1.amazonaws.com/prod';
+import { AMAZON_SORTING_TABLE_API_URL } from 'astro:env/client'
+import { useState } from 'react'
 
 const capitalize = (str: string) => str.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
 
@@ -41,8 +39,8 @@ export default function SortingTable({ extended = false }: Props) {
 
     const url =
       arrayType === "custom"
-        ? `${AMAZON_API}/custom/${parsedSortingAlgorithm}?array=${customValue}&type=${shellType}`
-        : `${AMAZON_API}/${arrayType}/${parsedSortingAlgorithm}?size=${arraySize}&type=${shellType}`
+        ? `${AMAZON_SORTING_TABLE_API_URL}/custom/${parsedSortingAlgorithm}?array=${customValue}&type=${shellType}`
+        : `${AMAZON_SORTING_TABLE_API_URL}/${arrayType}/${parsedSortingAlgorithm}?size=${arraySize}&type=${shellType}`
 
     const { response: { changes, time }, size } = await fetch(url).then(res => res.json())
 

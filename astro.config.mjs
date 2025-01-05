@@ -28,6 +28,7 @@ export default defineConfig({
     schema: {
       POSTHOG_API_KEY: envField.string({ context: "client", access: "public", startsWith: "phc_" }),
       POSTHOG_API_HOST: envField.string({ context: "client", access: "public", startsWith: "https://" }),
+      AMAZON_SORTING_TABLE_API_URL: envField.string({ context: "client", access: "public", startsWith: "https://", includes: "amazonaws.com" }),
     },
   },
   vite: {
