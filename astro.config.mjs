@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, envField } from 'astro/config'
 
-import compressor from 'astro-compressor'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 
@@ -41,8 +40,5 @@ export default defineConfig({
 
     // Build a sitemap to help with SEO
     sitemap(),
-
-    // Compressor needs to be the last integration to compress all generated files
-    compressor(),
   ]
 })
