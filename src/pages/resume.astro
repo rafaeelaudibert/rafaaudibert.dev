@@ -12,6 +12,138 @@ import taglivros from "../assets/companies/taglivros.png"
 import feeng from "../assets/companies/feeng.png"
 
 import { Image } from "astro:assets"
+
+export const BACKGROUND_CONTENT = [
+  "Rafael has 7+ years of experience in various industries, ranging from seed- stage SaaS startups to growth-stage scaleups. Proven track record of working with <b>Ruby on Rails</b>, <b>Python + Django</b>, <b>Typescript + React</b>, and <b>Elixir + Phoenix</b>, building reliable and scalable software. He's motivated by creating new and engaging customer-centric apps loved by clients.",
+  "His passion is to build products that are both functional and aesthetically pleasing. More importantly, he wants the product to do exactly what the customers needs it to do. He has a strong background in both front-end and back-end development, and he is always looking for new challenges to tackle.",
+]
+
+export const PAST_EXPERIENCES = [
+  {
+    company: "PostHog",
+    imageSrc: posthog,
+    href: "https://posthog.com",
+    role: "Product Engineer",
+    startDate: "11/2024",
+    endDate: "Present",
+    bulletPoints: [
+      "Working on the Web Analytics small team, building a new product to help companies understand their customers and improve their products.",
+      "Leading the <strong>Core Web Vitals + Performance</strong> tracking feature.",
+    ],
+  },
+  {
+    company: "LeadSimple",
+    imageSrc: leadsimple,
+    href: "https://leadsimple.com",
+    role: "Senior Software Engineer",
+    startDate: "03/2021",
+    endDate: "10/2024",
+    bulletPoints: [
+      "Built the company's flagship product in <strong>Ruby on Rails</strong> + <strong>React/TS</strong>, with a fully-fledged <strong>GraphQL API</strong>, deploying tens of times every day.",
+      "Implemented integrations with 4 big players in the Proptech industry, including 2-way sync PubSub-based infrastructure",
+      "Reduced frontend bundle size by 95% by applying modern frontend bundling practices while migrating from CRA to <strong>Vite</strong>.",
+      "Grew company by 2 orders of magnitude while making sure both the database and app architecture were capable of sustaining the higher load by migrating the company infrastructure from Heroku to AWS.",
+    ],
+  },
+  {
+    company: "TAG Livros",
+    imageSrc: taglivros,
+    href: "https://site.taglivros.com/",
+    role: "Software Engineer",
+    startDate: "11/2019",
+    endDate: "03/2021",
+    bulletPoints: [
+      "Developed a novel logistics IaaC microservice architecture, integrating with tens of shipping companies, to handle 70k deliveries/month in a continental country such as Brazil, using <strong>Terraform</strong>.",
+      "Maintained a legacy <strong>Django</strong> monolith responsible for the subscription process, while rewriting the old fiscal/billing system on Serverless.",
+      "Built an internal CLI to coordinate the company software deployment process, <strong>decreasing deployment time by 60%</strong>.",
+    ],
+  },
+  {
+    company: "FEENG/UFRGS",
+    imageSrc: feeng,
+    href: "https://www.feeng.com.br/",
+    role: "Software Engineer",
+    startDate: "03/2017",
+    endDate: "11/2019",
+    bulletPoints: [
+      "Led the initial MVP for the Brazilian government in a 3-month timeframe with a team of 3 junior engineers, and got the project greenlit by the government.",
+      "Built a <strong>fully-dockerized Ruby on Rails MVC</strong> application for the Brazilian public health system UPSs (small health clinics spread through Brazilian neighborhoods)",
+      "Provisioned infrastructure in AWS, using <strong>EC2, RDS, ELB, Route 53, and Cloudwatch</strong>.",
+    ],
+  },
+]
+
+export const EDUCATION_AND_ACHIEVEMENTS = [
+  {
+    year: "2022",
+    description:
+      "<i>summa cum laude</i> Bachelor's degree in Computer Science from Universidade Federal do Rio Grande do Sul (UFRGS), Brazil",
+  },
+  {
+    year: "2021",
+    description:
+      "Exchange student at the Technische Universität Kaiserslautern (TUK), Germany",
+  },
+  {
+    year: "2019/2020",
+    description:
+      "2-time finalist in the Brazilian Competitive Programming Contest (ICPC)",
+  },
+]
+
+export const LANGUAGES = [
+  { language: "Portuguese", level: "Native" },
+  { language: "English", level: "Professional Working Proficiency" },
+  { language: "Spanish", level: "Limited Working Proficiency" },
+  { language: "German", level: "Elementary Proficiency" },
+]
+
+export const TECHNOLOGIES = [
+  {
+    type: "Programming Languages",
+    technologies: ["Ruby", "Python", "Typescript", "Javascript", "Elixir"],
+  },
+  {
+    type: "Frameworks",
+    technologies: [
+      "Ruby on Rails",
+      "Django",
+      "React",
+      "Phoenix",
+      "NextJS",
+      "Gatsby",
+      "Astro",
+    ],
+  },
+  {
+    type: "Databases",
+    technologies: ["PostgreSQL", "Clickhouse", "Redis", "Elasticsearch"],
+  },
+  {
+    type: "Cloud",
+    technologies: [
+      "AWS (Lambda, DynamoDB, S3, CloudFront, CloudWatch, RDS, ELB, Route 53)",
+      "Vercel",
+      "Netlify",
+    ],
+  },
+  {
+    type: "Tools",
+    technologies: [
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "Git",
+      "GitHub",
+      "GitLab",
+      "CI/CD",
+      "Semaphore CI",
+      "Github Actions",
+      "GA4",
+      "PostHog",
+    ],
+  },
+]
 ---
 
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
@@ -31,197 +163,79 @@ import { Image } from "astro:assets"
       <section>
         <h2 class="section-title">Background</h2>
         <div class="content">
-          <p>
-            I have 7+ years of experience in various industries, ranging from
-            seed- stage SaaS startups to growth-stage scaleups. Proven track
-            record of working with <b>Ruby on Rails</b>, <b>Python + Django</b>,
-            <b>Typescript + React</b>, and <b>Elixir + Phoenix</b>, building
-            reliable and scalable software. I'm motivated by creating new and
-            engaging customer-centric apps loved by clients.
-          </p>
-          <p>
-            My passion is to build products that are both functional and
-            aesthetically pleasing. More importantly, I want the product to do
-            exactly what the customers needs it to do. I have a strong
-            background in both front-end and back-end development, and I am
-            always looking for new challenges to tackle.
-          </p>
+          {BACKGROUND_CONTENT.map((content) => <p set:html={content} />)}
         </div>
       </section>
+
       <section>
         <h2 class="section-title">Past Experience</h2>
         <div class="content">
-          <p>
-            <div class="company-header">
-              <Image src={posthog} alt="PostHog logo" />
-              <span>
-                <strong>Product Engineer</strong> at <Link
-                  href="https://posthog.com">PostHog</Link
-                > — 11/2024 - Present
-              </span>
-            </div>
+          {
+            PAST_EXPERIENCES.map((experience) => (
+              <p>
+                <div class="company-header">
+                  <Image src={experience.imageSrc} alt={experience.company} />
+                  <span>
+                    <strong>{experience.role}</strong> at{" "}
+                    <Link href={experience.href}>{experience.company}</Link> —{" "}
+                    {experience.startDate} - {experience.endDate}
+                  </span>
+                </div>
 
-            <ul>
-              <li>
-                Working on the <Link
-                  href="https://posthog.com/teams/web-analytics"
-                  >Web Analytics</Link
-                > small team, building a new product to help companies understand
-                their customers and improve their products.
-              </li>
-              <li>
-                Leading the <strong>Core Web Vitals + Performance</strong> tracking
-                feature.
-              </li>
-            </ul>
-          </p>
-
-          <p>
-            <div class="company-header">
-              <Image src={leadsimple} alt="LeadSimple logo" />
-              <span>
-                <strong>Senior Software Engineer</strong> at <Link
-                  href="https://leadsimple.com">LeadSimple</Link
-                > — 03/2021 - 10/2024
-              </span>
-            </div>
-            <ul>
-              <li>
-                Built the company's flagship product in <strong
-                  >Ruby on Rails</strong
-                > +
-                <strong>React/TS</strong>, with a fully-fledged <strong
-                  >GraphQL API</strong
-                >, deploying tens of times every day.
-              </li>
-              <li>
-                Implemented integrations with 4 big players in the Proptech
-                industry, including 2-way sync <strong>PubSub</strong>-based
-                infrastructure
-              </li>
-              <li>
-                <strong>Reduced frontend bundle size by 95%</strong> by applying
-                modern frontend bundling practices while migrating from CRA to
-                <strong>Vite</strong>.
-              </li>
-              <li>
-                Grew company by 2 orders of magnitude while making sure both the
-                database and app architecture were capable of sustaining the
-                higher load by <strong
-                  >migrating the company infrastructure from Heroku to AWS</strong
-                >.
-              </li>
-            </ul>
-          </p>
-
-          <p>
-            <div class="company-header">
-              <Image src={taglivros} alt="TAG Livros logo" />
-              <span>
-                <strong>Software Engineer</strong> at <Link
-                  href="https://site.taglivros.com/">TAG Livros</Link
-                > — 11/2019 - 03/2021
-              </span>
-            </div>
-            <ul>
-              <li>
-                Developed a novel logistics IaaC microservice architecture,
-                integrating with tens of shipping companies, to handle 70k
-                deliveries/month in a continental country such as Brazil, using
-                <strong>Terraform</strong>.
-              </li>
-              <li>
-                Maintained a legacy <strong>Django</strong> monolith responsible
-                for the subscription process, while rewriting the old fiscal/billing
-                system on Serverless.
-              </li>
-              <li>
-                Built an internal CLI to coordinate the company software
-                deployment process, <strong
-                  >decreasing deployment time by 60%</strong
-                >.
-              </li>
-            </ul>
-          </p>
-
-          <p>
-            <div class="company-header">
-              <Image src={feeng} alt="FEENG logo" />
-              <span>
-                <strong>Software Engineer</strong> at <Link
-                  href="https://www.feeng.com.br/">FEENG/UFRGS</Link
-                > — 03/2017 - 11/2019
-              </span>
-            </div>
-            <ul>
-              <li>
-                Led the initial MVP for the Brazilian government in a 3-month
-                timeframe with a team of 3 junior engineers, and got the project
-                greenlit by the government.
-              </li>
-              <li>
-                Built a <strong>fully-dockerized Ruby on Rails MVC</strong>
-                application for the Brazilian public health system UPSs (small health
-                clinics spread through Brazilian neighborhoods)
-              </li>
-              <li>
-                Provisioned infrastructure in AWS, using <strong
-                  >EC2, RDS, ELB, Route 53, and Cloudwatch</strong
-                >.
-              </li>
-            </ul>
-          </p>
+                <ul>
+                  {experience.bulletPoints.map((bulletPoint) => (
+                    <li set:html={bulletPoint} />
+                  ))}
+                </ul>
+              </p>
+            ))
+          }
         </div>
       </section>
+
       <section>
         <h2 class="section-title">Education &amp; Achievements</h2>
         <div class="content">
           <ul>
-            <li>
-              2022: <i>summa cum laude</i> Bachelor's degree in Computer Science
-              from Universidade Federal do Rio Grande do Sul (UFRGS), Brazil
-            </li>
-            <li>
-              2021: Exchange student at the Technische Universität
-              Kaiserslautern (TUK), Germany
-            </li>
-            <li>
-              2019/2020: 2-time finalist in the Brazilian Competitive
-              Programming Contest (ICPC)
-            </li>
+            {
+              EDUCATION_AND_ACHIEVEMENTS.map((content) => (
+                <li>
+                  <strong>{content.year}</strong>: {content.description}
+                </li>
+              ))
+            }
           </ul>
         </div>
       </section>
+
       <section>
         <h2 class="section-title">Languages</h2>
         <div class="content">
           <ul>
-            <li>Portuguese (Native)</li>
-            <li>English (Professional Working Proficiency)</li>
-            <li>Spanish (Limited Working Proficiency)</li>
+            {
+              LANGUAGES.map((language) => (
+                <li>
+                  {language.language} ({language.level})
+                </li>
+              ))
+            }
           </ul>
         </div>
       </section>
+
       <section>
         <h2 class="section-title">Things I've worked with before</h2>
         <div class="content">
           In no specific order (help with <kbd>Ctrl/Cmd + F</kbd>):
           <br />
           <ul>
-            <li>Languages: Ruby, Python, Typescript, Javascript, Elixir</li>
-            <li>
-              Frameworks: Ruby on Rails, Django, React, Phoenix, NextJS, Gatsby,
-              Astro
-            </li>
-            <li>Databases: PostgreSQL, Clickhouse, Redis, Elasticsearch</li>
-            <li>
-              Cloud: AWS (Lambda, DynamoDB, S3, CloudFront, CloudWatch, RDS,
-              ELB, Route 53), Vercel, Netlify
-            </li>
-            <li>
-              Tools: Docker, Kubernetes, Terraform, Git, GitHub, GitLab, CI/CD,
-              Semaphore CI, Github Actions, GA4, PostHog
-            </li>
+            {
+              TECHNOLOGIES.map((technology) => (
+                <li>
+                  {technology.type}: {technology.technologies.join(", ")}
+                </li>
+              ))
+            }
           </ul>
         </div>
       </section>
