@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 
 import compressor from 'astro-compressor'
 import mdx from '@astrojs/mdx'
@@ -23,6 +23,12 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMath], // Detect math equations in markdown
     rehypePlugins: [rehypeKatex], // Render latex equations in markdown
+  },
+  env: {
+    schema: {
+      POSTHOG_API_KEY: envField.string({ context: "client", access: "public", startsWith: "phc_" }),
+      POSTHOG_API_HOST: envField.string({ context: "client", access: "public", startsWith: "https://" }),
+    },
   },
   vite: {
     plugins: [dsv()],

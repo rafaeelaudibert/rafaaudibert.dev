@@ -51,10 +51,8 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-# dotenv environment variables file
-.env
-.env.development
-.env.production
+# dotenv environment variables file according to Vite standards
+.env.*
 
 # Astro stuff
 dist/

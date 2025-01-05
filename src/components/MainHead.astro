@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css"
+import PostHog from "./PostHog.astro"
 
 interface Props {
   title?: string | undefined
@@ -31,6 +32,7 @@ const {
   integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV"
   crossorigin="anonymous"
 />
+
 <script is:inline>
   // This code is inlined in the head to make dark mode instant & blocking.
   const getThemePreference = () => {
@@ -57,3 +59,5 @@ const {
     })
   }
 </script>
+
+<PostHog />
