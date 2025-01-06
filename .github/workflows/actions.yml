@@ -19,6 +19,10 @@ jobs:
         run: bun install
       - name: Build website
         run: bun run build
+        env:
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_API_HOST: ${{ secrets.POSTHOG_API_HOST }}
+          AMAZON_SORTING_TABLE_API_URL: ${{ secrets.AMAZON_SORTING_TABLE_API_URL }}
       - name: Deploy static website to S3 bucket
         run: aws s3 sync ./dist s3://rafaaudibert-website --delete
       - name: Invalidate Cloudfront Cache
