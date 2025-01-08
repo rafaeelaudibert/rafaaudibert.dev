@@ -5,11 +5,13 @@ import PostHog from "./PostHog.astro"
 interface Props {
   title?: string | undefined
   description?: string | undefined
+  ogImage?: string | undefined
 }
 
 const {
   title = "Rafa Audibert",
   description = "The personal site of Rafa Audibert",
+  ogImage,
 } = Astro.props
 ---
 
@@ -21,6 +23,7 @@ const {
 
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
+{ogImage && <meta property="og:image" content={ogImage} />}
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
