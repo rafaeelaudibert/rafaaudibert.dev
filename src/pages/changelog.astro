@@ -28,6 +28,40 @@ import Link from "../components/Link.astro"
       </Hero>
 
       <section>
+        <h2 class="section-year">2025</h2>
+        <h3 class="section-month">May</h3>
+        <div class="content">
+          <p>
+            Spent a week in beutiful Florida 🇺🇸 with my fiancée. We visited Disney's EPCOT and Holywood Studios parks in Orlando.
+            We then rented a convertible Mustang GT and drove to West Palm Beach and Florida 🌞.
+            Check that off my bucket list ✅   
+          </p>
+          <p>
+            Attended my first PostHog offsite in Tulum, Mexico 🇲🇽. I worked on a new Link Tracking product as part of our Hackathon,
+            but also enjoyed some chill time at the beautiful Caribbean Sea + pool.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">April</h3>
+        <div class="content">
+          <p>First experience in an all-inclusive resort in Punta Cana, 🇩🇴! I'm not a heavy-drinker,
+          but we made good use of the restaurants and room-service at 3 AM 🥓🥖🍔</p>
+        </div>
+        <div class="content">
+          <p>Started venue-hunting for our wedding, we've decided we'll marry in the [Vale dos Vinhedos](https://maps.app.goo.gl/UyNKMaEwgDLYNXSS7) region, just outside our home town 💒</p>
+        </div>
+      </section>
+
+      <section>
+        <h3 class="section-month">February</h3>
+        <div class="content">
+          <p>I'm 25 now! First birthday in years that I wasnt traveling and had the chance to spend it with my family!</p>
+        </div>
+      </section>
+
+      <section>
         <h2 class="section-year">2024</h2>
         <h3 class="section-month">November</h3>
         <div class="content">
@@ -35,7 +69,7 @@ import Link from "../components/Link.astro"
             Started working at <Link href="https://posthog.com">PostHog</Link> 🦔,
             one of my dream jobs. I'm working on the Web Analytics team for now.
           </p>
-          <p>Visited part of my team in London 🇬🇧.</p>
+          <p>Visited my team in London 🇬🇧.</p>
         </div>
       </section>
 
@@ -273,6 +307,10 @@ import Link from "../components/Link.astro"
 
   .content {
     grid-column: 3 / 5;
+  }
+
+  .content p:not(:last-child) {
+    margin-bottom: 1rem;
   }
 
   .content :global(a) {
