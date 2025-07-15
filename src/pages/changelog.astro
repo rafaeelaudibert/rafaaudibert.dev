@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
 
-import ContactCTA from "../components/ContactCTA.astro"
 import Hero from "../components/Hero.astro"
 
 import changelogImage from "../assets/changelog.jpg"
@@ -25,20 +24,47 @@ import Link from "../components/Link.astro"
           alt="Rafa Audibert and his beautiful fiancée at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
           class="hero-image"
         />
+        <div class="last-updated-note">
+          Last updated: {
+            new Date().toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          }
+        </div>
       </Hero>
 
       <section>
         <h2 class="section-year">2025</h2>
+        <h3 class="section-month">July&nbsp;&nbsp;&nbsp;🚧</h3>
+        <div class="content wip-content">
+          <div class="construction-banner" title="Still in progress">🚧</div>
+          <p>
+            Eurotrip 🇪🇺 with my fiancée. <br />
+            Planning on visiting: Milan and Sardinia 🇮🇹, Edimburgh and London 🇬🇧.
+          </p>
+          <p>
+            PostHog Analytics super-team offsite in Barcelona is coming up too!
+            🇪🇸
+          </p>
+        </div>
+      </section>
+
+      <section>
         <h3 class="section-month">May</h3>
         <div class="content">
           <p>
-            Spent a week in beutiful Florida 🇺🇸 with my fiancée. <br/>
-            We visited Disney's EPCOT and Holywood Studios parks in Orlando. <br/>
-            We then rented a convertible Mustang GT - check that off my bucket list ✅ - and drove to West Palm Beach and Miami 🌞.
+            Spent a week in beautiful Florida 🇺🇸 with my fiancée. <br />
+            We visited Disney's EPCOT and Holywood Studios parks in Orlando. <br
+            />
+            We then rented a convertible Mustang GT - check that off my bucket list
+            ✅ - and drove to West Palm Beach and Miami 🌞.
           </p>
           <p>
-            Attended my first PostHog offsite in Tulum, Mexico 🇲🇽. I worked on a new Link Tracking product as part of our Hackathon,
-            but also enjoyed some chill time on the beautiful Caribbean Sea (and heated pool 🏊🏻).
+            Attended my first PostHog offsite in Tulum, Mexico 🇲🇽. I worked on a
+            new Link Tracking product as part of our Hackathon, but also enjoyed
+            some chill time on the beautiful Caribbean Sea (and heated pool 🏊🏻).
           </p>
         </div>
       </section>
@@ -46,18 +72,30 @@ import Link from "../components/Link.astro"
       <section>
         <h3 class="section-month">April</h3>
         <div class="content">
-          <p>First experience in an all-inclusive resort in Punta Cana, 🇩🇴! <br/>
-          I'm not a heavy-drinker, but we made good use of the restaurants and room-service at 3 AM 🥓🥖🍔</p>
+          <p>
+            First experience in an all-inclusive resort in Punta Cana, 🇩🇴! <br
+            />
+            I'm not a heavy-drinker, but we made good use of the restaurants and
+            room-service at 3 AM 🥓🥖🍔
+          </p>
         </div>
         <div class="content">
-          <p>Started venue-hunting for our wedding, we've decided we'll marry in the <Link href="https://maps.app.goo.gl/UyNKMaEwgDLYNXSS7">Vale dos Vinhedos</Link> region, just outside our home town 💒</p>
+          <p>
+            Started venue-hunting for our wedding, we've decided we'll marry in
+            the <Link href="https://maps.app.goo.gl/UyNKMaEwgDLYNXSS7"
+              >Vale dos Vinhedos</Link
+            > region, just outside our home town 💒
+          </p>
         </div>
       </section>
 
       <section>
         <h3 class="section-month">February</h3>
         <div class="content">
-          <p>I'm 25 now! First birthday in years that I wasnt traveling and had the chance to spend it with my family!</p>
+          <p>
+            I'm 25 now! First birthday in years that I wasnt traveling and had
+            the chance to spend it with my family!
+          </p>
         </div>
       </section>
 
@@ -322,6 +360,61 @@ import Link from "../components/Link.astro"
   .content :global(a:hover),
   .content :global(a:focus) {
     text-decoration-color: currentColor;
+  }
+
+  .last-updated-note {
+    text-align: right;
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .wip-content {
+    position: relative;
+    border: 2px dashed #fbbf24;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background: rgba(251, 191, 36, 0.05);
+  }
+
+  .construction-banner {
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    background: #fbbf24;
+    color: #92400e;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-3px);
+    }
+    60% {
+      transform: translateY(-1px);
+    }
   }
 
   @media (min-width: 50em) {
