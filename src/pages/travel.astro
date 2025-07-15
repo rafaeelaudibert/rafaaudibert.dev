@@ -1,0 +1,284 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import TravelGlobe from "../components/TravelGlobe.astro"
+import Hero from "../components/Hero.astro"
+import {
+  COUNTRY_CODE_TO_LONG_NAME,
+  COUNTRIES_GEOMETRY,
+  countryCodeToFlag,
+} from "../data/countries"
+import { VISITED_COUNTRIES, VISITED_COUNTRIES_TIMELINE } from "../data/travel"
+import { joinerWithAnd } from "../utils/string"
+
+// Get unique countries with earliest visit year
+type VisitedCountryWithYears = (typeof VISITED_COUNTRIES_TIMELINE)[number] & {
+  years: Set<number>
+}
+const uniqueCountries = VISITED_COUNTRIES_TIMELINE.reduce((acc, country) => {
+  const existing = acc.find((c) => c.code === country.code)
+  if (existing) {
+    return acc.map((c) =>
+      c.code === country.code
+        ? { ...c, years: new Set([...c.years, country.year]) }
+        : c
+    )
+  }
+
+  return [...acc, { ...country, years: new Set([country.year]) }]
+}, [] as VisitedCountryWithYears[])
+
+const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
+  (acc, country: any) => {
+    if (VISITED_COUNTRIES.has(country.properties.ISO_A2)) {
+      acc.add(country.properties.CONTINENT)
+    }
+    return acc
+  },
+  new Set<string>()
+)
+---
+
+<BaseLayout
+  title="Travel | Rafa Audibert"
+  description="Rafa Audibert's Travel Journey - Countries visited around the world"
+>
+  <div class="stack gap-20 mb-4">
+    <main class="wrapper travel">
+      <Hero
+        title="My Travel Journey"
+        tagline="Exploring the world, one territory at a time."
+      />
+
+      <TravelGlobe />
+
+      <section class="countries-list">
+        <h2>Countries I've Explored</h2>
+        <div class="countries-grid">
+          {
+            uniqueCountries.map((country) => {
+              // Find country name from geometry data
+              const countryName = COUNTRY_CODE_TO_LONG_NAME[country.code]
+              const countryEmoji = countryCodeToFlag(country.code)
+
+              const manyVisits = country.years.size > 1
+
+              return (
+                <div
+                  class="country-card"
+                  title={`Visited in: ${joinerWithAnd(Array.from(country.years))}`}
+                >
+                  <span class="flag">{countryEmoji}</span>
+                  <div class="country-info">
+                    <span class="name">{countryName}</span>
+                    <span class="year">
+                      {manyVisits ? `${country.year} and more` : country.year}
+                    </span>
+                  </div>
+                  {manyVisits && (
+                    <div class="years-tooltip">
+                      <div class="tooltip-text">
+                        <div class="tooltip-title">Visited in:</div>
+                        <div class="tooltip-years">
+                          {joinerWithAnd(Array.from(country.years))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })
+          }
+        </div>
+      </section>
+
+      <section class="travel-stats-section">
+        <h2>Travel Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">{uniqueCountries.length}</div>
+            <div class="stat-label">Countries Visited</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">
+              {((uniqueCountries.length / 210) * 100).toFixed(2)}%
+            </div>
+            <div class="stat-label">Of the World</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{uniqueContinents.size}</div>
+            <div class="stat-label">Continents</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .travel {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+
+  .travel-stats-section {
+    margin-top: 2rem;
+  }
+
+  .travel-stats-section h2 {
+    font-size: var(--text-2xl);
+    color: var(--gray-0);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--gray-999_40);
+    border: 1px solid var(--gray-800);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .stat-card:hover {
+    border-color: var(--accent-regular);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .stat-number {
+    font-size: var(--text-3xl);
+    font-weight: bold;
+    color: var(--accent-regular);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .countries-list {
+    margin-top: 3rem;
+  }
+
+  .countries-list h2 {
+    font-size: var(--text-2xl);
+    color: var(--gray-0);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .countries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .country-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--gray-999_40);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .country-card:hover {
+    border-color: var(--accent-regular);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .flag {
+    font-size: 1.5rem;
+  }
+
+  .country-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .name {
+    font-weight: 600;
+    color: var(--gray-0);
+  }
+
+  .year {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+  }
+
+  .country-card {
+    position: relative;
+  }
+
+  .years-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gray-900);
+    border: 1px solid var(--gray-800);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    white-space: normal;
+    max-width: 250px;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .years-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--gray-900);
+  }
+
+  .country-card:hover .years-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .tooltip-text {
+    font-size: var(--text-sm);
+    color: var(--gray-0);
+  }
+
+  .tooltip-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--gray-200);
+  }
+
+  .tooltip-years {
+    color: var(--gray-0);
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+</style>

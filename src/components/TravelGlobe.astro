@@ -1,0 +1,94 @@
+---
+
+---
+
+<section class="travel-globe-section">
+  <div class="globe-container">
+    <div id="globe" class="globe"></div>
+  </div>
+</section>
+
+<script>
+  import { COUNTRIES_GEOMETRY } from "../data/countries"
+  import { VISITED_COUNTRIES } from "../data/travel"
+
+  import Globe from "globe.gl"
+
+  // Filter and mark visited countries
+  type Feature = (typeof COUNTRIES_GEOMETRY.features)[number] & {
+    properties: { visited: boolean }
+  }
+  const polygonsData = COUNTRIES_GEOMETRY.features.map((country: any) => {
+    const countryCode = country.properties.ISO_A2
+    const isVisited = VISITED_COUNTRIES.has(countryCode)
+
+    return {
+      ...country,
+      properties: {
+        ...country.properties,
+        visited: isVisited,
+      },
+    }
+  }) as Feature[]
+
+  // Initialize globe when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    const globeEl = document.getElementById("globe")
+    if (!globeEl) return
+
+    const globe = new Globe(globeEl)
+      .globeImageUrl("//unpkg.com/three-globe/example/img/earth-night.jpg")
+      .backgroundImageUrl("//unpkg.com/three-globe/example/img/night-sky.png")
+      .polygonsData(polygonsData)
+      .polygonCapColor((d) =>
+        (d as Feature).properties.visited ? "#4ade80" : "transparent"
+      )
+      .polygonSideColor((d) =>
+        (d as Feature).properties.visited ? "#22c55e" : "transparent"
+      )
+      .polygonStrokeColor((d) =>
+        (d as Feature).properties.visited ? "#16a34a" : "transparent"
+      )
+      .polygonAltitude((d) => ((d as Feature).properties.visited ? 0.01 : 0))
+      .polygonsTransitionDuration(1000)
+      .width(globeEl.clientWidth)
+      .height(400)
+
+    // Auto-rotate
+    globe.controls().autoRotate = true
+    globe.controls().autoRotateSpeed = 0.5
+
+    // Handle window resize
+    const handleResize = () => {
+      if (globeEl && globe) {
+        globe.width(globeEl.clientWidth).height(400)
+      }
+    }
+
+    window.addEventListener("resize", handleResize)
+  })
+</script>
+
+<style>
+  .travel-globe-section {
+    padding: 2rem 0;
+  }
+
+  .globe-container {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      var(--gray-999_40) 0%,
+      var(--gray-800) 100%
+    );
+    border: 1px solid var(--gray-800);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .globe {
+    width: 100%;
+    height: 400px;
+  }
+</style>

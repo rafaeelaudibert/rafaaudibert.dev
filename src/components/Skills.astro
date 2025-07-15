@@ -1,5 +1,7 @@
 ---
+import { VISITED_COUNTRIES } from "../data/travel"
 import Icon from "./Icon.astro"
+import Link from "./Link.astro"
 ---
 
 <section class="box skills">
@@ -13,7 +15,7 @@ import Icon from "./Icon.astro"
     <h2>Full Stack</h2>
     <p>
       Love working with the entire stack, from the database and the backend all
-      the way to the frontend.
+      the way to the frontend, going through the whole product workflow.
     </p>
   </div>
   <div class="stack gap-2 lg:gap-4">
@@ -25,9 +27,11 @@ import Icon from "./Icon.astro"
     />
     <h2>Traveler</h2>
     <p>
-      I love to travel and explore new places. I have been to 16 countries (17 if you include Puerto Rico)
-      so far and counting. It's not much yet, but I'm growing that number quickly
-      :). I am always looking for new adventures.
+      I love to travel and explore new places. I have been to <Link
+        href="/travel">{VISITED_COUNTRIES.size} countries/territories</Link
+      > so far and counting 😊 🌎. <br /><br />
+      It's not much yet, but I'm growing that number quickly . I am always looking
+      for new adventures.
     </p>
   </div>
   <div class="stack gap-2 lg:gap-4">
@@ -38,7 +42,7 @@ import Icon from "./Icon.astro"
       gradient
     />
     <h2>Customer Focused</h2>
-    <p>My goal will always be to deliver the product the customer needs.</p>
+    <p>My goal will always be to deliver exactly what a customer/user needs.</p>
   </div>
 </section>
 
