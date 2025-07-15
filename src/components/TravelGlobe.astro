@@ -31,32 +31,88 @@
     }
   }) as Feature[]
 
+  // Theme-specific image URLs
+  const themeImages = {
+    light: {
+      globe: "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg",
+      background: "//unpkg.com/three-globe/example/img/night-sky.png",
+    },
+    dark: {
+      globe: "//unpkg.com/three-globe/example/img/earth-night.jpg",
+      background: "//unpkg.com/three-globe/example/img/night-sky.png",
+    },
+  }
+
+  // Get current theme
+  const getCurrentTheme = () => {
+    return document.documentElement.classList.contains("theme-dark")
+      ? "dark"
+      : "light"
+  }
+
   // Initialize globe when DOM is ready
   document.addEventListener("DOMContentLoaded", () => {
     const globeEl = document.getElementById("globe")
     if (!globeEl) return
 
-    const globe = new Globe(globeEl)
-      .globeImageUrl("//unpkg.com/three-globe/example/img/earth-night.jpg")
-      .backgroundImageUrl("//unpkg.com/three-globe/example/img/night-sky.png")
-      .polygonsData(polygonsData)
-      .polygonCapColor((d) =>
-        (d as Feature).properties.visited ? "#4ade80" : "transparent"
-      )
-      .polygonSideColor((d) =>
-        (d as Feature).properties.visited ? "#22c55e" : "transparent"
-      )
-      .polygonStrokeColor((d) =>
-        (d as Feature).properties.visited ? "#16a34a" : "transparent"
-      )
-      .polygonAltitude((d) => ((d as Feature).properties.visited ? 0.01 : 0))
-      .polygonsTransitionDuration(1000)
-      .width(globeEl.clientWidth)
-      .height(400)
+    let globe: any = null
 
-    // Auto-rotate
-    globe.controls().autoRotate = true
-    globe.controls().autoRotateSpeed = 0.5
+    const initializeGlobe = () => {
+      const currentTheme = getCurrentTheme()
+      const images = themeImages[currentTheme]
+
+      globe = new Globe(globeEl)
+        .globeImageUrl(images.globe)
+        .backgroundImageUrl(images.background)
+        .polygonsData(polygonsData)
+        .polygonCapColor((d) =>
+          (d as Feature).properties.visited ? "#4ade80" : "transparent"
+        )
+        .polygonSideColor((d) =>
+          (d as Feature).properties.visited ? "#22c55e" : "transparent"
+        )
+        .polygonStrokeColor((d) =>
+          (d as Feature).properties.visited ? "#16a34a" : "transparent"
+        )
+        .polygonAltitude((d) => ((d as Feature).properties.visited ? 0.01 : 0))
+        .polygonsTransitionDuration(1000)
+        .width(globeEl.clientWidth)
+        .height(400)
+
+      // Auto-rotate
+      globe.controls().autoRotate = true
+      globe.controls().autoRotateSpeed = 0.5
+    }
+
+    const updateGlobeTheme = () => {
+      if (!globe) return
+
+      const currentTheme = getCurrentTheme()
+      const images = themeImages[currentTheme]
+
+      globe.globeImageUrl(images.globe)
+      globe.backgroundImageUrl(images.background)
+    }
+
+    // Initialize the globe
+    initializeGlobe()
+
+    // Listen for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "class"
+        ) {
+          updateGlobeTheme()
+        }
+      })
+    })
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
 
     // Handle window resize
     const handleResize = () => {
