@@ -1,0 +1,113 @@
+---
+interface Props {
+  year?: number | undefined
+  month: string
+  wip?: boolean
+}
+
+const { year, month, wip = false } = Astro.props
+---
+
+<section>
+  {year && <h2 class="section-year">{year}</h2>}
+  <h3 class="section-month">{month}{wip ? <>&nbsp;&nbsp;&nbsp;🚧</> : ""}</h3>
+  <div class:list={["content", { "wip-content": wip }]}>
+    {
+      wip && (
+        <div class="construction-banner" title="Still in progress">
+          🚧
+        </div>
+      )
+    }
+
+    <slot />
+  </div>
+</section>
+
+<style>
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--gray-200);
+  }
+
+  section:has(.section-year) {
+    margin-top: 3rem;
+  }
+
+  .section-year {
+    grid-column-start: 1;
+    font-size: var(--text-xl);
+    color: var(--gray-0);
+  }
+
+  .section-month {
+    grid-column-start: 2;
+    font-size: var(--text-lg);
+    color: var(--gray-0);
+  }
+
+  .content {
+    grid-column: 3 / 5;
+  }
+
+  .content p:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  .content :global(a) {
+    text-decoration: 1px solid underline transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--theme-transition);
+  }
+
+  .content :global(a:hover),
+  .content :global(a:focus) {
+    text-decoration-color: currentColor;
+  }
+
+  .wip-content {
+    position: relative;
+    border: 2px dashed #fbbf24;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background: rgba(251, 191, 36, 0.05);
+  }
+
+  .construction-banner {
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    background: #fbbf24;
+    color: #92400e;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-3px);
+    }
+    60% {
+      transform: translateY(-1px);
+    }
+  }
+
+  @media (min-width: 50em) {
+    section {
+      display: contents;
+      font-size: var(--text-lg);
+    }
+  }
+</style>

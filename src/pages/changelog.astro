@@ -7,6 +7,7 @@ import changelogImage from "../assets/changelog.jpg"
 
 import { Image } from "astro:assets"
 import Link from "../components/Link.astro"
+import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
 ---
 
 <BaseLayout
@@ -24,6 +25,10 @@ import Link from "../components/Link.astro"
           alt="Rafa Audibert and his beautiful fiancée at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
           class="hero-image"
         />
+
+        {
+          /* This is written during build time which means it'll be updated on deploy only */
+        }
         <div class="last-updated-note">
           Last updated: {
             new Date().toLocaleDateString("en-US", {
@@ -35,331 +40,241 @@ import Link from "../components/Link.astro"
         </div>
       </Hero>
 
-      <section>
-        <h2 class="section-year">2025</h2>
-        <h3 class="section-month">July&nbsp;&nbsp;&nbsp;🚧</h3>
-        <div class="content wip-content">
-          <div class="construction-banner" title="Still in progress">🚧</div>
-          <p>
-            Eurotrip 🇪🇺 with my fiancée. <br />
-            Planning on visiting: Milan and Sardinia 🇮🇹, Edimburgh and London 🇬🇧.
-          </p>
-          <p>
-            PostHog Analytics super-team offsite in Barcelona is coming up too!
-            🇪🇸
-          </p>
-        </div>
-      </section>
+      <!-- =========== 2025 =========== -->
+      <ChangelogEntry year={2025} month="August">
+        <p>
+          Posthog Analytics super-team offsite in Barcelona 🇪🇸! It was nice
+          going back to my favourite city in Spain. Amazing colleagues doing
+          amazing work + great chill time with superb Catalan food.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">May</h3>
-        <div class="content">
-          <p>
-            Spent a week in beautiful Florida 🇺🇸 with my fiancée. <br />
-            We visited Disney's EPCOT and Holywood Studios parks in Orlando. <br
-            />
-            We then rented a convertible Mustang GT - check that off my bucket list
-            ✅ - and drove to West Palm Beach and Miami 🌞.
-          </p>
-          <p>
-            Attended my first PostHog offsite in Tulum, Mexico 🇲🇽. I worked on a
-            new Link Tracking product as part of our Hackathon, but also enjoyed
-            some chill time on the beautiful Caribbean Sea (and heated pool 🏊🏻).
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="July">
+        <p>
+          Eurotrip 🇪🇺 with my fiancée. Visited Milan and Sardinia 🇮🇹, Edimburgh
+          and London 🇬🇧. <br />
+          Had a blast, never knew these places were so beautiful, would go back to
+          all of them. Might make sense to spend more time in <Link
+            href="https://maps.app.goo.gl/WCdLSeF7ok6Fdg4a9"
+            >Isola Madalena</Link
+          > next time.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">April</h3>
-        <div class="content">
-          <p>
-            First experience in an all-inclusive resort in Punta Cana, 🇩🇴! <br
-            />
-            I'm not a heavy-drinker, but we made good use of the restaurants and
-            room-service at 3 AM 🥓🥖🍔
-          </p>
-        </div>
-        <div class="content">
-          <p>
-            Started venue-hunting for our wedding, we've decided we'll marry in
-            the <Link href="https://maps.app.goo.gl/UyNKMaEwgDLYNXSS7"
-              >Vale dos Vinhedos</Link
-            > region, just outside our home town 💒
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="May">
+        <p>
+          Spent a week in beautiful Florida 🇺🇸 with my fiancée. <br />
+          We visited Disney's EPCOT and Holywood Studios parks in Orlando. <br
+          />
+          We then rented a convertible Mustang GT - check that off my bucket list
+          ✅ - and drove to West Palm Beach and Miami 🌞.
+        </p>
+        <p>
+          Attended my first PostHog offsite in Tulum, Mexico 🇲🇽. I worked on a
+          new Link Tracking product as part of our Hackathon, but also enjoyed
+          some chill time on the beautiful Caribbean Sea (and heated pool 🏊🏻).
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">February</h3>
-        <div class="content">
-          <p>
-            I'm 25 now! First birthday in years that I wasnt traveling and had
-            the chance to spend it with my family!
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="April">
+        <p>
+          First experience in an all-inclusive resort in Punta Cana, 🇩🇴! <br />
+          I'm not a heavy-drinker, but we made good use of the restaurants and room-service
+          at 3 AM 🥓🥖🍔
+        </p>
+        <p>
+          Started venue-hunting for our wedding, we've decided we'll marry in
+          the <Link href="https://maps.app.goo.gl/UyNKMaEwgDLYNXSS7"
+            >Vale dos Vinhedos</Link
+          > region, just outside our home town 💒
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2024</h2>
-        <h3 class="section-month">November</h3>
-        <div class="content">
-          <p>
-            Started working at <Link href="https://posthog.com">PostHog</Link> 🦔,
-            one of my dream jobs. I'm working on the Web Analytics team for now.
-          </p>
-          <p>Visited my team in London 🇬🇧.</p>
-        </div>
-      </section>
+      <ChangelogEntry month="March">
+        <p>
+          Started my own product at PostHog: <Link
+            href="https://posthog.com/teams/revenue-analytics"
+            >Revenue Analytics</Link
+          > 💰
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">October</h3>
-        <div class="content">
-          <p>I got engaged 💍 to my beautiful fiancée, Liliane Basso.</p>
-        </div>
-      </section>
+      <ChangelogEntry month="February">
+        <p>
+          I'm 25 now! First birthday in years that I wasnt traveling and had the
+          chance to spend it with my family!
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">July</h3>
-        <div class="content">
-          <p>
-            3-week trip of a lifetime to the East Coast of the United States 🇺🇸
-            and Canada 🇨🇦. New York City 🗽, Washington D.C. 🕴🏻, Philadelphia
-            🗞️, Chicago 🌆, Montreal 🍁, and Toronto 🚀.
-          </p>
-        </div>
-      </section>
+      <!-- =========== 2024 =========== -->
+      <ChangelogEntry year={2024} month="November">
+        <p>
+          Started working at <Link href="https://posthog.com">PostHog</Link> 🦔,
+          one of my dream jobs. I'm working on the Web Analytics team for now.
+        </p>
+        <p>Visited my team in London 🇬🇧.</p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">April</h3>
-        <div class="content">
-          <p>
-            Visited Puerto Rico 🇵🇷 for a LeadSimple offsite. Spent a week in the
-            east coast, 3 days in San Juan, and 3 days in Rincón on the West
-            Coast.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="October">
+        <p>I got engaged 💍 to my beautiful fiancée, Liliane Basso.</p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">February</h3>
-        <div class="content">
-          <p>
-            My 24th birthday 🎂. Spent a week in Punta del Este 🇺🇾 and a week in
-            Curaçao 🇨🇼 with my girlfriend. The Carribean Sea is really one of a
-            kind, can't wait to go back.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="July">
+        <p>
+          3-week trip of a lifetime to the East Coast of the United States 🇺🇸.
+          New York City 🗽, Washington D.C. 🕴🏻, Philadelphia 🗞️, Chicago 🌆,
+          Montreal 🍁, and Toronto 🚀.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2023</h2>
-        <h3 class="section-month">December</h3>
-        <div class="content">
-          <p>
-            Attended the <Link href="https://www.leadsimple.com"
-              >LeadSimple</Link
-            >
-            user conference in Austin, Texas 🇺🇸. This was my first time speaking
-            in English to a crowd. I was extremely nervous and couldn't stop shaking,
-            but it went extremely well, it was a highlight of the year.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="April">
+        <p>
+          Visited Puerto Rico 🇵🇷 for a LeadSimple offsite. Spent a week in the
+          east coast, 3 days in San Juan, and 3 days in Rincón on the West
+          Coast.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">April</h3>
-        <div class="content">
-          <p>
-            First time in the US for the first LeadSimple off-site in Austin,
-            Texas 🇺🇸.
-          </p>
-          <p>
-            Went to Florida for the first time! Loved Disney World 🎢, Miami and
-            Key West 🌴.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="February">
+        <p>
+          My 24th birthday 🎂. Spent a week in Punta del Este 🇺🇾 and a week in
+          Curaçao 🇨🇼 with my girlfriend. The Carribean Sea is really one of a
+          kind, can't wait to go back.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2022</h2>
-        <h3 class="section-month">July</h3>
-        <div class="content">
-          <p>Aura 😻 joined our lives.</p>
-        </div>
-      </section>
+      <!-- =========== 2023 =========== -->
+      <ChangelogEntry year={2023} month="December">
+        <p>
+          Attended the <Link href="https://www.leadsimple.com">LeadSimple</Link>
+          user conference in Austin, Texas 🇺🇸. This was my first time speaking in
+          English to a crowd. I was extremely nervous and couldn't stop shaking,
+          but it went extremely well, it was a highlight of the year.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">April</h3>
-        <div class="content">
-          <p>
-            Moved 🏠 to Porto Alegre 🇧🇷 with my now-fiancée-then-girlfriend.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="April">
+        <p>
+          First time in the US for the first LeadSimple off-site in Austin,
+          Texas 🇺🇸.
+        </p>
+        <p>
+          Went to Florida for the first time! Loved Disney World 🎢, Miami and
+          Key West 🌴.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">January</h3>
-        <div class="content">
-          <p>
-            Came back to Brazil 🇧🇷 after an exchange year in Germany 🇩🇪. Spent 4
-            months at the beach 🌴.
-          </p>
-        </div>
-      </section>
+      <!-- =========== 2022 =========== -->
+      <ChangelogEntry year={2022} month="July">
+        <p>Aura 😻 joined our lives.</p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2021</h2>
-        <h3 class="section-month">September</h3>
-        <div class="content">
-          <p>Visited some friends studying in Grenoble 🇫🇷.</p>
-          <p>Visited Luxembourg 🇱🇺 with a couple of German friends.</p>
-          <p>
-            My first trip totally on my own. Visited Switzerland 🇨🇭 albeit only
-            for a single day.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="June">
+        <p>Graduated in Computer Science 🎓 <i>summa cum laude</i></p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">July</h3>
-        <div class="content">
-          <p>
-            Visited one of my best friends in the Balearic Islands 🇪🇸. Also
-            spent some time in Barcelona.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="April">
+        <p>
+          Moved 🏠 back to Porto Alegre 🇧🇷 with my now-fiancée-then-girlfriend.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">March</h3>
-        <div class="content">
-          <p>
-            Moved to Germany 🇩🇪 for an exchange year at the Technische
-            Universität Kaiserslautern (TUK).
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="January">
+        <p>
+          Came back to Brazil 🇧🇷 after an exchange year in Germany 🇩🇪. Spent 4
+          months living at the beach 🌴.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h3 class="section-month">February</h3>
-        <div class="content">
-          <p>
-            Started working at <Link href="https://leadsimple.com"
-              >LeadSimple</Link
-            > 🏠.
-          </p>
-        </div>
-      </section>
+      <!-- =========== 2021 =========== -->
+      <ChangelogEntry year={2021} month="December">
+        <p>
+          Lili came to visit me in Europe and we toured around Portugal 🇵🇹 and
+          Spain 🇪🇸.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2020</h2>
-        <h3 class="section-month">March</h3>
-        <div class="content">
-          <p>March 15th, 2020. The world changed. 🦠</p>
-          <p>
-            I moved back to my home town with my parents and younger brother.
-          </p>
-        </div>
-      </section>
+      <ChangelogEntry month="September">
+        <p>Visited some friends studying in Grenoble 🇫🇷.</p>
+        <p>Visited Luxembourg 🇱🇺 with a couple of German friends.</p>
+        <p>
+          My first trip totally on my own. Visited Switzerland 🇨🇭 albeit only
+          for a single day.
+        </p>
+      </ChangelogEntry>
 
-      <section>
-        <h2 class="section-year">2019</h2>
-        <h3 class="section-month">September</h3>
-        <div class="content">
-          <p>
-            Started working at <Link href="https://site.taglivros.com"
-              >Tag Livros</Link
-            > 📚.
-          </p>
-        </div>
-      </section>
-      <section>
-        <h2 class="section-year">2017</h2>
-        <h3 class="section-month">July</h3>
-        <div class="content">
-          <p>
-            Started studying at the Federal University of Rio Grande do Sul
-            (UFRGS) 🇧🇷 🚌.
-          </p>
-        </div>
-      </section>
-      <section>
-        <h2 class="section-year">2015</h2>
-        <h3 class="section-month">December</h3>
-        <div class="content">
-          <p>Started dating my now-fiancée, Lili 🌹.</p>
-        </div>
-      </section>
-      <section>
-        <h2 class="section-year">2000</h2>
-        <h3 class="section-month">February</h3>
-        <div class="content">
-          <p>👶🏻🍼</p>
-        </div>
-      </section>
+      <ChangelogEntry month="July">
+        <p>
+          Visited one of my best friends in the Balearic Islands 🇪🇸. Also spent
+          some time in Barcelona.
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="March">
+        <p>
+          Moved to Germany 🇩🇪 for an exchange year at the Technische Universität
+          Kaiserslautern (TUK).
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="February">
+        <p>
+          Started working at <Link href="https://leadsimple.com"
+            >LeadSimple</Link
+          > 🏠.
+        </p>
+      </ChangelogEntry>
+
+      <!-- =========== 2020 =========== -->
+      <ChangelogEntry year={2020} month="March">
+        <p>March 15th, 2020. The world changed. 🦠</p>
+        <p>I moved back to my home town with my parents and younger brother.</p>
+      </ChangelogEntry>
+
+      <!-- =========== 2019 =========== -->
+      <ChangelogEntry year={2019} month="September">
+        <p>
+          Started working at <Link href="https://site.taglivros.com"
+            >Tag Livros</Link
+          > 📚.
+        </p>
+      </ChangelogEntry>
+
+      <!-- =========== 2017 =========== -->
+      <ChangelogEntry year={2017} month="July">
+        <p>
+          Started studying Computer Science at the <Link
+            href="https://www.ufrgs.br"
+            >Federal University of Rio Grande do Sul</Link
+          >
+          (UFRGS) 🇧🇷 🚌.
+        </p>
+      </ChangelogEntry>
+
+      <!-- =========== 2015 =========== -->
+      <ChangelogEntry year={2015} month="December">
+        <p>Started dating my now-fiancée, Lili 🌹.</p>
+      </ChangelogEntry>
+
+      <!-- =========== 2000 =========== -->
+      <ChangelogEntry year={2000} month="February">
+        <p>👶🏻🍼</p>
+      </ChangelogEntry>
     </main>
   </div>
 </BaseLayout>
 
 <style>
-  kbd {
-    background-color: var(--gray-500);
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.25rem;
-  }
-
   .changelog {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .changelog section:has(.section-year) {
-    margin-top: 3rem;
-  }
-
   img .hero-image {
     margin-top: 1.5rem;
     border-radius: 1.5rem;
     box-shadow: var(--shadow-md);
-  }
-
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    color: var(--gray-200);
-  }
-
-  .section-year {
-    grid-column-start: 1;
-    font-size: var(--text-xl);
-    color: var(--gray-0);
-  }
-
-  .section-month {
-    grid-column-start: 2;
-    font-size: var(--text-lg);
-    color: var(--gray-0);
-  }
-
-  .content {
-    grid-column: 3 / 5;
-  }
-
-  .content p:not(:last-child) {
-    margin-bottom: 1rem;
-  }
-
-  .content :global(a) {
-    text-decoration: 1px solid underline transparent;
-    text-underline-offset: 0.25em;
-    transition: text-decoration-color var(--theme-transition);
-  }
-
-  .content :global(a:hover),
-  .content :global(a:focus) {
-    text-decoration-color: currentColor;
   }
 
   .last-updated-note {
@@ -370,53 +285,6 @@ import Link from "../components/Link.astro"
     font-style: italic;
   }
 
-  .wip-content {
-    position: relative;
-    border: 2px dashed #fbbf24;
-    border-radius: 0.75rem;
-    padding: 1rem;
-    background: rgba(251, 191, 36, 0.05);
-  }
-
-  .construction-banner {
-    position: absolute;
-    top: -0.5rem;
-    right: 1rem;
-    background: #fbbf24;
-    color: #92400e;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: bold;
-    animation: bounce 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
-  }
-
-  @keyframes bounce {
-    0%,
-    20%,
-    50%,
-    80%,
-    100% {
-      transform: translateY(0);
-    }
-    40% {
-      transform: translateY(-3px);
-    }
-    60% {
-      transform: translateY(-1px);
-    }
-  }
-
   @media (min-width: 50em) {
     .changelog {
       display: grid;
@@ -425,11 +293,6 @@ import Link from "../components/Link.astro"
 
     .changelog > :global(:first-child) {
       grid-column-start: 3;
-    }
-
-    section {
-      display: contents;
-      font-size: var(--text-lg);
     }
   }
 </style>
