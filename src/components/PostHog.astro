@@ -11,9 +11,9 @@
 
   // @ts-expect-error
   posthog.init(POSTHOG_API_KEY, {
+    cookieless_mode: "always",
     api_host: POSTHOG_API_HOST,
-    person_profiles: "identified_only", // or 'always' to create profiles for anonymous users as well
-    disable_persistence: true, // disable persistence to avoid storing data in local storage or cookies
+    defaults: "2025-05-24",
     capture_copied_text: true, // capture text copied from the page
   })
 </script>
