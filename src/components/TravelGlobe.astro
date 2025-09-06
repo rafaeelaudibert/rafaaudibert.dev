@@ -4,15 +4,24 @@
 
 <section class="travel-globe-section">
   <div class="globe-container">
-    <div id="globe" class="globe"></div>
+    <div id="globe" class="globe">
+      <div id="globe-loading" class="globe-loading">
+        <div class="loading-spinner"></div>
+        <p>Loading interactive globe...</p>
+      </div>
+      <div id="globe-error" class="globe-error" style="display: none;">
+        <p>
+          Failed to load the interactive globe. Please refresh the page to try
+          again.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
 
 <script>
   import { COUNTRIES_GEOMETRY } from "../data/countries"
   import { VISITED_COUNTRIES } from "../data/travel"
-
-  import Globe from "globe.gl"
 
   // Filter and mark visited countries
   type Feature = (typeof COUNTRIES_GEOMETRY.features)[number] & {
@@ -51,77 +60,96 @@
   }
 
   // Initialize globe when DOM is ready
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const globeEl = document.getElementById("globe")
-    if (!globeEl) return
+    const loadingEl = document.getElementById("globe-loading")
+    const errorEl = document.getElementById("globe-error")
+
+    if (!globeEl || !loadingEl || !errorEl) return
 
     let globe: any = null
 
-    const initializeGlobe = () => {
-      const currentTheme = getCurrentTheme()
-      const images = themeImages[currentTheme]
+    try {
+      // Dynamically import globe.gl to reduce initial bundle size
+      const { default: Globe } = await import("globe.gl")
 
-      globe = new Globe(globeEl)
-        .globeImageUrl(images.globe)
-        .backgroundImageUrl(images.background)
-        .polygonsData(polygonsData)
-        .polygonCapColor((d) =>
-          (d as Feature).properties.visited ? "#4ade80" : "transparent"
-        )
-        .polygonSideColor((d) =>
-          (d as Feature).properties.visited ? "#22c55e" : "transparent"
-        )
-        .polygonStrokeColor((d) =>
-          (d as Feature).properties.visited ? "#16a34a" : "transparent"
-        )
-        .polygonAltitude((d) => ((d as Feature).properties.visited ? 0.01 : 0))
-        .polygonsTransitionDuration(1000)
-        .width(globeEl.clientWidth)
-        .height(400)
+      // Hide loading indicator
+      loadingEl.style.display = "none"
 
-      // Auto-rotate
-      globe.controls().autoRotate = true
-      globe.controls().autoRotateSpeed = 0.5
-    }
+      const initializeGlobe = () => {
+        const currentTheme = getCurrentTheme()
+        const images = themeImages[currentTheme]
 
-    const updateGlobeTheme = () => {
-      if (!globe) return
+        globe = new Globe(globeEl)
+          .globeImageUrl(images.globe)
+          .backgroundImageUrl(images.background)
+          .polygonsData(polygonsData)
+          .polygonCapColor((d) =>
+            (d as Feature).properties.visited ? "#4ade80" : "transparent"
+          )
+          .polygonSideColor((d) =>
+            (d as Feature).properties.visited ? "#22c55e" : "transparent"
+          )
+          .polygonStrokeColor((d) =>
+            (d as Feature).properties.visited ? "#16a34a" : "transparent"
+          )
+          .polygonAltitude((d) =>
+            (d as Feature).properties.visited ? 0.01 : 0
+          )
+          .polygonsTransitionDuration(1000)
+          .width(globeEl.clientWidth)
+          .height(400)
 
-      const currentTheme = getCurrentTheme()
-      const images = themeImages[currentTheme]
-
-      globe.globeImageUrl(images.globe)
-      globe.backgroundImageUrl(images.background)
-    }
-
-    // Initialize the globe
-    initializeGlobe()
-
-    // Listen for theme changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          mutation.type === "attributes" &&
-          mutation.attributeName === "class"
-        ) {
-          updateGlobeTheme()
-        }
-      })
-    })
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-
-    // Handle window resize
-    const handleResize = () => {
-      if (globeEl && globe) {
-        globe.width(globeEl.clientWidth).height(400)
+        // Auto-rotate
+        globe.controls().autoRotate = true
+        globe.controls().autoRotateSpeed = 0.5
       }
-    }
 
-    window.addEventListener("resize", handleResize)
+      const updateGlobeTheme = () => {
+        if (!globe) return
+
+        const currentTheme = getCurrentTheme()
+        const images = themeImages[currentTheme]
+
+        globe.globeImageUrl(images.globe)
+        globe.backgroundImageUrl(images.background)
+      }
+
+      // Initialize the globe
+      initializeGlobe()
+
+      // Listen for theme changes
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "class"
+          ) {
+            updateGlobeTheme()
+          }
+        })
+      })
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      })
+
+      // Handle window resize
+      const handleResize = () => {
+        if (globeEl && globe) {
+          globe.width(globeEl.clientWidth).height(400)
+        }
+      }
+
+      window.addEventListener("resize", handleResize)
+    } catch (error) {
+      console.error("Failed to load globe.gl:", error)
+
+      // Hide loading indicator and show error message
+      loadingEl.style.display = "none"
+      errorEl.style.display = "flex"
+    }
   })
 </script>
 
@@ -146,5 +174,52 @@
   .globe {
     width: 100%;
     height: 400px;
+    position: relative;
+  }
+
+  .globe-loading,
+  .globe-error {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--gray-999-basis), 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+
+  .globe-loading p,
+  .globe-error p {
+    color: var(--gray-200);
+    font-size: 1rem;
+    margin: 1rem 0 0 0;
+    text-align: center;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-600);
+    border-top: 3px solid var(--accent-regular);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .globe-error {
+    color: var(--red-500, #ef4444);
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
