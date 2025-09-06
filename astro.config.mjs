@@ -26,8 +26,6 @@ export default defineConfig({
   experimental: {
     // Prerender pages on the client when prefetching it
     clientPrerender: true,
-    // Responsive images
-    responsiveImages: true,
     // Improve intelisense for content files
     contentIntellisense: true
   },
@@ -40,7 +38,7 @@ export default defineConfig({
 
   // Image optimization settings
   image: {
-    experimentalLayout: "responsive",
+    layout: "constrained",
   },
 
   // Typed environment variables to guarantee they always exist when building the site

@@ -7,9 +7,9 @@
     "url": "https://github.com/rafaaudibert/rafaaudibert.dev.git"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.0.3",
-    "@astrojs/react": "^4.1.2",
-    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/mdx": "^4.3.4",
+    "@astrojs/react": "^4.3.0",
+    "@astrojs/sitemap": "^3.5.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.3.0",
@@ -17,7 +17,7 @@
     "@rollup/plugin-dsv": "^3.0.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "astro": "^5.1.1",
+    "astro": "^5.13.5",
     "d3": "^7.9.0",
     "globe.gl": "^2.42.0",
     "katex": "^0.16.19",
