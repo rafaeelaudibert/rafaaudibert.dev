@@ -1,0 +1,132 @@
+---
+interface Props {
+  keys: string[]
+  class?: string
+}
+
+const { keys, class: className } = Astro.props
+---
+
+<span class:list={["keyboard-shortcut", className]}>
+  {
+    keys.map((key, index) => (
+      <>
+        <kbd class="key" data-key={key.toLowerCase()}>
+          <span class="key-text">{key}</span>
+        </kbd>
+        {index < keys.length - 1 && <span class="key-separator">+</span>}
+      </>
+    ))
+  }
+</span>
+
+<style>
+  .keyboard-shortcut {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+  }
+
+  .key {
+    background: var(--gray-700);
+    border: 1px solid var(--gray-600);
+    border-bottom: 2px solid var(--gray-500);
+    border-radius: 4px;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.875em;
+    font-family: var(--font-system);
+    font-weight: 500;
+    color: var(--gray-100);
+    min-width: 1.5rem;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .key-separator {
+    font-size: 0.75em;
+    color: var(--gray-400);
+    margin: 0 0.125rem;
+  }
+
+  /* Simplify on mobile */
+  @media (max-width: 50em) {
+    .key {
+      padding: 0.1rem 0.25rem;
+      font-size: 0.8em;
+      min-width: 1.25rem;
+    }
+
+    .key-separator {
+      font-size: 0.7em;
+    }
+  }
+
+  /* Hide when printing */
+  @media print {
+    .keyboard-shortcut {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Client-side detection for Mac vs Windows/Linux
+  function updateKeyboardShortcuts() {
+    const isMac =
+      navigator.platform.toUpperCase().indexOf("MAC") >= 0 ||
+      navigator.userAgent.toUpperCase().indexOf("MAC") >= 0
+
+    document
+      .querySelectorAll('.key[data-key="ctrl/cmd"]')
+      .forEach((element) => {
+        const textElement = element.querySelector(".key-text")
+        if (textElement) {
+          textElement.textContent = isMac ? "⌘" : "Ctrl"
+        }
+      })
+
+    document.querySelectorAll('.key[data-key="cmd"]').forEach((element) => {
+      const textElement = element.querySelector(".key-text")
+      if (textElement) {
+        textElement.textContent = isMac ? "⌘" : "Ctrl"
+      }
+    })
+
+    document.querySelectorAll('.key[data-key="alt/opt"]').forEach((element) => {
+      const textElement = element.querySelector(".key-text")
+      if (textElement) {
+        textElement.textContent = isMac ? "⌥" : "Alt"
+      }
+    })
+
+    document.querySelectorAll('.key[data-key="win/cmd"]').forEach((element) => {
+      const textElement = element.querySelector(".key-text")
+      if (textElement) {
+        textElement.textContent = isMac ? "⌘" : "⊞"
+      }
+    })
+
+    document.querySelectorAll('.key[data-key="super"]').forEach((element) => {
+      const textElement = element.querySelector(".key-text")
+      if (textElement) {
+        textElement.textContent = isMac ? "⌘" : "⊞"
+      }
+    })
+
+    document.querySelectorAll('.key[data-key="win"]').forEach((element) => {
+      const textElement = element.querySelector(".key-text")
+      if (textElement) {
+        textElement.textContent = isMac ? "⌘" : "⊞"
+      }
+    })
+  }
+
+  // Run on page load
+  if (typeof window !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", updateKeyboardShortcuts)
+    } else {
+      updateKeyboardShortcuts()
+    }
+  }
+</script>
