@@ -8,7 +8,7 @@ interface Props {
 const { year, month, wip = false } = Astro.props
 ---
 
-<section>
+<section class:list={[{ "has-year": year }]}>
   {year && <h2 class="section-year">{year}</h2>}
   <h3 class="section-month">{month}{wip ? <>&nbsp;&nbsp;&nbsp;🚧</> : ""}</h3>
   <div class:list={["content", { "wip-content": wip }]}>
@@ -30,10 +30,10 @@ const { year, month, wip = false } = Astro.props
     flex-direction: column;
     gap: 0.5rem;
     color: var(--gray-200);
-  }
 
-  section:has(.section-year) {
-    margin-top: 3rem;
+    &:has(.section-year) {
+      margin-top: 3rem;
+    }
   }
 
   .section-year {
@@ -50,21 +50,21 @@ const { year, month, wip = false } = Astro.props
 
   .content {
     grid-column: 3 / 5;
-  }
 
-  .content p:not(:last-child) {
-    margin-bottom: 1rem;
-  }
+    p:not(:last-child) {
+      margin-bottom: 1rem;
+    }
 
-  .content :global(a) {
-    text-decoration: 1px solid underline transparent;
-    text-underline-offset: 0.25em;
-    transition: text-decoration-color var(--theme-transition);
-  }
+    a {
+      text-decoration: 1px solid underline transparent;
+      text-underline-offset: 0.25em;
+      transition: text-decoration-color var(--theme-transition);
 
-  .content :global(a:hover),
-  .content :global(a:focus) {
-    text-decoration-color: currentColor;
+      &:hover,
+      &:focus {
+        text-decoration-color: currentColor;
+      }
+    }
   }
 
   .wip-content {
@@ -108,6 +108,16 @@ const { year, month, wip = false } = Astro.props
     section {
       display: contents;
       font-size: var(--text-lg);
+
+      &:has(.section-year) {
+        margin-top: 0;
+      }
+    }
+
+    .has-year .section-year,
+    .has-year .section-month,
+    .has-year .content {
+      margin-top: 3rem;
     }
   }
 </style>
