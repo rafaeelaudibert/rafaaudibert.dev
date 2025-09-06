@@ -27,8 +27,8 @@ export const PAST_EXPERIENCES = [
     startDate: "11/2024",
     endDate: "Present",
     bulletPoints: [
-      "Working on the Web Analytics small team, building a new product to help companies understand their customers and improve their products.",
-      "Leading the <strong>Core Web Vitals + Performance</strong> tracking feature.",
+      "While working on the Web Analytics team ($5M+ ARR), implemented the <strong>Core Web Vitals + Performance</strong> tracking feature.",
+      "Started and led the <strong>Revenue Analytics</strong> team, building a new product to help companies understand their revenue metrics and improve their products.",
     ],
   },
   {
@@ -40,9 +40,9 @@ export const PAST_EXPERIENCES = [
     endDate: "10/2024",
     bulletPoints: [
       "Built the company's flagship product in <strong>Ruby on Rails</strong> + <strong>React/TS</strong>, with a fully-fledged <strong>GraphQL API</strong>, deploying tens of times every day.",
-      "Implemented integrations with 4 big players in the Proptech industry, including 2-way sync PubSub-based infrastructure",
+      "Implemented integrations with 4 big players in the Proptech industry, including 2-way sync PubSub-based infrastructure.",
       "Reduced frontend bundle size by 95% by applying modern frontend bundling practices while migrating from CRA to <strong>Vite</strong>.",
-      "Grew company by 2 orders of magnitude while making sure both the database and app architecture were capable of sustaining the higher load by migrating the company infrastructure from Heroku to AWS.",
+      "Grew company by 2 orders of magnitude while ensuring both the database and app architecture could sustain the higher load by migrating the company infrastructure from Heroku to AWS.",
     ],
   },
   {
@@ -53,8 +53,8 @@ export const PAST_EXPERIENCES = [
     startDate: "11/2019",
     endDate: "03/2021",
     bulletPoints: [
-      "Developed a novel logistics IaaC microservice architecture, integrating with tens of shipping companies, to handle 70k deliveries/month in a continental country such as Brazil, using <strong>Terraform</strong>.",
-      "Maintained a legacy <strong>Django</strong> monolith responsible for the subscription process, while rewriting the old fiscal/billing system on Serverless.",
+      "Developed a novel logistics IaC microservice architecture, integrating with tens of shipping companies, to handle 70k deliveries/month in a continental country such as Brazil, using <strong>Terraform</strong>.",
+      "Maintained a legacy <strong>Django</strong> monolith responsible for the subscription process, while rewriting the old billing system on Serverless.",
       "Built an internal CLI to coordinate the company software deployment process, <strong>decreasing deployment time by 60%</strong>.",
     ],
   },
@@ -66,9 +66,9 @@ export const PAST_EXPERIENCES = [
     startDate: "03/2017",
     endDate: "11/2019",
     bulletPoints: [
-      "Led the initial MVP for the Brazilian government in a 3-month timeframe with a team of 3 junior engineers, and got the project greenlit by the government.",
-      "Built a <strong>fully-dockerized Ruby on Rails MVC</strong> application for the Brazilian public health system UPSs (small health clinics spread through Brazilian neighborhoods)",
-      "Provisioned infrastructure in AWS, using <strong>EC2, RDS, ELB, Route 53, and Cloudwatch</strong>.",
+      "Led the initial MVP for the Brazilian government in a 3-month timeframe with a team of 3 junior engineers, and got the project greenlit by it.",
+      "Built a <strong>fully-dockerized Ruby on Rails MVC</strong> application for the Brazilian public health system UPSs (small health clinics spread through Brazilian neighborhoods).",
+      "Provisioned infrastructure in AWS, using <strong>EC2, RDS, ELB, Route 53, and CloudWatch</strong>.",
     ],
   },
 ]
@@ -101,7 +101,14 @@ export const LANGUAGES = [
 export const TECHNOLOGIES = [
   {
     type: "Programming Languages",
-    technologies: ["Ruby", "Python", "Typescript", "Javascript", "Elixir"],
+    technologies: [
+      "Ruby",
+      "Python",
+      "Typescript",
+      "Javascript",
+      "Elixir",
+      "Rust",
+    ],
   },
   {
     type: "Frameworks",
@@ -123,6 +130,7 @@ export const TECHNOLOGIES = [
     type: "Cloud",
     technologies: [
       "AWS (Lambda, DynamoDB, S3, CloudFront, CloudWatch, RDS, ELB, Route 53)",
+      "Supabase",
       "Vercel",
       "Netlify",
     ],
@@ -139,9 +147,12 @@ export const TECHNOLOGIES = [
       "CI/CD",
       "Semaphore CI",
       "Github Actions",
-      "GA4",
       "PostHog",
     ],
+  },
+  {
+    type: "AI Tooling",
+    technologies: ["Cursor", "Claude Code", "Lovable"],
   },
 ]
 ---
