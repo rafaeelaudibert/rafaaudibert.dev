@@ -2,8 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 
 import ContactCTA from "../components/ContactCTA.astro"
-import Hero from "../components/Hero.astro"
 import Link from "../components/Link.astro"
+import KeyboardShortcut from "../components/KeyboardShortcut.astro"
 
 import work from "../assets/work.jpg"
 import posthog from "../assets/companies/posthog.png"
@@ -48,7 +48,7 @@ export const PAST_EXPERIENCES = [
   {
     company: "TAG Livros",
     imageSrc: taglivros,
-    href: "https://site.taglivros.com/",
+    href: "https://taglivros.com.br/",
     role: "Software Engineer",
     startDate: "11/2019",
     endDate: "03/2021",
@@ -149,16 +149,18 @@ export const TECHNOLOGIES = [
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
   <div class="stack gap-20 mb-4">
     <main class="wrapper about">
-      <Hero
-        title="Resume"
-        tagline="Thanks for stopping by. Read below to learn more about myself and my background."
-      >
-        <Image
-          src={work}
-          alt="Rafa Audibert working behind a laptop full with stickers"
-          class="hero-image"
-        />
-      </Hero>
+      <div class="cv-header">
+        <Image src={work} alt="Rafael Audibert" class="profile-image" />
+        <div class="name-title-section">
+          <h1 class="cv-name">Rafael Audibert</h1>
+          <p class="cv-title">Senior Product Engineer</p>
+          <div class="print-suggestion">
+            <span class="print-text"
+              >💡 Tip: Press <KeyboardShortcut keys={["Ctrl/Cmd", "P"]} /> to print</span
+            >
+          </div>
+        </div>
+      </div>
 
       <section>
         <h2 class="section-title">Background</h2>
@@ -200,7 +202,8 @@ export const TECHNOLOGIES = [
             {
               EDUCATION_AND_ACHIEVEMENTS.map((content) => (
                 <li>
-                  <strong>{content.year}</strong>: {content.description}
+                  <strong>{content.year}</strong>:{" "}
+                  <span set:html={content.description} />
                 </li>
               ))
             }
@@ -226,7 +229,9 @@ export const TECHNOLOGIES = [
       <section>
         <h2 class="section-title">Things I've worked with before</h2>
         <div class="content">
-          In no specific order (help with <kbd>Ctrl/Cmd + F</kbd>):
+          In no specific order <span class="help-text"
+            >(help with <KeyboardShortcut keys={["Ctrl/Cmd", "F"]} />)</span
+          >:
           <br />
           <ul>
             {
@@ -246,12 +251,6 @@ export const TECHNOLOGIES = [
 </BaseLayout>
 
 <style>
-  kbd {
-    background-color: var(--gray-500);
-    border-radius: 0.25rem;
-    padding: 0.125rem 0.25rem;
-  }
-
   ul {
     margin-bottom: 1.5rem;
   }
@@ -274,10 +273,280 @@ export const TECHNOLOGIES = [
     gap: 3.5rem;
   }
 
-  img .hero-image {
-    margin-top: 1.5rem;
-    border-radius: 1.5rem;
+  /* CV Header Styles */
+  .cv-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 150px;
+    border-radius: 16px;
+    object-fit: cover;
     box-shadow: var(--shadow-md);
+    flex-shrink: 0;
+  }
+
+  .name-title-section {
+    flex: 1;
+  }
+
+  .cv-name {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--gray-0);
+    margin: 0;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-brand);
+  }
+
+  .cv-title {
+    font-size: var(--text-lg);
+    color: var(--gray-300);
+    margin: 0;
+    font-weight: 500;
+  }
+
+  /* Print Suggestion - Subtle */
+  .print-suggestion {
+    text-align: left;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .print-text {
+    font-size: var(--text-sm);
+    color: var(--gray-400);
+    font-style: italic;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 50em) {
+    .cv-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .profile-image {
+      width: 280px;
+      height: 350px;
+      align-self: center;
+    }
+
+    .cv-name {
+      font-size: var(--text-3xl);
+    }
+
+    .print-suggestion {
+      text-align: center;
+    }
+  }
+
+  /* Print Optimizations */
+  @media print {
+    /* Hide unnecessary elements */
+    :global(nav),
+    :global(footer),
+    :global(aside) {
+      display: none !important;
+    }
+
+    /* Hide web-specific content */
+    .hero {
+      display: none !important;
+    }
+
+    /* Hide tagline when printing */
+    .tagline {
+      display: none !important;
+    }
+
+    /* Hide help text when printing */
+    .help-text {
+      display: none !important;
+    }
+
+    /* Hide print suggestion when actually printing */
+    .print-suggestion {
+      display: none !important;
+    }
+
+    /* Remove backgrounds and optimize for black & white printing */
+    :global(body) {
+      background: white !important;
+      color: #1a1a1a !important;
+      font-size: 12pt;
+      line-height: 1.4;
+    }
+
+    :global(.backgrounds) {
+      background: none !important;
+    }
+
+    /* Optimize layout for print */
+    .stack {
+      gap: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .wrapper {
+      max-width: none !important;
+      padding: 0.5in !important;
+      margin: 0 !important;
+    }
+
+    .about {
+      gap: 1.5rem !important;
+      display: block !important;
+      grid-template-columns: none !important;
+    }
+
+    /* Show CV header in print */
+    .cv-header {
+      display: flex !important;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      page-break-after: avoid;
+      padding: 0 !important;
+    }
+
+    .profile-image {
+      width: 60px !important;
+      height: 75px !important;
+      border-radius: 8px !important;
+      object-fit: cover;
+      box-shadow: none !important;
+      flex-shrink: 0;
+    }
+
+    .name-title-section {
+      flex: 1;
+    }
+
+    .cv-name {
+      font-size: 18pt !important;
+      font-weight: bold;
+      color: #1a1a1a !important;
+      margin: 0;
+      margin-bottom: 0.25rem;
+    }
+
+    .cv-title {
+      font-size: 12pt !important;
+      color: #333 !important;
+      margin: 0;
+      font-weight: normal;
+    }
+
+    /* Typography optimizations */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      color: #1a1a1a !important;
+      page-break-after: avoid;
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-title {
+      font-size: 14pt !important;
+      font-weight: bold;
+      color: #1a1a1a !important;
+      border-bottom: 1pt solid #1a1a1a;
+      padding-bottom: 2pt;
+      margin-bottom: 0.5rem !important;
+      page-break-after: avoid;
+    }
+
+    /* Content spacing */
+    section {
+      display: block !important;
+      margin-bottom: 1rem !important;
+      page-break-inside: avoid;
+      gap: 0.25rem !important;
+    }
+
+    .content {
+      margin-left: 0 !important;
+      grid-column: auto !important;
+    }
+
+    /* Company header optimizations */
+    .company-header {
+      margin-left: 0 !important;
+      margin-bottom: 0.25rem;
+      page-break-inside: avoid;
+    }
+
+    /* Keep company logos in print - smaller size for clean appearance */
+    .company-header img {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    /* List optimizations */
+    ul {
+      margin-bottom: 0.75rem !important;
+      margin-left: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.25rem;
+      page-break-inside: avoid;
+    }
+
+    /* Link styling for print - company names not underlined */
+    :global(a) {
+      color: #1a1a1a !important;
+      text-decoration: none !important;
+      font-size: 0.95em;
+    }
+
+    /* Show URLs after links for print - smaller text, this is clickable */
+    :global(a[href]:after) {
+      content: " (" attr(href) ")";
+      font-size: 0.8em;
+      color: #444;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* Ensure page breaks work well */
+    p {
+      page-break-inside: avoid;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Remove shadows and decorative elements */
+    * {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Page break controls */
+    section:nth-child(1) {
+      page-break-before: avoid;
+    }
+
+    section:nth-child(n + 2) {
+      page-break-before: avoid;
+    }
+
+    /* Ensure the first section (Background) stays with title */
+    section:first-of-type {
+      page-break-after: avoid;
+    }
   }
 
   section {
