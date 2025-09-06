@@ -22,15 +22,25 @@ export default defineConfig({
     prefetchAll: true,
   },
 
-  // Prerender pages on the client when prefetching it
+  // Some experimental configuration
   experimental: {
+    // Prerender pages on the client when prefetching it
     clientPrerender: true,
+    // Responsive images
+    responsiveImages: true,
+    // Improve intelisense for content files
+    contentIntellisense: true
   },
 
   // Detect math equations in markdown
   markdown: {
     remarkPlugins: [remarkMath], // Detect math equations in markdown
     rehypePlugins: [rehypeKatex], // Render latex equations in markdown
+  },
+
+  // Image optimization settings
+  image: {
+    experimentalLayout: "responsive",
   },
 
   // Typed environment variables to guarantee they always exist when building the site
