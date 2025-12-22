@@ -2,9 +2,21 @@
   "name": "rafaaudibert.dev",
   "version": "2.0.0",
   "author": "Rafael Audibert",
+  "description": "Rafael Audibert's personal website",
+  "homepage": "https://rafaaudibert.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/rafaaudibert/rafaaudibert.dev.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "engines": {
+    "node": "v24.12.0"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.4",
@@ -12,7 +24,6 @@
     "@astrojs/sitemap": "^3.5.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/material": "^6.3.0",
     "@mui/x-charts": "^7.23.2",
     "@rollup/plugin-dsv": "^3.0.5",
     "@types/react": "^19.0.2",
@@ -28,18 +39,6 @@
     "satori": "^0.18.3",
     "sharp": "^0.33.5"
   },
-  "bugs": {
-    "url": "https://github.com/rafaaudibert/rafaaudibert.dev/issues"
-  },
-  "description": "Rafael Audibert's personal website",
-  "homepage": "https://rafaaudibert.dev",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "type": "module",
   "devDependencies": {
     "@types/d3": "^7.4.3"
   }
