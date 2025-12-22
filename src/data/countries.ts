@@ -124,7 +124,7 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   FO: "Faroe Islands",
   FR: "France",
   GA: "Gabon",
-  GB: "United Kingdom", // ISO defines as "United Kingdom of Great Britain and Northern Ireland" but we'll opt for the more common "United Kingdom"
+  GB: "United Kingdom", // ISO defines as "United Kingdom of Great Britain and Northern Ireland" but I'll just go with the much shorter "United Kingdom"
   GD: "Grenada",
   GE: "Georgia",
   GF: "French Guiana",
@@ -168,12 +168,12 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   KI: "Kiribati",
   KM: "Comoros",
   KN: "Saint Kitts and Nevis",
-  KP: "North Korea", // ISO defines as "Korea (the Democratic People's Republic of)", simplified for common use by us
-  KR: "South Korea", // ISO defines as "Korea (the Republic of)", simplified for common use by us
+  KP: "North Korea", // ISO defines as "Korea (the Democratic People's Republic of)", simplified for common use
+  KR: "South Korea", // ISO defines as "Korea (the Republic of)", simplified for common use
   KW: "Kuwait",
   KY: "Cayman Islands",
   KZ: "Kazakhstan",
-  LA: "Laos", // ISO defines as "Lao People's Democratic Republic", simplified for common use by us
+  LA: "Laos", // ISO defines as "Lao People's Democratic Republic", simplified for common use
   LB: "Lebanon",
   LC: "Saint Lucia",
   LI: "Liechtenstein",
@@ -230,7 +230,7 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   PM: "Saint Pierre and Miquelon",
   PN: "Pitcairn",
   PR: "Puerto Rico",
-  PS: "Palestine", // ISO defines as "Palestine, State of", simplified for common use by us
+  PS: "Palestine", // ISO defines as "Palestine, State of", simplified for common use
   PT: "Portugal",
   PW: "Palau",
   PY: "Paraguay",
@@ -238,7 +238,7 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   RE: "Réunion",
   RO: "Romania",
   RS: "Serbia",
-  RU: "Russia", // ISO defines as "Russian Federation", simplified for common use by us
+  RU: "Russia", // ISO defines as "Russian Federation", simplified for common use
   RW: "Rwanda",
   SA: "Saudi Arabia",
   SB: "Solomon Islands",
@@ -259,7 +259,7 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   ST: "Sao Tome and Principe",
   SV: "El Salvador",
   SX: "Sint Maarten",
-  SY: "Syria", // ISO defines as "Syrian Arab Republic", simplified for common use by us
+  SY: "Syria", // ISO defines as "Syrian Arab Republic", simplified for common use
   SZ: "Eswatini",
   TC: "Turks and Caicos Islands",
   TD: "Chad",
@@ -276,19 +276,19 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   TT: "Trinidad and Tobago",
   TV: "Tuvalu",
   TW: "Taiwan",
-  TZ: "Tanzania", // ISO defines as "Tanzania, the United Republic of", simplified for common use by us
+  TZ: "Tanzania", // ISO defines as "Tanzania, the United Republic of", simplified for common use
   UA: "Ukraine",
   UG: "Uganda",
   UM: "United States Minor Outlying Islands",
-  US: "United States", // ISO defines as "United States of America (the)", simplified for common use by us
+  US: "United States", // ISO defines as "United States of America (the)", simplified for common use
   UY: "Uruguay",
   UZ: "Uzbekistan",
-  VA: "Vatican", // ISO defines as "Holy See (the)", simplified for common use by us
+  VA: "Vatican", // ISO defines as "Holy See (the)", simplified for common use
   VC: "Saint Vincent and the Grenadines",
   VE: "Venezuela",
   VG: "British Virgin Islands",
   VI: "U.S. Virgin Islands",
-  VN: "Viet Nam", // More widely known in English as "Vietnam", but ISO/UN/US Gov use "Viet Nam"
+  VN: "Vietnam", // ISO/UN/US Gov defines as "Viet Nam", simplified for common use
   VU: "Vanuatu",
   WF: "Wallis and Futuna",
   WS: "Samoa",
@@ -298,7 +298,7 @@ export const COUNTRY_CODE_TO_LONG_NAME = {
   ZM: "Zambia",
   ZW: "Zimbabwe",
 
-  // Not included in ISO 3166-1 Alpha-2, but we'll add them here for completeness
+  // Not included in ISO 3166-1 Alpha-2, but I'll add them here for completeness because I wanna visit them someday
   XK: "Kosovo",
 } as const
 
