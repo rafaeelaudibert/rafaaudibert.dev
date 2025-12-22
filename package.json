@@ -24,7 +24,7 @@
     "@astrojs/sitemap": "^3.5.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/x-charts": "^7.23.2",
+    "@mui/x-charts": "^8.22.1",
     "@rollup/plugin-dsv": "^3.0.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
