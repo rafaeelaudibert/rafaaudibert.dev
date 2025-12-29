@@ -3,22 +3,28 @@ import Icon from "./Icon.astro"
 import ThemeToggle from "./ThemeToggle.astro"
 import type { iconPaths } from "./IconPaths"
 
-/** Main menu items */
-const textLinks: { label: string; href: string }[] = [
+interface NavbarMenuItem {
+  label: string
+  href: string
+  external?: boolean
+}
+
+const NAVBAR_MENU_ITEMS: NavbarMenuItem[] = [
   { label: "Home", href: "/" },
   { label: "Blog", href: "/blog/" },
   { label: "Resume", href: "/resume/" },
   { label: "Travel", href: "/travel/" },
   { label: "Changelog", href: "/changelog/" },
-  { label: "Wedding", href: "https://www.lilierafa.com.br" },
+  { label: "Wedding", href: "https://www.lilierafa.com.br", external: true },
 ]
 
-/** Icon links to social media */
-const iconLinks: {
+interface SocialMediaItem {
   label: string
   href: string
   icon: keyof typeof iconPaths
-}[] = [
+}
+
+const SOCIAL_MEDIA_ITEMS: SocialMediaItem[] = [
   {
     label: "GitHub",
     href: "https://github.com/rafaeelaudibert",
@@ -55,14 +61,17 @@ const isCurrentPage = (href: string) => {
   <noscript>
     <ul class="nav-items">
       {
-        textLinks.map(({ label, href }) => (
+        NAVBAR_MENU_ITEMS.map(({ label, href, external }) => (
           <li>
             <a
               aria-current={isCurrentPage(href) ? "page" : null}
-              class="link"
+              class:list={["link", { external }]}
               href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noopener noreferrer" : undefined}
             >
               {label}
+              {external && <Icon icon="arrow-square-out" size="0.85em" />}
             </a>
           </li>
         ))
@@ -73,7 +82,7 @@ const isCurrentPage = (href: string) => {
     <div class="menu-footer">
       <div class="socials">
         {
-          iconLinks.map(({ href, icon, label }) => (
+          SOCIAL_MEDIA_ITEMS.map(({ href, icon, label }) => (
             <a href={href} class="social">
               <span class="sr-only">{label}</span>
               <Icon icon={icon} />
@@ -86,14 +95,17 @@ const isCurrentPage = (href: string) => {
   <div id="menu-content" hidden>
     <ul class="nav-items">
       {
-        textLinks.map(({ label, href }) => (
+        NAVBAR_MENU_ITEMS.map(({ label, href, external }) => (
           <li>
             <a
               aria-current={isCurrentPage(href) ? "page" : null}
-              class="link"
+              class:list={["link", { external }]}
               href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noopener noreferrer" : undefined}
             >
               {label}
+              {external && <Icon icon="arrow-square-out" size="0.85em" />}
             </a>
           </li>
         ))
@@ -102,7 +114,7 @@ const isCurrentPage = (href: string) => {
     <div class="menu-footer">
       <div class="socials">
         {
-          iconLinks.map(({ href, icon, label }) => (
+          SOCIAL_MEDIA_ITEMS.map(({ href, icon, label }) => (
             <a href={href} class="social">
               <span class="sr-only">{label}</span>
               <Icon icon={icon} />
@@ -195,7 +207,8 @@ const isCurrentPage = (href: string) => {
 
   .menu-button[aria-expanded="true"] {
     color: var(--gray-0);
-    background: linear-gradient(180deg, var(--gray-600), transparent),
+    background:
+      linear-gradient(180deg, var(--gray-600), transparent),
       radial-gradient(var(--gray-900), var(--gray-800) 150%);
   }
 
@@ -232,7 +245,9 @@ const isCurrentPage = (href: string) => {
   }
 
   .link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
     color: var(--gray-300);
     text-decoration: none;
   }
