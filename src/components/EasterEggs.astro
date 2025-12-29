@@ -1,0 +1,346 @@
+---
+// Easter Eggs - Hidden surprises throughout the site!
+---
+
+<!-- Confetti canvas for celebrations -->
+<canvas id="confetti-canvas"></canvas>
+
+<style>
+  #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99999;
+  }
+
+  /* Secret hover effects */
+  :global(.hero img) {
+    transition:
+      transform 0.3s ease,
+      filter 0.3s ease;
+  }
+
+  :global(.hero img:hover) {
+    transform: scale(1.02);
+  }
+
+  :global(.hero img.spin) {
+    animation: spin 1s ease-in-out;
+  }
+
+  :global(.site-title.party) {
+    animation: rainbow 0.5s linear infinite;
+  }
+
+  :global(.rainbow-mode) {
+    animation: rainbow 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg) scale(1);
+    }
+    50% {
+      transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+      transform: rotate(360deg) scale(1);
+    }
+  }
+
+  @keyframes rainbow {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-5px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(5px);
+    }
+  }
+
+  :global(.shake) {
+    animation: shake 0.5s ease-in-out;
+  }
+</style>
+
+<script>
+  // ========================================
+  // 🎉 EASTER EGGS CONTROLLER
+  // ========================================
+
+  class EasterEggs {
+    private konamiCode = [
+      "ArrowUp",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowLeft",
+      "ArrowRight",
+      "KeyB",
+      "KeyA",
+    ]
+    private konamiIndex = 0
+    private typedKeys = ""
+    private secretWords = ["rafa", "audibert", "confetti", "party"]
+    private heroClickCount = 0
+    private heroClickTimeout: ReturnType<typeof setTimeout> | null = null
+
+    constructor() {
+      this.initKonamiCode()
+      this.initSecretTyping()
+      this.initHeroClicks()
+      this.initConsoleMessage()
+    }
+
+    // Konami Code: ↑↑↓↓←→←→BA
+    private initKonamiCode() {
+      document.addEventListener("keydown", (e) => {
+        if (e.code === this.konamiCode[this.konamiIndex]) {
+          this.konamiIndex++
+          if (this.konamiIndex === this.konamiCode.length) {
+            this.triggerKonamiSuccess()
+            this.konamiIndex = 0
+          }
+        } else {
+          this.konamiIndex = 0
+        }
+      })
+    }
+
+    // Type secret words anywhere
+    private initSecretTyping() {
+      document.addEventListener("keydown", (e) => {
+        // Don't trigger if typing in an input
+        if (
+          (e.target as HTMLElement).tagName === "INPUT" ||
+          (e.target as HTMLElement).tagName === "TEXTAREA"
+        ) {
+          return
+        }
+
+        // Only track single character keys (letters)
+        if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
+          this.typedKeys += e.key.toLowerCase()
+
+          // Keep only last 20 characters
+          if (this.typedKeys.length > 20) {
+            this.typedKeys = this.typedKeys.slice(-20)
+          }
+
+          // Check for secret words
+          for (const word of this.secretWords) {
+            if (this.typedKeys.endsWith(word)) {
+              this.triggerSecretWord(word)
+              this.typedKeys = ""
+              break
+            }
+          }
+        }
+      })
+    }
+
+    // Click hero image multiple times
+    private initHeroClicks() {
+      const heroImg = document.querySelector(".hero img")
+      if (heroImg) {
+        heroImg.addEventListener("click", () => {
+          this.heroClickCount++
+
+          if (this.heroClickTimeout) {
+            clearTimeout(this.heroClickTimeout)
+          }
+
+          if (this.heroClickCount >= 5) {
+            heroImg.classList.add("spin")
+            setTimeout(() => heroImg.classList.remove("spin"), 1000)
+            this.triggerConfetti()
+            this.heroClickCount = 0
+          }
+
+          this.heroClickTimeout = setTimeout(() => {
+            this.heroClickCount = 0
+          }, 2000)
+        })
+      }
+    }
+
+    // Fun console message
+    private initConsoleMessage() {
+      const styles = [
+        "color: #7611a6",
+        "font-size: 20px",
+        "font-weight: bold",
+        "text-shadow: 2px 2px 0 #c561f6",
+      ].join(";")
+
+      console.log("%c👋 Hey there, curious developer!", styles)
+      console.log(
+        "%c🔍 Looking for easter eggs? Try the Konami code! ↑↑↓↓←→←→BA",
+        "color: #888; font-size: 12px;"
+      )
+      console.log(
+        '%c💜 Or type "rafa", "confetti", or "party" anywhere on the page...',
+        "color: #888; font-size: 12px;"
+      )
+    }
+
+    private triggerKonamiSuccess() {
+      // Rainbow mode + big confetti celebration
+      document.body.classList.add("rainbow-mode")
+      this.triggerConfetti(true)
+
+      setTimeout(() => {
+        document.body.classList.remove("rainbow-mode")
+      }, 5000)
+    }
+
+    private triggerSecretWord(word: string) {
+      switch (word) {
+        case "rafa":
+          // Rainbow site title + confetti
+          const siteTitle = document.querySelector(".site-title")
+          if (siteTitle) {
+            siteTitle.classList.add("party")
+            setTimeout(() => siteTitle.classList.remove("party"), 2000)
+          }
+          this.triggerConfetti()
+          break
+        case "audibert":
+          // Invert colors briefly + confetti
+          document.body.style.filter = "invert(1)"
+          this.triggerConfetti()
+          setTimeout(() => {
+            document.body.style.filter = ""
+          }, 500)
+          break
+        case "confetti":
+        case "party":
+          this.triggerConfetti()
+          break
+      }
+    }
+
+    private triggerConfetti(isBig = false) {
+      const canvas = document.getElementById(
+        "confetti-canvas"
+      ) as HTMLCanvasElement
+      if (!canvas) return
+
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return
+
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+
+      const confettiCount = isBig ? 300 : 150
+      const confetti: Array<{
+        x: number
+        y: number
+        w: number
+        h: number
+        color: string
+        vx: number
+        vy: number
+        spin: number
+        spinSpeed: number
+        opacity: number
+      }> = []
+
+      const colors = [
+        "#7611a6",
+        "#c561f6",
+        "#ff6b6b",
+        "#4ecdc4",
+        "#ffe66d",
+        "#95e1d3",
+        "#f38181",
+      ]
+
+      // Create confetti particles
+      for (let i = 0; i < confettiCount; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 10 + 5,
+          h: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: Math.random() * 4 - 2,
+          vy: Math.random() * 3 + 2,
+          spin: Math.random() * 360,
+          spinSpeed: Math.random() * 10 - 5,
+          opacity: 1,
+        })
+      }
+
+      let frame = 0
+      const maxFrames = isBig ? 400 : 250
+
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        confetti.forEach((c) => {
+          c.x += c.vx
+          c.y += c.vy
+          c.spin += c.spinSpeed
+          c.vy += 0.05 // gravity
+
+          // Fade out near the end
+          if (frame > maxFrames - 50) {
+            c.opacity = Math.max(0, c.opacity - 0.02)
+          }
+
+          ctx.save()
+          ctx.translate(c.x, c.y)
+          ctx.rotate((c.spin * Math.PI) / 180)
+          ctx.globalAlpha = c.opacity
+          ctx.fillStyle = c.color
+          ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h)
+          ctx.restore()
+        })
+
+        frame++
+        if (frame < maxFrames) {
+          requestAnimationFrame(animate)
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+        }
+      }
+
+      animate()
+    }
+  }
+
+  // Initialize easter eggs when DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    new EasterEggs()
+  })
+
+  // Also initialize on Astro page transitions
+  document.addEventListener("astro:page-load", () => {
+    new EasterEggs()
+  })
+</script>
