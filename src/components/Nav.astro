@@ -6,17 +6,33 @@ import type { iconPaths } from "./IconPaths"
 interface NavbarMenuItem {
   label: string
   href: string
+  shortcut?: string // Keyboard shortcut key (single letter)
   external?: boolean
 }
 
-const NAVBAR_MENU_ITEMS: NavbarMenuItem[] = [
-  { label: "Home", href: "/" },
-  { label: "Blog", href: "/blog/" },
-  { label: "Resume", href: "/resume/" },
-  { label: "Travel", href: "/travel/" },
-  { label: "Changelog", href: "/changelog/" },
-  { label: "Wedding", href: "https://www.lilierafa.com.br", external: true },
+export const NAVBAR_MENU_ITEMS: NavbarMenuItem[] = [
+  { label: "Home", href: "/", shortcut: "h" },
+  { label: "Blog", href: "/blog/", shortcut: "b" },
+  { label: "Resume", href: "/resume/", shortcut: "r" },
+  { label: "Travel", href: "/travel/", shortcut: "t" },
+  { label: "Changelog", href: "/changelog/", shortcut: "c" },
+  {
+    label: "Wedding",
+    href: "https://www.lilierafa.com.br",
+    shortcut: "w",
+    external: true,
+  },
 ]
+
+/** Export navigation shortcuts for the ShortcutsManager */
+export const NAV_SHORTCUTS = NAVBAR_MENU_ITEMS.filter(
+  (item) => item.shortcut
+).map((item) => ({
+  key: item.shortcut!,
+  label: item.label,
+  href: item.href,
+  external: item.external,
+}))
 
 interface SocialMediaItem {
   label: string
@@ -95,7 +111,7 @@ const isCurrentPage = (href: string) => {
   <div id="menu-content" hidden>
     <ul class="nav-items">
       {
-        NAVBAR_MENU_ITEMS.map(({ label, href, external }) => (
+        NAVBAR_MENU_ITEMS.map(({ label, href, external, shortcut }) => (
           <li>
             <a
               aria-current={isCurrentPage(href) ? "page" : null}
@@ -106,6 +122,11 @@ const isCurrentPage = (href: string) => {
             >
               {label}
               {external && <Icon icon="arrow-square-out" size="0.85em" />}
+              {shortcut && (
+                <kbd class="shortcut-hint" aria-hidden="true">
+                  {shortcut.toUpperCase()}
+                </kbd>
+              )}
             </a>
           </li>
         ))
@@ -388,6 +409,61 @@ const isCurrentPage = (href: string) => {
   @media (forced-colors: active) {
     .link[aria-current="page"] {
       color: SelectedItem;
+    }
+  }
+
+  /* Keyboard shortcut hints */
+  .shortcut-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Start collapsed - no space taken */
+    width: 0;
+    height: 1.25rem;
+    padding: 0;
+    margin-left: 0;
+    overflow: hidden;
+    font-family: var(--font-system);
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--accent-text-over);
+    background: var(--accent-regular);
+    border-radius: 3px;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: scale(0.8);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease,
+      width 0.15s ease,
+      padding 0.15s ease,
+      margin-left 0.15s ease;
+    pointer-events: none;
+  }
+
+  /* Show hints when Alt is held (class added by JS) */
+  :global(.shortcuts-active) .shortcut-hint {
+    width: 1.25rem;
+    padding: 0 0.25rem;
+    margin-left: 0.375rem;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Hide on mobile - shortcuts don't work well there */
+  @media (max-width: 50em) {
+    .shortcut-hint {
+      display: none;
+    }
+  }
+
+  /* Hide when printing */
+  @media print {
+    .shortcut-hint {
+      display: none !important;
     }
   }
 </style>
