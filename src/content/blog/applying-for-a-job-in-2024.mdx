@@ -1,0 +1,154 @@
+---
+title: Applying for a remote job in 2024 - a data analysis
+publishDate: 2025-12-21 12:00:00 +0300
+description: >
+  What's like applying for a remote job in 2024 with all the layoffs happening?
+img: applying-for-a-remote-job-in-2024-a-data-analysis.png
+img_alt: Applying for a remote job in 2024 - a data analysis
+tags: [Job Search, "2024", LinkedIn]
+reading_time: "5min"
+---
+
+import { JobSearchSankey } from "./components/JobSearchSankey"
+
+> Yes, this blogpost is about 2024 but I wrote it in 2025. I [landed a great job](#posthog) - see more below - and it kept me busy through the year!
+
+In September 2024, I found myself needing to look for a new job. It didn't feel good.
+I'd just seen a [Reddit post](https://www.reddit.com/r/EngineeringResumes/comments/1d8bg8s/0_yoe_software_engineer_have_applied_to_around/)
+about a new grad who'd applied to 200 jobs and gotten zero interviews. Yikes, that sucks.
+
+Of course, I'm not a new grad and I like to think I'm pretty good at what I do. But I still needed interviews to prove it, and getting zero out of 200 applications wasn't exactly reassuring.
+
+Based on friends who'd interviewed recently, I figured that if I could land 10 real interviews - not counting automated or AI screenings - I'd probably get at least one offer.
+
+The real question was: how many applications would it take to get 10 interviews? I had no idea, so I set out to replicate the Redditor's approach and apply to 200 jobs.
+
+
+### What jobs should I apply to?
+
+
+I was fortunate enough to have saved over 50% of my income during the 4 years at my last job, so I had a decent buffer. It would take a lot to burn through my savings in under 12 months, but that was my hard limit.
+
+With that in mind, I set up some constraints when applying to jobs. I was ready to drop some of these constraints if I couldn't find a job in 3 months.
+
+
+<dl>
+  <dt>International jobs only</dt>
+  <dd>I live in Brazil but I'm not looking for a local job. I was already working for an American company. Low-paying international jobs pay as much as high-paying jobs in Brazil. If I was to apply to local jobs I'd be looking at `$50k`/year or less and that was too big of a pay cut for me.</dd>
+
+  <dt>Fully remote work, anywhere in the world</dt>
+  <dd>Again, I'm in Brazil and I really enjoy living here close to my family. I'm not interested in moving for a job! I'd also like to be able to reserve the right to have longer seasons abroad - I have a lot of friends in Europe - so a job that allows me to [travel internationally](/travel) without much red tape is a requirement.</dd>
+
+  <dt>No more than a 30% pay cut</dt>
+  <dd>This means I was ready to accept a job paying $100k/year or more. This is a lot of money for Brazil, and I could go for less and still live a comfortable life, but this was my goal for the first 3 months of search.</dd>
+
+  <dt>No crypto, NFTs, or other blockchain-related jobs for minor companies. No sports betting.</dt>
+  <dd>I have no interest in fueling the crypto hype, working on unsustainable projects, or building things that don't align with my values. In my head, most crypto bros are scammers.</dd>
+
+  <dt>Preferably Ruby on Rails jobs</dt>
+  <dd>I'm most comfortable with Ruby on Rails and I love the language. Typescript was obviously on the table as well. I'd also be open to jobs in Elixir (++), Rust (+), and Python (--).</dd>
+
+  <dt>Preferably start-up jobs</dt>
+  <dd>When I joined LeadSimple, I was very close to our customers - and I LOVED that. As we grew, through a series of bad decisions, I ended up reporting to product managers who didn't understand the business (new hires). It was terrible, and it's why I needed to find a new job in the first place.</dd>
+
+  <dt>Only apply to companies I'd be genuinely interested working at</dt>
+  <dd>I really like being a software engineer. I want to work at a place where I'm happy to wake up in the morning and do the work. I wanna work in a place where I can learn something every day and not feel burned out 2 months in.</dd>
+</dl>
+
+> Yes, I know I'm privileged in adding these constraints to my search, but they're not unreasonable for a developer in my position. Again, if I could not find a job in 3 months I'd be ready to drop some of these constraints.
+
+### Where should I apply?
+
+
+I wouldn't apply to jobs posted on LinkedIn - that was a no-go. Companies that post there get thousands of applicants, and whether you get to talk to a human is basically luck.
+
+My main sources of applications would be:
+
+- Applying directly to the companies I admired - the list wasn't big to be honest
+- [We Work Remotely](https://weworkremotely.com/) - that's how I found my first international job
+- [Wellfound](https://wellfound.com/) (previously AngelList)
+- [Ruby on Remote](https://rubyonremote.com/)
+- [Rails Job Board](https://jobs.rubyonrails.org/)
+- [Hacker News](https://news.ycombinator.com/)' monthly "Who's hiring?" threads
+- Actually start replying to recruiters reaching out to me on LinkedIn
+
+My LinkedIn was already well-optimized, and I regularly got 10+ recruiter messages per week. That continued during my search. Most of these jobs are terrible - companies only use recruiters when they can't fill a role themselves - but some were reasonable, and I ended up interviewing with a handful of companies that reached out this way.
+
+### What's my strategy here?
+
+I decided I'd apply to 200 jobs to try and replicate the Redditor's task. By hand, no AI applications since those are just slop.
+
+I focused on Senior+ positions since I had 7 years of experience and was already in a Senior position in my last job.
+
+200 applications is way too much to keep in your head, so I tracked everything in Notion. This helped me remember interviewer names, what we discussed, and whether we'd already covered compensation, remote options, benefits, etc. It would also make it easier to compare offers - in the unlikely event I got multiple.
+
+I created three different CVs and used the best one depending on the company and type of job I was applying to: Ruby on Rails-focused, backend-focused, frontend-focused.
+
+I also spent time writing custom cover letters explaining why I wanted to work at each company. I'd sometimes use an LLM to polish the text since English isn't my first language.
+
+I didn't do any leetcode training. I used to do competitive programming, and I figured that would be enough for the jobs I was targeting. Besides, if I failed an interview due to lack of leetcode knowledge, I probably wouldn't want to work there anyway. That's not what engineers do day-to-day - we're not applied mathematics researchers.
+
+Talking to engineers is easy and I was positive I could convince them about my skills. I had a basic script of what I'd talk about when asked about myself.
+
+When it came to compensation my strategy was three-fold. I was always ready to go as low as $100k, but I'd usually start slightly higher than that.
+- if applying to a company with public compensation range `[$A, $B]`, then I'd ask `max(($A - $B) / 2 + $B, $100k)`, i.e. either the middle of the range or $100k, whatever was higher.
+- if applying to a small start-up (less than `$100M` valuation) without public compensation, then I'd ask for `$115k`.
+- else, I'd ask for `$130k`.
+
+If I applied somewhere without public compensation and later learned they couldn't match my expectations, I'd withdraw immediately.
+
+### How did it go?
+
+The job search went much better than I expected - it only lasted 32 days (October 11th to November 12th).
+
+I spent an average of 30 hours/week either applying or preparing.
+In hindsight, that was probably way more than I needed to, but I was scared I wouldn't find anything!
+I would do it again in the exact same way if I had to.
+
+Here's a sankey chart of the results, it's pretty cool:
+
+<JobSearchSankey client:load />
+
+At the end, since this didn't last the full 90 days I'd planned I _only_ **applied to 137 jobs**.
+
+The numbers:
+
+- Applied: 137 companies
+- Ghosted: 79 companies (57.7%)
+- Recruiter/First interview: 30 companies (21.9%)
+- Withdrawn (for many reasons): 14 companies (10.2%)
+- Rejections (after being interviewed, in many different stages): 4 companies (2.9%)
+- Offers: 6 companies (4.4%)
+- Accepted: 1 🦔
+
+I was fortunate to get 30 first interviews - almost 22% of my applications. This meant I could be much pickier than expected. I withdrew from 14 of those for various reasons: salary expectations didn't match, misaligned values, boring product, bad interview vibes, didn't enjoy talking to the founders, etc.
+
+I was also pleasantly surprised to get 6 offers - a staggering 4.4% of my applications. Way better than expected. Since I was only applying to startups and similar companies, it wasn't hard to align all the offers within the same couple of weeks.
+
+This meant I didn't have to accept an offer only to turn it down later for something better - I find that extremely rude. I'd rather reject an offer I wasn't 100% sure about, even if I was confident I'd get another one down the line.
+
+At the end, where did I dock my boat?
+
+#### PostHog 🦔
+
+In the end, I landed an amazing job. Coincidentally, it was from the very first company I applied to: [PostHog](https://posthog.com). Go check out our website - the folks who built it are absolutely cracked.
+
+I'd known about PostHog for a while, even though I'd never used it as a customer. What drew me in was how open the company is - our [handbook](https://posthog.com/handbook) is public, and so is our compensation. I also loved how close I could be to customers as a [product engineer](https://posthog.com/blog/what-is-a-product-engineer), helping other developers and companies build better products.
+
+Did I match all my requirements? Almost! We unfortunately use Python, but that's really my only complaint. My colleagues are [absolutely cracked](https://posthog.com/founders/cracked-manifesto), I have a ton of autonomy to work on what I think matters, I have a great manager who backs me up, and I get to see my colleagues in person ~3 times a year - all expenses paid. It's pretty perfect.
+
+In the 12 months since I joined, I've worked on the [Web Analytics team](https://posthog.com/teams/web-analytics) and built our [Web Vitals offering](https://posthog.com/docs/web-analytics/web-vitals#web-vitals-dashboard), built [Revenue Analytics](https://posthog.com/docs/revenue-analytics/start-here) from scratch 100% solo (showing how your revenue grows over time - Stripe only for now), and then moved into the [Growth team](https://posthog.com/teams/growth) focused on increasing our already-high growth and retention. Expect to see some cool stuff coming to our onboarding.
+
+
+### Would I do the same again?
+
+Hopefully I won't have to look for a new job anytime soon - PostHog might just carry me to early retirement (valuation's already up 10x since I joined!). But for anyone in a similar position, I'd definitely recommend following my approach: know where to apply, prepare different CVs, write custom cover letters. You can probably start with fewer than 200 applications though.
+
+I probably won't take the same approach in the future myself. I'm counting on the fact that being an early employee at PostHog will make it easier to get into other VC-backed companies later - which I tend to enjoy much more.
+
+### Other numbers
+
+- I applied to 13 YC companies. Only 3 of them got back to me, got an interview with only one of them, and was hired.
+- Highest offer was `$180k`/year all-cash, but I turned it down for PostHog - better fit. Compensation isn't everything, and if PostHog keeps doing well (we recently hit [unicorn status!](https://posthog.com/blog/series-e)), the stock will more than make up for the difference. Lowest offer was `$50k`/year.
+- I only applied to 2 Brazilian (local) companies that I thought could match my intended compensation. Got ghosted by both of them.
+- All in all, I attended around 70 interviews. I was dizzy for a lot of them, and I'm not sure I could do it again.

@@ -198,6 +198,27 @@ h5 {
   font-size: var(--text-xl);
 }
 
+/* Definition Lists */
+dl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 1rem 0;
+  padding-left: 1.25rem;
+}
+
+dt {
+  font-weight: 600;
+  color: var(--gray-100);
+  list-style-type: disc;
+  display: list-item;
+  margin-top: 0.5rem;
+}
+
+dd {
+  margin: 0;
+}
+
 /* Utilities */
 
 .mb-4 {
