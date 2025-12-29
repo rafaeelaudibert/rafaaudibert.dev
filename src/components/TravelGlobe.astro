@@ -2,14 +2,24 @@
 
 ---
 
-<section class="travel-globe-section">
+<section class="travel-globe-section" aria-label="Interactive travel globe">
   <div class="globe-container">
-    <div id="globe" class="globe">
-      <div id="globe-loading" class="globe-loading">
-        <div class="loading-spinner"></div>
+    <div
+      id="globe"
+      class="globe"
+      role="img"
+      aria-label="3D globe showing countries I have visited highlighted in green. Use mouse or touch to rotate and explore."
+    >
+      <div id="globe-loading" class="globe-loading" aria-live="polite">
+        <div class="loading-spinner" aria-hidden="true"></div>
         <p>Loading interactive globe...</p>
       </div>
-      <div id="globe-error" class="globe-error" style="display: none;">
+      <div
+        id="globe-error"
+        class="globe-error"
+        style="display: none;"
+        role="alert"
+      >
         <p>
           Failed to load the interactive globe. Please refresh the page to try
           again.

@@ -41,8 +41,14 @@ if (!images[pathFor(data.img)])
     transition: box-shadow var(--theme-transition);
   }
 
-  .card:hover {
+  .card:hover,
+  .card:focus {
     box-shadow: var(--shadow-md);
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
   }
 
   .title {

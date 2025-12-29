@@ -167,7 +167,7 @@
     private initHeroClicks() {
       const heroImg = document.querySelector(".hero img")
       if (heroImg) {
-        heroImg.addEventListener("click", () => {
+        const handleInteraction = () => {
           this.heroClickCount++
 
           if (this.heroClickTimeout) {
@@ -184,6 +184,19 @@
           this.heroClickTimeout = setTimeout(() => {
             this.heroClickCount = 0
           }, 2000)
+        }
+
+        heroImg.addEventListener("click", handleInteraction)
+
+        // Keyboard accessibility - Enter or Space triggers the same action
+        heroImg.addEventListener("keydown", (e) => {
+          if (
+            (e as KeyboardEvent).key === "Enter" ||
+            (e as KeyboardEvent).key === " "
+          ) {
+            e.preventDefault()
+            handleInteraction()
+          }
         })
       }
     }

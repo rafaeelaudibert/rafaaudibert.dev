@@ -1,9 +1,26 @@
 ---
 interface Props {
   href: string
+  external?: boolean
 }
 
-const { href } = Astro.props
+const { href, external = true } = Astro.props
 ---
 
-<a href={href} target="_blank" rel="noopener noreferrer"><slot /></a>
+{
+  external ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${Astro.slots.has("default") ? "" : href} (opens in new tab)`}
+    >
+      <slot />
+      <span class="sr-only">(opens in new tab)</span>
+    </a>
+  ) : (
+    <a href={href}>
+      <slot />
+    </a>
+  )
+}

@@ -47,6 +47,11 @@ const { href } = Astro.props
     background-color: hsla(var(--gray-999-basis), 0.3);
   }
 
+  a:focus-visible {
+    outline: 3px solid var(--accent-text-over);
+    outline-offset: 3px;
+  }
+
   @media (min-width: 50em) {
     a {
       padding: 1.125rem 2.5rem;

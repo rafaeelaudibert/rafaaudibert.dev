@@ -167,6 +167,33 @@ a {
   color: var(--link-color);
 }
 
+/* Keyboard focus indicators - visible and accessible */
+:focus {
+  outline: 2px solid var(--accent-regular);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-regular);
+  outline-offset: 2px;
+}
+
+/* Ensure high contrast focus for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-regular);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 h1,
 h2,
 h3,
