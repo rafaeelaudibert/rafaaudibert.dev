@@ -60,7 +60,8 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
               const countryName = COUNTRY_CODE_TO_LONG_NAME[country.code]
               const countryEmoji = countryCodeToFlag(country.code)
 
-              const manyVisits = country.years.size > 1
+              const countryYears = Array.from(country.years)
+              const manyVisits = countryYears.length > 1
 
               return (
                 <div
@@ -71,7 +72,11 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
                   <div class="country-info">
                     <span class="name">{countryName}</span>
                     <span class="year">
-                      {manyVisits ? `${country.year} and more` : country.year}
+                      {countryYears.length === 1
+                        ? country.year
+                        : countryYears.length === 2
+                          ? `${countryYears[0]} and ${countryYears[1]}`
+                          : `${countryYears[0]} and more`}
                     </span>
                   </div>
                   {manyVisits && (
@@ -79,7 +84,7 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
                       <div class="tooltip-text">
                         <div class="tooltip-title">Visited in:</div>
                         <div class="tooltip-years">
-                          {joinerWithAnd(Array.from(country.years))}
+                          {joinerWithAnd(countryYears)}
                         </div>
                       </div>
                     </div>

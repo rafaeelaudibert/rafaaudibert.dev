@@ -67,6 +67,7 @@ export const VISITED_COUNTRIES_TIMELINE: VisitedCountry[] = [
   { code: "UY", year: 2025 },
   { code: "AR", year: 2025 },
   { code: "BR", year: 2025 },
+  { code: "BR", year: 2026 },
 ]
 
 export const VISITED_COUNTRIES = new Set(
