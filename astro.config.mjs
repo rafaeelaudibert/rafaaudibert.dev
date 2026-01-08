@@ -11,11 +11,11 @@ import dsv from '@rollup/plugin-dsv'
 
 import react from '@astrojs/react';
 
-const URL = "https://rafaaudibert.dev"
+import { site } from './src/data/site.ts';
 
 export default defineConfig({
   // Guarantees that we can properly generate the sitemap
-  site: URL,
+  site: site.url,
 
   // On hover, prefetch that link
   prefetch: {
@@ -64,7 +64,7 @@ export default defineConfig({
     // Build a sitemap to help with SEO
     sitemap({
       customPages: [
-        `${URL}/llms.txt`, // The plugin doesn't detect non-astro pages by default, so we need to add them manually here
+        `${site.url}/llms.txt`, // The plugin doesn't detect non-astro pages by default, so we need to add them manually here
       ],
     }),
   ]

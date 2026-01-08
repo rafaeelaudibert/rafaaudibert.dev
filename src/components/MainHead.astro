@@ -1,29 +1,58 @@
 ---
 import "../styles/global.css"
 import PostHog from "./PostHog.astro"
+import { site } from "../data/site"
 
 interface Props {
   title?: string | undefined
   description?: string | undefined
   ogImage?: string | undefined
+  type?: "website" | "article" | undefined
 }
 
 const {
-  title = "Rafa Audibert",
-  description = "The personal site of Rafa Audibert",
+  title = site.name,
+  description = site.description,
   ogImage,
+  type = "website",
 } = Astro.props
+
+const canonicalUrl = Astro.url.href
+const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 ---
 
 <meta charset="UTF-8" />
-<meta name="description" property="og:description" content={description} />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
 <title>{title}</title>
 
+<!-- Primary Meta Tags -->
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={resolvedOgImage} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content={site.locale} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={resolvedOgImage} />
+<meta name="twitter:site" content={site.twitter} />
+<meta name="twitter:creator" content={site.twitter} />
+
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
-{ogImage && <meta property="og:image" content={ogImage} />}
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
