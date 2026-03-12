@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.4",
-    "@astrojs/react": "^4.3.0",
+    "@astrojs/react": "^5.0.0",
     "@astrojs/sitemap": "^3.5.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
