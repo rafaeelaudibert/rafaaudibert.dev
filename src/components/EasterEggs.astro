@@ -1,5 +1,10 @@
 ---
 // Easter Eggs - Hidden surprises throughout the site!
+//
+// Available easter eggs:
+// 1. Konami Code (↑↑↓↓←→←→BA) — triggers rainbow mode + big confetti burst
+// 2. Secret words — type "rafa", "audibert", "confetti", or "party" anywhere to trigger confetti
+// 3. Hero portrait frenzy — click the portrait image on the home page 5 times within 2 seconds for spin + confetti
 ---
 
 <!-- Confetti canvas for celebrations -->
@@ -90,6 +95,16 @@
   // 🎉 EASTER EGGS CONTROLLER
   // ========================================
 
+  function capture_easter_egg_event(
+    type: string,
+    extraProperties: Record<string, any> = {},
+  ) {
+    window.posthog?.capture("easter_egg_triggered", {
+      type,
+      ...extraProperties,
+    })
+  }
+
   class EasterEggs {
     private konamiCode = [
       "ArrowUp",
@@ -175,6 +190,7 @@
           }
 
           if (this.heroClickCount >= 5) {
+            capture_easter_egg_event("hero_click_frenzy")
             heroImg.classList.add("spin")
             setTimeout(() => heroImg.classList.remove("spin"), 1000)
             this.triggerConfetti()
@@ -213,16 +229,16 @@
       console.log("%c👋 Hey there, curious developer!", styles)
       console.log(
         "%c🔍 Looking for easter eggs? Try the Konami code! ↑↑↓↓←→←→BA",
-        "color: #888; font-size: 12px;"
+        "color: #888; font-size: 12px;",
       )
       console.log(
         '%c💜 Or type "rafa", "confetti", or "party" anywhere on the page...',
-        "color: #888; font-size: 12px;"
+        "color: #888; font-size: 12px;",
       )
     }
 
     private triggerKonamiSuccess() {
-      // Rainbow mode + big confetti celebration
+      capture_easter_egg_event("konami_code")
       document.body.classList.add("rainbow-mode")
       this.triggerConfetti(true)
 
@@ -232,6 +248,7 @@
     }
 
     private triggerSecretWord(word: string) {
+      capture_easter_egg_event("secret_word", { word })
       switch (word) {
         case "rafa":
           // Rainbow site title + confetti
@@ -259,7 +276,7 @@
 
     private triggerConfetti(isBig = false) {
       const canvas = document.getElementById(
-        "confetti-canvas"
+        "confetti-canvas",
       ) as HTMLCanvasElement
       if (!canvas) return
 

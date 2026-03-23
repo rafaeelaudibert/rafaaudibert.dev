@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import type { CountryCode } from "../data/travel"
+import { capture } from "../utils/analytics"
 import { useGalleryNavigation } from "../hooks/useGalleryNavigation"
 import styles from "./TravelGallery.module.css"
 
@@ -65,6 +66,7 @@ export default function TravelGallery({
         setCurrentIndex(detail.imageIndex ?? 0)
         document.documentElement.style.overflow = "hidden"
         dialogRef.current?.showModal()
+        capture("travel_gallery_open", { country: detail.countryCode })
       }
     }
 
@@ -77,6 +79,7 @@ export default function TravelGallery({
     const dialog = dialogRef.current
     if (!dialog) return
     const onClose = () => {
+      capture("travel_gallery_close", { country: currentCountry })
       setCurrentCountry(null)
       document.documentElement.style.overflow = ""
     }
@@ -119,7 +122,7 @@ export default function TravelGallery({
           <div className={styles.imageContainer} {...swipeProps}>
             <button
               className={`${styles.navButton} ${styles.navPrev}`}
-              onClick={prev}
+              onClick={() => { prev(); capture("travel_gallery_navigate", { direction: "prev" }) }}
               disabled={!hasMultiple}
               aria-label="Previous image"
             >
@@ -147,7 +150,7 @@ export default function TravelGallery({
             />
             <button
               className={`${styles.navButton} ${styles.navNext}`}
-              onClick={next}
+              onClick={() => { next(); capture("travel_gallery_navigate", { direction: "next" }) }}
               disabled={!hasMultiple}
               aria-label="Next image"
             >
@@ -175,6 +178,7 @@ export default function TravelGallery({
                   onClick={() => {
                     setCurrentCountry(code)
                     setCurrentIndex(0)
+                    capture("travel_gallery_switch_country", { country: code })
                   }}
                 >
                   {countryMeta[code]?.flag} {countryMeta[code]?.name}

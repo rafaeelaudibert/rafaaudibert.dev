@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import createGlobe from "cobe"
 import type { AirportCode, CountryCode } from "../data/travel"
+import { capture } from "../utils/analytics"
 import { joinerWithAnd } from "../utils/string"
 import styles from "./TravelGlobe.module.css"
 
@@ -245,6 +246,7 @@ export default function TravelGlobe({
             })
 
             popup.addEventListener("click", () => {
+              capture("travel_photo_popup_click", { country: code })
               document.dispatchEvent(
                 new CustomEvent("travel:open-gallery", {
                   detail: { countryCode: code, imageIndex: imgIndex },

@@ -88,6 +88,7 @@ class ShortcutsRegistry {
 
     if (shortcut) {
       e.preventDefault()
+      ;(window as any).posthog?.capture("keyboard_shortcut_used", { key, description: shortcut.description })
       shortcut.action()
 
       // Reset Alt state after triggering

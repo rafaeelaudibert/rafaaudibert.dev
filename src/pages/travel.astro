@@ -231,6 +231,7 @@ for (const [path, mod] of Object.entries(travelImageModules)) {
     card.addEventListener("click", () => {
       const countryCode = card.getAttribute("data-country")
       const countryName = card.getAttribute("data-country-name")
+      window.posthog?.capture("travel_country_card_clicked", { country: countryCode, country_name: countryName })
       document.dispatchEvent(
         new CustomEvent("travel:open-gallery", {
           detail: { countryCode, countryName },
