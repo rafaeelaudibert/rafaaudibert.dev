@@ -9,9 +9,15 @@
  */
 
 import sharp from "sharp"
-import { readdir, writeFile, rename } from "fs/promises"
+import { readdir, writeFile, rename, stat, unlink, access } from "fs/promises"
 import { join, extname, dirname, basename } from "path"
 import { createInterface } from "readline"
+
+function fmtSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes}B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)}KB`
+  return `${(bytes / 1024 / 1024).toFixed(1)}MB`
+}
 
 const TRAVEL_DIR = join(import.meta.dir, "../src/assets/travel")
 const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp"])
@@ -46,7 +52,7 @@ async function getImageFiles(dir: string): Promise<string[]> {
       files.push(full)
     }
   }
-  return files
+  return files.sort((a, b) => a.localeCompare(b))
 }
 
 interface ExifInfo {
@@ -76,10 +82,10 @@ function dateToFilename(date: string, ext: string): string {
 
 async function processFile(
   file: string,
-  info: ExifInfo
-): Promise<{ newPath: string }> {
+  info: ExifInfo | null
+): Promise<{ newPath: string; beforeSize: number; afterSize: number }> {
+  const beforeSize = await stat(file).then(data => data.size)
   const metadata = await sharp(file).metadata()
-  const format = metadata.format as string
 
   // Step 1: decode + auto-rotate into a clean pixel buffer (strips ALL metadata)
   const { data, info: rawInfo } = await sharp(file)
@@ -87,68 +93,67 @@ async function processFile(
     .raw()
     .toBuffer({ resolveWithObject: true })
 
-  // Step 2: re-encode from raw pixels (guaranteed no carried-over EXIF)
+  // Step 2: re-encode as webp from raw pixels (guaranteed no carried-over EXIF)
   let pipeline = sharp(data, {
     raw: {
       width: rawInfo.width,
       height: rawInfo.height,
       channels: rawInfo.channels as 1 | 2 | 3 | 4,
     },
-  })
-
-  if (format === "jpeg" || format === "jpg") {
-    pipeline = pipeline.jpeg({ quality: 95, mozjpeg: true })
-  } else if (format === "png") {
-    pipeline = pipeline.png()
-  } else if (format === "webp") {
-    pipeline = pipeline.webp({ quality: 95 })
-  }
+  }).webp({ quality: 90 })
 
   // Step 3: add back ONLY the date
-  if (info.date) {
-    pipeline = pipeline.withExif({
-      IFD0: { DateTime: info.date },
-      IFD2: {
-        DateTimeOriginal: info.date,
-        DateTimeDigitized: info.date,
-      },
-    })
-  }
+  const now = new Date()
+  const date = info?.date ??
+    `${now.getFullYear()}:${String(now.getMonth() + 1).padStart(2, "0")}:${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`
+
+  pipeline = pipeline.withExif({
+    IFD0: { DateTime: date },
+    IFD2: {
+      DateTimeOriginal: date,
+      DateTimeDigitized: date,
+    },
+  })
 
   const output = await pipeline.toBuffer()
-  await writeFile(file, output)
 
-  // Rename to date-based filename if we have a date and it's not already named that way
-  const ext = extname(file)
-  const name = basename(file)
-  let newPath = file
+  // Write as .webp, delete original if it was a different format
+  const oldExt = extname(file)
+  const webpFile = join(dirname(file), basename(file, oldExt) + ".webp")
 
-  if (info.date && !DATE_FILENAME_RE.test(name)) {
-    const newName = dateToFilename(info.date, ext)
-    newPath = join(dirname(file), newName)
+  await writeFile(webpFile, output)
+  if (oldExt.toLowerCase() !== ".webp") {
+    await unlink(file)
+  }
+
+  // Rename to date-based filename
+  let newPath = webpFile
+
+  if (!DATE_FILENAME_RE.test(basename(webpFile))) {
+    const newName = dateToFilename(date, ".webp")
+    newPath = join(dirname(webpFile), newName)
 
     // Avoid collision
     let finalPath = newPath
     let counter = 1
-    const { access } = await import("fs/promises")
     while (true) {
       try {
         await access(finalPath)
-        // File exists, add suffix
         finalPath = join(
-          dirname(file),
-          dateToFilename(info.date, `_${counter}${ext}`)
+          dirname(webpFile),
+          dateToFilename(date, `_${counter}.webp`)
         )
         counter++
       } catch {
-        break // File doesn't exist, safe to use
+        break
       }
     }
     newPath = finalPath
-    await rename(file, newPath)
+    if (webpFile !== newPath) await rename(webpFile, newPath)
   }
 
-  return { newPath }
+  const afterSize = await stat(newPath).then(data => data.size)
+  return { newPath, beforeSize, afterSize }
 }
 
 async function main() {
@@ -168,30 +173,34 @@ async function main() {
   for (const file of files) {
     const rel = file.replace(TRAVEL_DIR + "/", "")
     const metadata = await sharp(file).metadata()
+    const isWebp = file.toLowerCase().endsWith(".webp")
+    const info = metadata.exif ? parseExif(metadata.exif) : null
+    const alreadyClean = isWebp && (!info || info.isClean)
 
-    if (!metadata.exif || metadata.exif.length === 0) {
-      if (CHECK_MODE) continue
-      if (!AUTO_MODE) console.log(`  CLEAN ${rel} — no EXIF metadata`)
-      skipped++
+    if (CHECK_MODE) {
+      if (!isWebp) {
+        console.log(`  FAIL  ${rel} — not webp (run strip-metadata --auto to convert)`)
+        needsStripping++
+      } else if (info && !info.isClean) {
+        console.log(`  FAIL  ${rel} — ${info.exifSize} bytes of EXIF (date: ${info.date ?? "none"})`)
+        needsStripping++
+      }
       continue
     }
 
-    const info = parseExif(metadata.exif)
-
-    if (CHECK_MODE) {
-      if (info.isClean) continue
-      console.log(`  FAIL  ${rel} — ${info.exifSize} bytes of EXIF (date: ${info.date ?? "none"})`)
-      needsStripping++
+    if (alreadyClean) {
+      skipped++
+      if (!AUTO_MODE) console.log(`  SKIP  ${rel} — already clean`)
       continue
     }
 
     if (AUTO_MODE) {
-      // Auto: strip everything, keep date, rename
       try {
-        const { newPath } = await processFile(file, info)
+        const { newPath, beforeSize, afterSize } = await processFile(file, info)
         const newRel = newPath.replace(TRAVEL_DIR + "/", "")
+        const saved = ((1 - afterSize / beforeSize) * 100).toFixed(0)
         console.log(
-          `  DONE  ${rel}${newRel !== rel ? ` -> ${newRel}` : ""}`
+          `  DONE  ${rel}${newRel !== rel ? ` -> ${newRel}` : ""} (${fmtSize(beforeSize)} -> ${fmtSize(afterSize)}, -${saved}%)`
         )
         stripped++
       } catch (e) {
@@ -202,9 +211,10 @@ async function main() {
 
     // Interactive mode
     console.log(`\n--- ${rel} ---`)
-    console.log(`  EXIF size: ${info.exifSize} bytes`)
-    if (info.date) console.log(`  Date: ${info.date}`)
-    if (info.isClean) console.log(`  Status: clean (date-only)`)
+    console.log(`  EXIF size: ${info?.exifSize ?? 0} bytes`)
+    if (info?.date) console.log(`  Date: ${info.date}`)
+    else console.log(`  Date: none (will use current date)`)
+    if (info?.isClean) console.log(`  Status: clean (date-only)`)
     else console.log(`  Status: has extra metadata to strip`)
 
     const answer = await ask(
@@ -219,10 +229,11 @@ async function main() {
       skipped++
     } else {
       try {
-        const { newPath } = await processFile(file, info)
+        const { newPath, beforeSize, afterSize } = await processFile(file, info)
         const newRel = newPath.replace(TRAVEL_DIR + "/", "")
+        const saved = ((1 - afterSize / beforeSize) * 100).toFixed(0)
         console.log(
-          `  Stripped!${newRel !== rel ? ` Renamed to ${newRel}` : ""}`
+          `  Stripped!${newRel !== rel ? ` Renamed to ${newRel}` : ""} (${fmtSize(beforeSize)} -> ${fmtSize(afterSize)}, -${saved}%)`
         )
         stripped++
       } catch (e) {
