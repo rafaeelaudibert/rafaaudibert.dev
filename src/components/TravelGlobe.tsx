@@ -419,7 +419,7 @@ export default function TravelGlobe({
               {hoveredMarker.countryName}
             </div>
             <div className={styles.tooltipYears}>
-              {joinerWithAnd(hoveredMarker.years)}
+              Visited in {joinerWithAnd(hoveredMarker.years)}
             </div>
           </div>
         )}
