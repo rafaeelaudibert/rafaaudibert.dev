@@ -1,0 +1,26 @@
+#!/bin/sh
+# Pre-commit hook: blocks commits that include travel images with extra EXIF
+# metadata (GPS location, camera info, etc). Only the date taken is allowed.
+#
+# This hook is activated automatically via `bun install`, which runs the
+# postinstall script: `git config core.hooksPath .githooks`
+#
+# If this hook blocks your commit:
+#   bun run strip-metadata --auto   # strips metadata, keeps date, renames files
+#   git add src/assets/travel/      # re-stage the cleaned images
+
+# Only check if travel images are being committed
+STAGED_IMAGES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/assets/travel/.*\.(jpg|jpeg|png|webp)$' || true)
+
+if [ -z "$STAGED_IMAGES" ]; then
+  exit 0
+fi
+
+echo "Checking travel images for EXIF metadata..."
+bun scripts/strip-image-metadata.ts --check
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "Fix: run 'bun run strip-metadata --auto' then re-stage the images."
+  exit 1
+fi

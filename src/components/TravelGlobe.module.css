@@ -1,0 +1,200 @@
+.section {
+  padding: 2rem 0;
+}
+
+.disclaimer {
+  text-align: right;
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.flightTicker {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.flightTag {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  flex-shrink: 0;
+  animation: tagIn 0.3s ease-out;
+}
+
+@keyframes tagIn {
+  from {
+    opacity: 0;
+    max-width: 0;
+    padding: 2px 0;
+  }
+  to {
+    opacity: 1;
+    max-width: 100px;
+    padding: 2px 5px;
+  }
+}
+
+.container {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--gray-999_40) 0%,
+    var(--gray-800) 100%
+  );
+  border: 1px solid var(--gray-800);
+  box-shadow: var(--shadow-lg);
+  height: 600px;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  display: block;
+}
+
+.photoPopup {
+  position: relative;
+  cursor: pointer;
+  opacity: 0;
+  filter: blur(8px);
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease,
+    transform 0.15s ease;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.photoPopupVisible {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.photoPopup:hover {
+  transform: scale(1.05);
+}
+
+.photoPopupImg {
+  display: block;
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.photoPopupBadge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 0.85rem;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+.photoPopup:hover .photoPopupBadge {
+  opacity: 1;
+}
+
+.label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  cursor: default;
+  transition: opacity 0.3s ease;
+  margin-bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+
+.label:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  color: white;
+  z-index: 10;
+  pointer-events: none;
+  animation: tooltipIn 0.15s ease-out;
+  min-width: 160px;
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.tooltipFlag {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.tooltipCode {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.tooltipName {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.15rem;
+}
+
+.tooltipCountry {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.35rem;
+}
+
+.tooltipYears {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}

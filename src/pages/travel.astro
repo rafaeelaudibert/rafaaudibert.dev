@@ -1,13 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
-import TravelGlobe from "../components/TravelGlobe.astro"
+import TravelGlobe from "../components/TravelGlobe"
+import TravelGallery from "../components/TravelGallery"
 import Hero from "../components/Hero.astro"
 import {
   COUNTRY_CODE_TO_LONG_NAME,
   COUNTRIES_GEOMETRY,
   countryCodeToFlag,
 } from "../data/countries"
-import { VISITED_COUNTRIES, VISITED_COUNTRIES_TIMELINE } from "../data/travel"
+import {
+  VISITED_COUNTRIES,
+  VISITED_COUNTRIES_TIMELINE,
+  AIRPORTS,
+  FLIGHTS,
+  type AirportCode,
+} from "../data/travel"
 import { joinerWithAnd } from "../utils/string"
 
 // Get unique countries with earliest visit year
@@ -20,7 +27,7 @@ const uniqueCountries = VISITED_COUNTRIES_TIMELINE.reduce((acc, country) => {
     return acc.map((c) =>
       c.code === country.code
         ? { ...c, years: new Set([...c.years, country.year]) }
-        : c
+        : c,
     )
   }
 
@@ -34,8 +41,67 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
     }
     return acc
   },
-  new Set<string>()
+  new Set<string>(),
 )
+
+// Compute globe markers from unique airports in flights
+const airportCodes = new Set<string>()
+FLIGHTS.forEach((f) => {
+  airportCodes.add(f.from)
+  airportCodes.add(f.to)
+})
+const markers = (Array.from(airportCodes) as Array<AirportCode>).map((code) => {
+  const airport = AIRPORTS[code]
+  const years = [
+    ...new Set(
+      FLIGHTS.filter((f) => f.from === code || f.to === code).map(
+        (f) => f.year,
+      ),
+    ),
+  ].sort()
+  return {
+    location: airport.location as [number, number],
+    size: 0.03,
+    id: code,
+    label: airport.name.split("-")[0],
+    countryCode: airport.countryCode,
+    fullName: airport.name,
+    countryName:
+      COUNTRY_CODE_TO_LONG_NAME[airport.countryCode] ?? airport.countryCode,
+    flag: countryCodeToFlag(airport.countryCode),
+    years,
+  }
+})
+
+// Compute arcs from flights
+const arcs = FLIGHTS.map((f) => ({
+  from: AIRPORTS[f.from].location as [number, number],
+  to: AIRPORTS[f.to].location as [number, number],
+  fromCode: f.from,
+  toCode: f.to,
+}))
+
+// Discover travel images
+const travelImageModules = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/travel/**/*.{jpg,jpeg,png,webp}",
+  { eager: true },
+)
+const imagesByCountry: Record<
+  string,
+  Array<{ src: string; width: number; height: number }>
+> = {}
+for (const [path, mod] of Object.entries(travelImageModules)) {
+  const match = path.match(/\/travel\/([A-Z]{2})\//)
+  if (match) {
+    const code = match[1]
+    if (!imagesByCountry[code]) imagesByCountry[code] = []
+    imagesByCountry[code].push({
+      src: mod.default.src,
+      width: mod.default.width,
+      height: mod.default.height,
+    })
+  }
+}
 ---
 
 <BaseLayout
@@ -43,29 +109,37 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
   description="Rafa Audibert's Travel Journey - Countries visited around the world"
 >
   <div class="stack gap-20 mb-4">
-    <main class="wrapper travel" tabindex="-1">
+    <main class="wrapper travel">
       <Hero
         title="My Travel Journey"
-        tagline="Exploring the world, one territory at a time."
+        tagline="Exploring the world, one flight at a time."
       />
 
-      <TravelGlobe />
+      <TravelGlobe
+        client:visible
+        markers={markers}
+        arcs={arcs}
+        imagesByCountry={imagesByCountry}
+      />
 
       <section class="countries-list">
         <h2>Countries I've Explored</h2>
         <div class="countries-grid">
           {
             uniqueCountries.map((country) => {
-              // Find country name from geometry data
               const countryName = COUNTRY_CODE_TO_LONG_NAME[country.code]
               const countryEmoji = countryCodeToFlag(country.code)
-
               const countryYears = Array.from(country.years)
               const manyVisits = countryYears.length > 1
+              const hasImages = (imagesByCountry[country.code]?.length ?? 0) > 0
 
               return (
                 <div
-                  class="country-card"
+                  class:list={["country-card", { "has-images": hasImages }]}
+                  data-country={country.code}
+                  data-country-name={countryName}
+                  role={hasImages ? "button" : undefined}
+                  tabindex={hasImages ? "0" : undefined}
                   title={`Visited in: ${joinerWithAnd(Array.from(country.years))}`}
                 >
                   <span class="flag">{countryEmoji}</span>
@@ -79,6 +153,23 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
                           : `${countryYears[0]} and more`}
                     </span>
                   </div>
+                  {hasImages && (
+                    <span class="camera-icon" aria-hidden="true">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                      </svg>
+                    </span>
+                  )}
                   {manyVisits && (
                     <div class="years-tooltip">
                       <div class="tooltip-text">
@@ -115,9 +206,39 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
           </div>
         </div>
       </section>
+
+      <TravelGallery
+        client:idle
+        imagesByCountry={imagesByCountry}
+        countryMeta={Object.fromEntries(
+          Object.keys(imagesByCountry).map((code) => [
+            code,
+            {
+              name: COUNTRY_CODE_TO_LONG_NAME[
+                code as keyof typeof COUNTRY_CODE_TO_LONG_NAME
+              ],
+              flag: countryCodeToFlag(code),
+            },
+          ]),
+        )}
+      />
     </main>
   </div>
 </BaseLayout>
+
+<script>
+  document.querySelectorAll(".country-card.has-images").forEach((card) => {
+    card.addEventListener("click", () => {
+      const countryCode = card.getAttribute("data-country")
+      const countryName = card.getAttribute("data-country-name")
+      document.dispatchEvent(
+        new CustomEvent("travel:open-gallery", {
+          detail: { countryCode, countryName },
+        }),
+      )
+    })
+  })
+</script>
 
 <style>
   .travel {
@@ -202,12 +323,17 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
     border: 1px solid var(--gray-800);
     border-radius: 0.75rem;
     transition: all 0.2s ease;
+    position: relative;
   }
 
   .country-card:hover {
     border-color: var(--accent-regular);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+  }
+
+  .country-card.has-images {
+    cursor: pointer;
   }
 
   .flag {
@@ -218,6 +344,7 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    flex: 1;
   }
 
   .name {
@@ -230,8 +357,15 @@ const uniqueContinents = COUNTRIES_GEOMETRY.features.reduce(
     color: var(--gray-400);
   }
 
-  .country-card {
-    position: relative;
+  .camera-icon {
+    color: var(--gray-400);
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+
+  .country-card:hover .camera-icon {
+    opacity: 1;
   }
 
   .years-tooltip {

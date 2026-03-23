@@ -12,8 +12,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postinstall": "git config core.hooksPath .githooks",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "strip-metadata": "bun scripts/strip-image-metadata.ts",
+    "check-metadata": "bun scripts/strip-image-metadata.ts --check"
   },
   "engines": {
     "node": "v24.12.0"
@@ -29,9 +32,9 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "astro": "^5.13.5",
+    "cobe": "^2.0.1",
     "d3": "^7.9.0",
     "d3-sankey": "^0.12.3",
-    "globe.gl": "^2.42.0",
     "katex": "^0.16.19",
     "react": "19.2.3",
     "react-dom": "19.2.3",
