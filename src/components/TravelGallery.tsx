@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import type { CountryCode } from "../data/travel"
 import { useGalleryNavigation } from "../hooks/useGalleryNavigation"
 import styles from "./TravelGallery.module.css"
@@ -33,6 +33,25 @@ export default function TravelGallery({
     hasMultiple,
     swipeProps,
   } = useGalleryNavigation(images, isOpen)
+
+  const [imageLoading, setImageLoading] = useState(false)
+  const prevSrc = useRef<string | undefined>(undefined)
+  const loadingTimer = useRef<number | null>(null)
+
+  // Only show loading state if the image takes >150ms to load
+  if (currentItem?.src !== prevSrc.current) {
+    prevSrc.current = currentItem?.src
+    if (loadingTimer.current) clearTimeout(loadingTimer.current)
+    if (currentItem?.src) {
+      loadingTimer.current = window.setTimeout(() => setImageLoading(true), 150)
+    }
+  }
+
+  const onImageLoad = useCallback(() => {
+    if (loadingTimer.current) clearTimeout(loadingTimer.current)
+    loadingTimer.current = null
+    setImageLoading(false)
+  }, [])
 
   // Listen for custom event from country cards / globe photo popups
   useEffect(() => {
@@ -115,9 +134,15 @@ export default function TravelGallery({
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
+            {imageLoading && (
+              <div className={styles.loader}>
+                <div className={styles.spinner} />
+              </div>
+            )}
             <img
               src={currentItem?.src}
-              className={styles.image}
+              className={`${styles.image} ${imageLoading ? styles.imageLoading : ""}`}
+              onLoad={onImageLoad}
               alt=""
             />
             <button

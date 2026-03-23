@@ -93,6 +93,35 @@
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.imageLoading {
+  opacity: 0.3;
+}
+
+.loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Nav buttons pinned to viewport edges, not image edges */
