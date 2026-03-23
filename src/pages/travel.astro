@@ -207,6 +207,21 @@ for (const [path, mod] of Object.entries(travelImageModules)) {
         </div>
       </section>
 
+      <section class="bucket-list-section">
+        <h2>Bucket List</h2>
+        <p class="bucket-list-subtitle">
+          Places I'd love to visit at some point in my life — not necessarily where I'm heading next, but destinations I dream about.
+        </p>
+        <div class="bucket-list-grid">
+          {(["AQ", "AT", "CN", "CO", "NO", "ZA"] as const).map((code) => (
+            <div class="bucket-list-card">
+              <span class="flag">{countryCodeToFlag(code)}</span>
+              <span class="name">{COUNTRY_CODE_TO_LONG_NAME[code]}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <TravelGallery
         client:idle
         imagesByCountry={imagesByCountry}
@@ -420,5 +435,48 @@ for (const [path, mod] of Object.entries(travelImageModules)) {
     color: var(--gray-0);
     word-wrap: break-word;
     hyphens: auto;
+  }
+
+  .bucket-list-section {
+    margin-top: 2rem;
+  }
+
+  .bucket-list-section h2 {
+    font-size: var(--text-2xl);
+    color: var(--gray-0);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .bucket-list-subtitle {
+    text-align: center;
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+    margin-bottom: 1.5rem;
+  }
+
+  .bucket-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .bucket-list-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--gray-999_40);
+    border: 1px dashed var(--gray-700);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+  }
+
+  .bucket-list-card:hover {
+    opacity: 1;
+    border-color: var(--accent-regular);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 </style>
