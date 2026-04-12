@@ -22,30 +22,30 @@
     "node": "v24.12.0"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.4",
-    "@astrojs/react": "^4.3.0",
-    "@astrojs/sitemap": "^3.5.1",
+    "@astrojs/mdx": "^5.0.3",
+    "@astrojs/react": "^5.0.3",
+    "@astrojs/sitemap": "^3.7.2",
     "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/x-charts": "^8.22.1",
+    "@emotion/styled": "^11.14.1",
+    "@mui/x-charts": "^9.0.1",
     "@rollup/plugin-dsv": "^3.0.5",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "astro": "^5.13.5",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "astro": "^6.1.5",
     "cobe": "^2.0.1",
     "d3": "^7.9.0",
     "d3-sankey": "^0.12.3",
-    "katex": "^0.16.19",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "katex": "^0.16.45",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "satori": "^0.19.1",
+    "satori": "^0.26.0",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/d3-sankey": "^0.12.5",
-    "node-addon-api": "^8.5.0"
+    "node-addon-api": "^8.7.0"
   }
 }

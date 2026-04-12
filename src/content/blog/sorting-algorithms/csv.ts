@@ -80,7 +80,7 @@ const parseSortingAlgorithmData = (data: SortingAlgorithmData[]) => {
         iteration: parseInt(row["Iteration"]),
         arraySize: parseInt(row[" Array Size"]),
         swaps: parseInt(row[" Swaps"]),
-        time: parseFloat(row[" Time"]) || 0.00000001
+        time: parseFloat(row[" Time"]) || 0
     }))
 }
 
@@ -133,11 +133,11 @@ const parseRecursiveSortingAlgorithmData = (data: RecursiveSortingAlgorithmData[
     return data.map((row) => ({
         arraySize: parseInt(row["Numbers per File"]),
         recursiveCalls: parseInt(row[" Recursive Calls"]),
-        time: parseFloat(row[" Time"]) || 0.00000001,
+        time: parseFloat(row[" Time"]) || 0,
         recursiveCallsAverage: parseInt(row[" Recursive Calls Average"]),
-        timeAverage: parseFloat(row[" Time Average"]) || 0.00000001,
-        callsStandardDeviation: parseFloat(row[" Calls Standard Deviation"]) || 0.00000001,
-        timerStandardDeviation: parseFloat(row[" Timer Standard Deviation"]) || 0.00000001
+        timeAverage: parseFloat(row[" Time Average"]) || 0,
+        callsStandardDeviation: parseFloat(row[" Calls Standard Deviation"]) || 0,
+        timerStandardDeviation: parseFloat(row[" Timer Standard Deviation"]) || 0
     }))
 }
 
@@ -164,8 +164,8 @@ export type ParsedFileSortingAlgorithmData = {
 const parseFileSortingAlgorithmData = (data: FileSortingAlgorithmData[]) => {
     return data.map((row) => ({
         arraySize: parseInt(row["Numbers per File"]),
-        time: parseFloat(row[" Time"]) || 0.00000001,
-        timePerFile: parseFloat(row[" Time Per File"]) || 0.00000001,
+        time: parseFloat(row[" Time"]) || 0,
+        timePerFile: parseFloat(row[" Time Per File"]) || 0,
         outputSize: parseInt(row[" Output Size"])
     }))
 }
