@@ -32,13 +32,13 @@ import ThemeSetLight from '../../../components/ThemeSetLight.astro'
     > *Warning*: This is a legacy article, therefore it won't work well on dark mode. I suggest you turn light mode on to read this article. <ThemeSetLight/>
 </div>
 
-This is the first article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. On this first one, we will also make an exploration about asymptotic complexity in general. We will also have a playground at the end of the article, running with `async` JavaScript code, which will be emulated live on this page, through an API connected to a backend server. You will be able to experiment some stuff (check it later).
+This is the first article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. On this first one, we will also explore asymptotic complexity in general. We will also have a playground at the end of the article, running with `async` JavaScript code, which will be emulated live on this page, through an API connected to a backend server. You will be able to experiment some stuff (check it later).
 
 > The JavaScript code will run in an AWS server, which will be requested through an API call. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-1.zip) zip file containing the CSV data used as input.
 
 ## Analyzing complexity time cases ⏱️
 
-First, we must analyze and understand the $$\Theta$$ (read theta) asymptotic notation of some simple functions. To do so, we must find a given value $$n$$, which when applied to another function of the same complexity, will make the former to be between then, that is, we have a function with a higher asymptotic value and another with a lower one. We will have some charts to help us understand what is going on (I won't say it won't have math in some of them). Remember to zoom in (maybe it will look a bit clunky, but you can do it) to see more details, especially in those where we can barely see a difference between the lines.
+First, we must analyze and understand the $$\Theta$$ (read theta) asymptotic notation of some simple functions. To do so, we must find a given value $$n$$, which when applied to another function of the same complexity, will make the former lie between them, that is, we have a function with a higher asymptotic value and another with a lower one. We will have some charts to help us understand what is going on (I won't say it won't have math in some of them). Remember to zoom in (maybe it will look a bit clunky, but you can do it) to see more details, especially in those where we can barely see a difference between the lines.
 
 
 <ul>
@@ -90,7 +90,7 @@ First, we must analyze and understand the $$\Theta$$ (read theta) asymptotic not
   <li>
     <LatexFormula formula="2n^2 \over 3n^2-1" />
     <p>
-      Maybe you can not see the complexity of this formula right in time (I didn't), but we can prove it with what we learned in our Calculus classes, as soon as we realize that a limit solves it with mastery, as <LatexFormula formula="\lim_{x\to\infty} {2n^2 \over 3n^2-1} = {2 \over 3}" />. In conclusion, our time complexity is constant, this is $\Theta(1)$. <br/>
+      Maybe you cannot see the complexity of this formula right away (I didn't), but we can prove it with what we learned in our Calculus classes, as soon as we realize that a limit solves it with mastery, as <LatexFormula formula="\lim_{x\to\infty} {2n^2 \over 3n^2-1} = {2 \over 3}" />. In conclusion, our time complexity is constant, this is $\Theta(1)$. <br/>
       <ConstantComplexityChart client:only="react" />
     </p>
   </li>
@@ -109,17 +109,17 @@ First, we must analyze and understand the $$\Theta$$ (read theta) asymptotic not
 
 In this first article, we will analyze the basic sorting algorithms: Bubble Sort, Insertion Sort (with its variant) and Shell Sort (with different 'sequences'). All the analysis will be made sorting arrays of unsigned integers, using two languages: C (which will have a better performance, in most cases - although not in all cases) - the chart language - and JavaScript - the playground language. We will analyze the time spent to sort the array, as well as the changes/swaps needed to do it. For Sorted and Reversed arrays, the benchmark was run only once, but to generate the Random data, each data sample was run $$12$$ times or $$2$$ minutes, whichever took less time, so that we were able to make something like an average, to avoid samples where we got a more or less ordered random arrangement of values in the array.
 
-Another point about the random array generation is that its allocation + filling-the-array-with-values time was taken in consideration in the time measure (for sake of comparison it doesn't matter as every sample has that extra "linear" time).
+Another point about the random array generation is that its allocation + filling-the-array-with-values time was taken in consideration in the time measure (for the sake of comparison it doesn't matter as every sample has that extra "linear" time).
 
-> **Disclaimer:** Some weird values can be seen in the sorted array examples, partially because we just ran it once, and it could have been blocked by some OS interruption, taking longer than it would be expected, looking for us as a strange and unexpected curve in the chart.
+> **Disclaimer:** Some weird values can be seen in the sorted array examples, partially because we just ran it once, and it could have been blocked by some OS interruption, taking longer than it would be expected, looking to us like a strange and unexpected curve in the chart.
 
 <br />
 
 ### Bubble Sort 🔁
 
-With a time complexity of $$\Theta(n^2)$$, this algorithm is probably one of the worsts algorithms to sort something (we can find something worst, like [BogoSort](https://en.wikipedia.org/wiki/Bogosort) or [SleepSort 💤](https://pt.wikipedia.org/wiki/Sleep_sort) (in Portuguese because it doesn't exist in the English Wikipedia somehow?), as it takes a LOT of time to organize an array of values, as it compares adjacent pairs of numbers to see if they are in relative order.
+With a time complexity of $$\Theta(n^2)$$, this algorithm is probably one of the worst algorithms for sorting (we can find something worse, like [BogoSort](https://en.wikipedia.org/wiki/Bogosort) or [SleepSort 💤](https://pt.wikipedia.org/wiki/Sleep_sort) (in Portuguese because it doesn't exist in the English Wikipedia somehow?), as it takes a LOT of time to organize an array of values, as it compares adjacent pairs of numbers to see if they are in relative order.
 
-It was used arrays varying from $$2^1$$ until $$2^{18}$$ to generate the data below. The left y-axis shows the changes and the right one shows the time. As a reminder, the sorted charts may be a bit wrong in the time dataset, as explained before in this report (TLDR: OS interruptions can cause this).
+We used arrays varying from $$2^1$$ until $$2^{18}$$ to generate the data below. The left y-axis shows the changes and the right one shows the time. As a reminder, the sorted charts may be a bit wrong in the time dataset, as explained before in this report (TLDR: OS interruptions can cause this).
 
 The code used for it can be seen below, followed by the charts showing the data.
 
@@ -130,14 +130,14 @@ The code used for it can be seen below, followed by the charts showing the data.
 <br />
 
 Some information we can retrieve from these charts is that BubbleSort has best case complexity of $$\Theta(n)$$ as it will only run through the array once, and stop, this is why it only makes $$0$$ changes and has such a small running time (0?).
-Reversed case really shows us why he has such an asymptotic curve, going from $$0.82s$$ in the size $$16384$$ to incredible $$177s$$ with a size of $$262144$$ ($$16$$x bigger size, $$256$$x bigger time, as we would expect with a $$\Theta(n^2)$$ complexity). To have some fun, you can try to switch the y-axis scale back and forth between linear and logarithmic scale, to see some difference (the y-axis may be a bit glitched, showing numbers in scientific notation, couldn't figure it out how to make it looks better 🤔).
+Reversed case really shows us why he has such an asymptotic curve, going from $$0.82s$$ in the size $$16384$$ to incredible $$177s$$ with a size of $$262144$$ ($$16$$x bigger size, $$256$$x bigger time, as we would expect with a $$\Theta(n^2)$$ complexity). To have some fun, you can try to switch the y-axis scale back and forth between linear and logarithmic scale, to see some difference (the y-axis may be a bit glitched, showing numbers in scientific notation, couldn't figure out how to make it look better 🤔).
 
 <br />
 <br />
 
 ### Insertion Sort ⤵️
 
-Let's move on to another simple sorting algorithm which we all learned in our 1$$^{st}$$ year at CS course. It also has a time complexity of $$\Theta(n^2)$$, but we will be able to see some evolution, comparing to Bubble Sort.
+Let's move on to another simple sorting algorithm which we all learned in our 1$$^{st}$$ year of CS. It also has a time complexity of $$\Theta(n^2)$$, but we will be able to see some evolution, comparing to Bubble Sort.
 
 For these charts, we also used arrays varying from $$2^1$$ until $$2^{18}$$ to generate the data below. All blah-blah-blahs spoken about the BubbleSort are also valid here.
 
@@ -149,7 +149,7 @@ The code used for it can be seen below, followed by the charts showing the data.
 <br />
 <br />
 
-I really like the Selection Sort idea, it's really a pity that it's $$\Theta(n^2)$$ worst-case complexity 😞. The reversed chart shows us that it makes exactly the same changes as BubbleSort in reverse order, although it took less time, so point to Insertion ✨. In random data, it also runs A LOT faster than Bubble sort (in this sample case, almost 3X faster). So, although both have an average-case time complexity of $$\Theta(n^2)$$, it will only be the same asymptotically, as in "small" samples Insertion can be really faster.
+I really like the Insertion Sort idea, it's really a pity that it's $$\Theta(n^2)$$ worst-case complexity 😞. The reversed chart shows us that it makes exactly the same changes as BubbleSort in reverse order, although it took less time, so point to Insertion ✨. In random data, it also runs A LOT faster than Bubble sort (in this sample case, almost 3X faster). So, although both have an average-case time complexity of $$\Theta(n^2)$$, it will only be the same asymptotically, as in "small" samples Insertion can be really faster.
 
 <br />
 <br />
@@ -168,14 +168,14 @@ The code used for it, as well as the code used in the binary search, can be seen
 <br />
 <br />
 
-As you can see, the changes occur the exactly same times both in Normal and Binary Insertion. The great advantage comes when we don't need to compare as many times as we would compare in a normal Insertion Sort, because we can find the place we must insert ourselves in $$\log n$$ time, saving us something around 30% of time, although having an average-case time complexity of $$\Theta(n^2)$$, exactly the same as Bubble and Insertion Sort.
+As you can see, the changes occur exactly the same number of times both in Normal and Binary Insertion. The great advantage comes when we don't need to compare as many times as we would compare in a normal Insertion Sort, because we can find the place we must insert ourselves in $$\log n$$ time, saving us something around 30% of time, although having an average-case time complexity of $$\Theta(n^2)$$, exactly the same as Bubble and Insertion Sort.
 
 <br />
 <br />
 
 ### Shell Sort ⤵️
 
-Let's start talking about the Shell, thinking about the Insertion. What is it really good about? Sorting ALMOST sorted stuff! And that's what the Shell sort abuses of, making the array each time more "sorted", making it faster to get fully sorted.
+Let's start talking about the Shell, thinking about the Insertion. What is it really good at? Sorting ALMOST sorted stuff! And that's what the Shell sort abuses of, making the array each time more "sorted", making it faster to get fully sorted.
 
 It uses something called `sequences` to order different pieces of the array at the same time (you can see "all" of them [here](https://en.wikipedia.org/wiki/Shellsort) (at least, the more famous ones)). Here we used three different sequences, as follow:
 
@@ -195,7 +195,7 @@ The code used for it can be seen below, followed by the NINE charts (three for e
 <br />
 <br />
 
-Wow, we have a lot of data here! As you can see, ShellSort is pretty BAD at sorting already sorted arrays in comparison to the others sorting algorithms (you can see a comparison in the charts below). That would be easily solved by adding a check to see if it is already sorted (although, it wouldn't solve "almost sorted" arrays long running time). A HUGE improvement can be observed in the last two, as they only take roughly 0.1s to sort the same thing Insertion took 43 seconds!!!!11!.
+Wow, we have a lot of data here! As you can see, ShellSort is pretty BAD at sorting already sorted arrays in comparison to the others sorting algorithms (you can see a comparison in the charts below). That would be easily solved by adding a check to see if it is already sorted (although, it wouldn't solve "almost sorted" arrays' long running time). A HUGE improvement can be observed in the last two, as they only take roughly 0.1s to sort the same thing Insertion took 43 seconds!!!!11!.
 
 Weirdly enough, Knuth's and Tokuda's sequences got pretty close not exactly saying which one is better, which is plausible, as Tokuda one doesn't have a time-complexity well-established. Anyway, we will have some comparisons to see that difference better in some charts below.
 
