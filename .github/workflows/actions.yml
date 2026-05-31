@@ -25,18 +25,32 @@ jobs:
           POSTHOG_API_HOST: ${{ secrets.POSTHOG_API_HOST }}
           AMAZON_SORTING_TABLE_API_URL: ${{ secrets.AMAZON_SORTING_TABLE_API_URL }}
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: us-east-1
       - name: Deploy static website to S3 bucket
-        run: aws s3 sync ./dist s3://rafaaudibert-website --delete
-      - name: Invalidate Cloudfront Cache
-        uses: chetan/invalidate-cloudfront-action@master
+        run: |
+          aws s3 sync ./dist s3://rafaaudibert-website --delete \
+            --cache-control "public, max-age=0, must-revalidate"
+          if [ -d ./dist/_astro ]; then
+            aws s3 cp ./dist/_astro s3://rafaaudibert-website/_astro \
+              --recursive \
+              --cache-control "public, max-age=31536000, immutable"
+          fi
+      - name: Invalidate CloudFront cache
+        run: |
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --paths "/*" \
+            --query "Invalidation.Id" \
+            --output text)
+          echo "Invalidation created: $INVALIDATION_ID"
+          echo "Waiting for CloudFront invalidation to complete..."
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "$DISTRIBUTION_ID" \
+            --id "$INVALIDATION_ID"
+          echo "CloudFront invalidation completed."
         env:
-          DISTRIBUTION: ${{ secrets.DISTRIBUTION }}
-          PATHS: "/*"
-          AWS_REGION: "us-east-1"
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY_ID }}
+          DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION }}
