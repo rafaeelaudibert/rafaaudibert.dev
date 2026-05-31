@@ -15,6 +15,7 @@ import {
   FLIGHTS,
   type AirportCode,
 } from "../data/travel"
+import { imagesByCountry } from "../data/travelPhotos"
 import { joinerWithAnd } from "../utils/string"
 
 // Get unique countries with earliest visit year
@@ -81,27 +82,6 @@ const arcs = FLIGHTS.map((f) => ({
   toCode: f.to,
 }))
 
-// Discover travel images
-const travelImageModules = import.meta.glob<{ default: ImageMetadata }>(
-  "../assets/travel/**/*.webp",
-  { eager: true },
-)
-const imagesByCountry: Record<
-  string,
-  Array<{ src: string; width: number; height: number }>
-> = {}
-for (const [path, mod] of Object.entries(travelImageModules)) {
-  const match = path.match(/\/travel\/([A-Z]{2})\//)
-  if (match) {
-    const code = match[1]
-    if (!imagesByCountry[code]) imagesByCountry[code] = []
-    imagesByCountry[code].push({
-      src: mod.default.src,
-      width: mod.default.width,
-      height: mod.default.height,
-    })
-  }
-}
 ---
 
 <BaseLayout

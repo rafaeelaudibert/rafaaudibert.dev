@@ -43,7 +43,7 @@ export const AIRPORTS = {
   CUR: { code: "CUR", name: "Curaçao-Hato", location: [12.19, -68.96], countryCode: "CW" },
   SJU: { code: "SJU", name: "San Juan", location: [18.44, -66.00], countryCode: "PR" },
   PUJ: { code: "PUJ", name: "Punta Cana", location: [18.57, -68.37], countryCode: "DO" },
-  // BGI: { code: "BGI", name: "Barbados-Grantley Adams", location: [13.07, -59.48], countryCode: "BB" }, // SOON!
+  BGI: { code: "BGI", name: "Barbados-Grantley Adams", location: [13.07, -59.48], countryCode: "BB" },
   CUN: { code: "CUN", name: "Cancún", location: [21.04, -86.87], countryCode: "MX" },
   TQO: { code: "TQO", name: "Tulum", location: [20.24, -87.43], countryCode: "MX" },
   // United States
@@ -52,6 +52,7 @@ export const AIRPORTS = {
   MIA: { code: "MIA", name: "Miami", location: [25.80, -80.29], countryCode: "US" },
   PHL: { code: "PHL", name: "Philadelphia", location: [39.87, -75.24], countryCode: "US" },
   ORD: { code: "ORD", name: "Chicago-O'Hare", location: [41.97, -87.91], countryCode: "US" },
+  SFO: { code: "SFO", name: "San Francisco", location: [37.61, -122.38], countryCode: "US" },
   // Canada
   YYZ: { code: "YYZ", name: "Toronto-Pearson", location: [43.68, -79.63], countryCode: "CA" },
   YUL: { code: "YUL", name: "Montréal-Trudeau", location: [45.47, -73.74], countryCode: "CA" },
@@ -192,11 +193,20 @@ export const FLIGHTS: Flight[] = [
   { from: "POA", to: "AEP", year: 2025 },
   { from: "AEP", to: "POA", year: 2025 },
   // 2026
-  // SOON!
-  // { from: "POA", to: "PTY", year: 2026, layover: true },
-  // { from: "PTY", to: "BGI", year: 2026 },
-  // { from: "BGI", to: "PTY", year: 2026, layover: true },
-  // { from: "PTY", to: "POA", year: 2026 },
+  { from: "POA", to: "GIG", year: 2026, layover: true },
+  { from: "GIG", to: "JPA", year: 2026 },
+  { from: "JPA", to: "BSB", year: 2026, layover: true },
+  { from: "BSB", to: "POA", year: 2026 },
+  { from: "POA", to: "PTY", year: 2026, layover: true },
+  { from: "PTY", to: "BGI", year: 2026 },
+  { from: "BGI", to: "PTY", year: 2026, layover: true },
+  { from: "PTY", to: "POA", year: 2026 },
+  { from: "POA", to: "GRU", year: 2026, layover: true },
+  { from: "GRU", to: "PTY", year: 2026, layover: true },
+  { from: "PTY", to: "SFO", year: 2026 },
+  { from: "SFO", to: "PTY", year: 2026, layover: true },
+  { from: "PTY", to: "GRU", year: 2026 },
+  { from: "GRU", to: "POA", year: 2026 },
 ]
 
 // Home country — generates a visit entry for every year since birth

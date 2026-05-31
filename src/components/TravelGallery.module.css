@@ -199,6 +199,11 @@
   color: white;
 }
 
+.countryChip:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+}
+
 .countryChipActive {
   background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
@@ -206,41 +211,6 @@
 }
 
 @media (max-width: 50em) {
-  .dialog {
-    width: 100vw;
-    max-height: 100vh;
-  }
-
-  .imageContainer {
-    height: 55vh;
-  }
-
-  .navButton {
-    width: 36px;
-    height: 36px;
-  }
-
-  .navPrev {
-    left: 0.5rem;
-  }
-
-  .navNext {
-    right: 0.5rem;
-  }
-
-  .content {
-    padding: 0 0.75rem;
-  }
-
-  .countryFlag {
-    left: 0.75rem;
-  }
-
-  .close {
-    top: -2rem;
-    right: 0.75rem;
-  }
-
   .countryChip {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;

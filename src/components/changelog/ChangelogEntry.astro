@@ -1,16 +1,52 @@
 ---
+import { resolveChangelogEntry } from "../../data/changelogPhotos"
+
 interface Props {
   year?: number | undefined
   month: string
   wip?: boolean
+  entryId?: string
 }
 
 const { year, month, wip = false } = Astro.props
+const { entryId: resolvedEntryId, photos } = resolveChangelogEntry(month, year)
+const entryId = Astro.props.entryId ?? resolvedEntryId
 ---
 
 <section class:list={[{ "has-year": year }]}>
   {year && <h2 class="section-year">{year}</h2>}
-  <h3 class="section-month">{month}{wip ? <>&nbsp;&nbsp;&nbsp;🚧</> : ""}</h3>
+
+  <div class="month-column">
+    <h3 class="section-month">{month}{wip ? <>&nbsp;&nbsp;&nbsp;🚧</> : ""}</h3>
+
+    {
+      photos.length > 0 && (
+        <div class="entry-photos">
+          {photos.map((photo, index) => (
+            <button
+              type="button"
+              class="photo-thumb"
+              data-gallery-open={entryId}
+              data-image-index={index}
+              aria-label={`View photo: ${photo.alt}`}
+            >
+              <img
+                src={photo.placeholderSrc}
+                alt=""
+                aria-hidden="true"
+                class="photo-thumb-image"
+                width={48}
+                height={48}
+                decoding="async"
+                loading="eager"
+              />
+            </button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
   <div class:list={["content", { "wip-content": wip }]}>
     {
       wip && (
@@ -42,10 +78,54 @@ const { year, month, wip = false } = Astro.props
     color: var(--gray-0);
   }
 
+  .month-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+  }
+
   .section-month {
-    grid-column-start: 2;
     font-size: var(--text-lg);
     color: var(--gray-0);
+    line-height: 1.2;
+  }
+
+  .entry-photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    max-width: 9.5rem;
+  }
+
+  .photo-thumb {
+    display: block;
+    padding: 0;
+    border: 1px solid var(--gray-500);
+    border-radius: 0.25rem;
+    background: var(--gray-600);
+    cursor: pointer;
+    overflow: hidden;
+    line-height: 0;
+    transition: border-color var(--theme-transition);
+  }
+
+  .photo-thumb:hover {
+    border-color: var(--accent-regular);
+  }
+
+  .photo-thumb:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
+  }
+
+  .photo-thumb-image {
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+    max-width: none;
+    object-fit: cover;
   }
 
   .content {
@@ -114,10 +194,29 @@ const { year, month, wip = false } = Astro.props
       }
     }
 
+    .month-column {
+      grid-column-start: 2;
+      align-self: start;
+    }
+
     .has-year .section-year,
-    .has-year .section-month,
+    .has-year .month-column,
     .has-year .content {
       margin-top: 3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .photo-thumb {
+      transition: border-color var(--theme-transition);
+    }
+
+    .photo-thumb:hover {
+      transform: none;
+    }
+
+    .construction-banner {
+      animation: none;
     }
   }
 </style>

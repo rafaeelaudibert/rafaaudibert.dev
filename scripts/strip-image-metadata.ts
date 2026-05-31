@@ -1,5 +1,5 @@
 /**
- * Strips EXIF metadata from travel images, keeping only the date taken.
+ * Strips EXIF metadata from travel images, keeping the date taken and optional description.
  * Renames files to their date (YYYYMMDD_HHMMSS.ext) if not already named that way.
  *
  * Usage:
@@ -12,6 +12,10 @@ import sharp from "sharp"
 import { readdir, writeFile, rename, stat, unlink, access } from "fs/promises"
 import { join, extname, dirname, basename } from "path"
 import { createInterface } from "readline"
+import {
+  parseTravelImageExif,
+  type TravelImageExif,
+} from "../src/utils/travelImageExif"
 
 function fmtSize(bytes: number): string {
   if (bytes < 1024) return `${bytes}B`
@@ -55,23 +59,16 @@ async function getImageFiles(dir: string): Promise<string[]> {
   return files.sort((a, b) => a.localeCompare(b))
 }
 
-interface ExifInfo {
-  date: string | null
-  exifSize: number
-  isClean: boolean
-}
+type ExifInfo = TravelImageExif & { isClean: boolean }
 
-// A date-only EXIF written by our strip script is ~300 bytes or less
-const MAX_CLEAN_EXIF_SIZE = 300
+// Date + optional ImageDescription written by our strip script
+const MAX_CLEAN_EXIF_SIZE = 4096
 
 function parseExif(exifBuffer: Buffer): ExifInfo {
-  const str = exifBuffer.toString("binary")
-  const dateMatch = str.match(/(\d{4}:\d{2}:\d{2} \d{2}:\d{2}:\d{2})/)
-
+  const info = parseTravelImageExif(exifBuffer)
   return {
-    date: dateMatch ? dateMatch[1] : null,
-    exifSize: exifBuffer.length,
-    isClean: exifBuffer.length <= MAX_CLEAN_EXIF_SIZE,
+    ...info,
+    isClean: info.exifSize <= MAX_CLEAN_EXIF_SIZE,
   }
 }
 
@@ -102,13 +99,16 @@ async function processFile(
     },
   }).webp({ quality: 90 })
 
-  // Step 3: add back ONLY the date
+  // Step 3: add back the date and optional description
   const now = new Date()
   const date = info?.date ??
     `${now.getFullYear()}:${String(now.getMonth() + 1).padStart(2, "0")}:${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`
 
+  const ifd0: Record<string, string> = { DateTime: date }
+  if (info?.description) ifd0.ImageDescription = info.description
+
   pipeline = pipeline.withExif({
-    IFD0: { DateTime: date },
+    IFD0: ifd0,
     IFD2: {
       DateTimeOriginal: date,
       DateTimeDigitized: date,

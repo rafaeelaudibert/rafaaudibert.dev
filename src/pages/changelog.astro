@@ -8,6 +8,11 @@ import changelogImage from "../assets/changelog.jpg"
 import { Image } from "astro:assets"
 import Link from "../components/Link.astro"
 import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
+import ChangelogGallery from "../components/changelog/ChangelogGallery"
+import {
+  changelogGalleries,
+  changelogGalleryLabels,
+} from "../data/changelogPhotos"
 ---
 
 <BaseLayout
@@ -40,6 +45,63 @@ import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
         </div>
       </Hero>
 
+      <!-- =========== 2026 =========== -->
+      <ChangelogEntry year={2026} month="June">
+        <p>
+          1st time in SF 🇺🇸. Got here for an event with Supabase, also visited
+          GitHub. What a place, wth.
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="May">
+        <p>
+          2nd PostHog full-company offsite I attended! This time we traveled to
+          warm Barbados 🇧🇧. It was nice getting to see the team I've been
+          leading all in the same place, and even better was working in our
+          hackathon project. This is always soo fun.
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="April">
+        <p>
+          Got married to the love of my life, Lili. We had an intimate wedding
+          ceremony in an old colonial Italian house in Garibaldi, RS 🇧🇷. We had
+          50 of our closest people with us, and it was an incredible day. 💍
+        </p>
+        <p>
+          Our honeymoon was in the beautiful Pipa, RN 🇧🇷. We stayed at a
+          gluten-free resort and enjoyed a nice pool overseeing the ocean. We
+          also got to spend a couple days in João Pessoa, PB 🇧🇷 and witnessed
+          the sun rise in the Americas.
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="March">
+        <p>
+          First public speaking opportunity in my life! Attended the Lovable
+          conference in Porto Alegre 🇧🇷, where I gave a talk about how Lovable
+          uses PostHog and we use Lovable for internal products.
+        </p>
+        <p>
+          Back in São Paulo for the third time in 30 days: public speaking in
+          name of PostHog about what the magical animal known as Product
+          Engineer does.
+        </p>
+      </ChangelogEntry>
+
+      <ChangelogEntry month="February">
+        <p>
+          Spent some time in São Paulo 🇧🇷, onboarding my new colleague. I
+          disliked SP before, I dislike it even more now. Traffic is just so so
+          bad.
+        </p>
+        <p>
+          Also attended Bad Bunny's concert! Best concern of my life, no doubt
+          about that, just so much fun. Also got to show São Paulo to some
+          friends from my hometown who were in SP for the concert too.
+        </p>
+      </ChangelogEntry>
+
       <!-- =========== 2025 =========== -->
       <ChangelogEntry year={2025} month="December">
         <p>
@@ -48,8 +110,8 @@ import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
           the one thing nobody will ever beat Europe on, it's just great to land
           and still live that day rather than just head to the hotel to rest.
           <br />
-          Besides meeting with my colleagues, I had the chance to hang out with Sol -
-          and introduce her to my fiancée. We used to work together at LeadSimple
+          Besides meeting with my colleagues, I had the chance to hang out with Sol
+          - and introduce her to my fiancée. We used to work together at LeadSimple
           and seeing her is always amazing.
         </p>
         <p>
@@ -141,8 +203,8 @@ import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
 
       <ChangelogEntry month="February">
         <p>
-          I'm 25 now! First birthday in years that I wasn't traveling and had the
-          chance to spend it with my family!
+          I'm 25 now! First birthday in years that I wasn't traveling and had
+          the chance to spend it with my family!
         </p>
       </ChangelogEntry>
 
@@ -300,6 +362,12 @@ import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
       <ChangelogEntry year={2000} month="February">
         <p>👶🏻🍼</p>
       </ChangelogEntry>
+
+      <ChangelogGallery
+        client:idle
+        galleries={changelogGalleries}
+        labels={changelogGalleryLabels}
+      />
     </main>
   </div>
 </BaseLayout>
