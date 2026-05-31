@@ -16,17 +16,11 @@ export const NAVBAR_MENU_ITEMS: NavbarMenuItem[] = [
   { label: "Resume", href: "/resume/", shortcut: "r" },
   { label: "Travel", href: "/travel/", shortcut: "t" },
   { label: "Changelog", href: "/changelog/", shortcut: "c" },
-  {
-    label: "Wedding",
-    href: "https://www.lilierafa.com.br",
-    shortcut: "w",
-    external: true,
-  },
 ]
 
 /** Export navigation shortcuts for the ShortcutsManager */
 export const NAV_SHORTCUTS = NAVBAR_MENU_ITEMS.filter(
-  (item) => item.shortcut
+  (item) => item.shortcut,
 ).map((item) => ({
   key: item.shortcut!,
   label: item.label,
