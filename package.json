@@ -18,7 +18,8 @@
     "strip-metadata": "bun scripts/strip-image-metadata.ts",
     "check-metadata": "bun scripts/strip-image-metadata.ts --check",
     "describe-images": "bun scripts/describe-travel-images.ts",
-    "check-descriptions": "bun scripts/describe-travel-images.ts --check"
+    "check-descriptions": "bun scripts/describe-travel-images.ts --check",
+    "check": "bun run check-metadata && bun run check-descriptions"
   },
   "engines": {
     "node": "v24.12.0"
