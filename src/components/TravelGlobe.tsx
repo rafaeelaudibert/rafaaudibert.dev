@@ -101,6 +101,8 @@ export default function TravelGlobe({
   const [completedFlights, setCompletedFlights] = useState<
     Array<{ from: AirportCode; to: AirportCode }>
   >([])
+  const [allFlightsRevealed, setAllFlightsRevealed] = useState(false)
+  const showAllFlightsRef = useRef(false)
 
   // Theme detection
   useEffect(() => {
@@ -284,9 +286,14 @@ export default function TravelGlobe({
     }
 
     // Arc animation
+    showAllFlightsRef.current = false
+    setAllFlightsRevealed(false)
+    setCompletedFlights([])
+
     let currentArcIndex = 0
     let arcProgress = 0
     let arcPauseCounter = 0
+    let hasMarkedAllRevealed = false
     const completedArcs: Array<{ from: [number, number]; to: [number, number] }> =
       []
     let cachedArcs: typeof completedArcs = []
@@ -315,7 +322,20 @@ export default function TravelGlobe({
         opacity: fadeIn,
       }
 
-      if (currentArcIndex < arcs.length) {
+      if (showAllFlightsRef.current && currentArcIndex < arcs.length) {
+        completedArcs.length = 0
+        completedArcs.push(...arcs)
+        cachedArcs = completedArcs.slice()
+        currentArcIndex = arcs.length
+        arcProgress = 0
+        arcPauseCounter = 0
+        setCompletedFlights(
+          arcs.map((arc) => ({ from: arc.fromCode, to: arc.toCode }))
+        )
+        setAllFlightsRevealed(true)
+        hasMarkedAllRevealed = true
+        arcsDirty = true
+      } else if (currentArcIndex < arcs.length) {
         if (arcPauseCounter > 0) {
           arcPauseCounter--
         } else {
@@ -336,6 +356,11 @@ export default function TravelGlobe({
           }
         }
         arcsDirty = true
+      }
+
+      if (currentArcIndex >= arcs.length && !hasMarkedAllRevealed) {
+        hasMarkedAllRevealed = true
+        setAllFlightsRevealed(true)
       }
 
       if (arcsDirty) {
@@ -424,6 +449,20 @@ export default function TravelGlobe({
               Visited in {joinerWithAnd(hoveredMarker.years)}
             </div>
           </div>
+        )}
+        {!allFlightsRevealed && arcs.length > 0 && (
+          <button
+            type="button"
+            className={styles.showAllFlightsButton}
+            aria-label="Show all flights at once"
+            onClick={() => {
+              showAllFlightsRef.current = true
+              setAllFlightsRevealed(true)
+              capture("travel_globe_show_all_flights")
+            }}
+          >
+            Show all flights
+          </button>
         )}
         {completedFlights.length > 0 && (
           <div className={styles.flightTicker}>
