@@ -4,6 +4,7 @@ import { defineConfig, envField } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 
+import { unified } from '@astrojs/markdown-remark'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 
@@ -30,10 +31,14 @@ export default defineConfig({
     contentIntellisense: true
   },
 
-  // Detect math equations in markdown
+  // Detect math equations in markdown.
+  // Astro v7+ defaults to the native Sätteri processor, so we opt back into the
+  // remark/rehype pipeline via `@astrojs/markdown-remark` to keep our plugins.
   markdown: {
-    remarkPlugins: [remarkMath], // Detect math equations in markdown
-    rehypePlugins: [rehypeKatex], // Render latex equations in markdown
+    processor: unified({
+      remarkPlugins: [remarkMath], // Detect math equations in markdown
+      rehypePlugins: [rehypeKatex], // Render latex equations in markdown
+    }),
   },
 
   // Image optimization settings
