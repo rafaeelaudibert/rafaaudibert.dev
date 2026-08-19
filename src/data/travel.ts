@@ -76,6 +76,11 @@ export const AIRPORTS = {
   FCO: { code: "FCO", name: "Rome-Fiumicino", location: [41.80, 12.25], countryCode: "IT" },
   MXP: { code: "MXP", name: "Milan-Malpensa", location: [45.63, 8.72], countryCode: "IT" },
   OLB: { code: "OLB", name: "Olbia-Costa Smeralda", location: [40.90, 9.52], countryCode: "IT" },
+  // France
+  CDG: { code: "CDG", name: "Paris-Charles de Gaulle", location: [49.01, 2.55], countryCode: "FR" },
+  NCE: { code: "NCE", name: "Nice-Côte d'Azur", location: [43.70, 7.27], countryCode: "FR" },
+  // Switzerland
+  ZCH: { code: "ZCH", name: "Zurich-Kloten", location: [47.46, 8.55], countryCode: "CH" },
 } satisfies Record<string, Airport>
 
 export type AirportCode = keyof typeof AIRPORTS
@@ -207,6 +212,17 @@ export const FLIGHTS: Flight[] = [
   { from: "SFO", to: "PTY", year: 2026, layover: true },
   { from: "PTY", to: "GRU", year: 2026 },
   { from: "GRU", to: "POA", year: 2026 },
+  { from: "POA", to: "GRU", year: 2026, layover: true },
+  { from: "GRU", to: "FCO", year: 2026, layover: true },
+  { from: "FCO", to: "CDG", year: 2026 },
+  { from: "NCE", to: "PMI", year: 2026 },
+  { from: "PMI", to: "ZCH", year: 2026 },
+  { from: "FCO", to: "GRU", year: 2026, layover: true },
+  { from: "GRU", to: "POA", year: 2026 },
+  { from: "POA", to: "GRU", year: 2026, layover: true },
+  { from: "GRU", to: "MAD", year: 2026 },
+  { from: "MAD", to: "GRU", year: 2026, layover: true },
+  { from: "GRU", to: "POA", year: 2026 },
 ]
 
 // Home country — generates a visit entry for every year since birth
@@ -218,6 +234,7 @@ const NON_FLIGHT_VISITS: VisitedCountry[] = [
   { code: "LU", year: 2021 }, // Bus from Saarbrucken (DE) to Luxembourg City
   { code: "CH", year: 2021 }, // Train from Kaiserslautern to Basel (DE) + Bus from Grenoble to Geneve (FR)
   { code: "FR", year: 2021 }, // Train from Kaiserslautern to Strasbourg (DE) + Bus from Freiburg to Grenoble (DE)
+  { code: "IT", year: 2026 }, // Train from Zurich to Florence (CH)
 ]
 
 // Derived from FLIGHTS + AIRPORTS + the above supplements
