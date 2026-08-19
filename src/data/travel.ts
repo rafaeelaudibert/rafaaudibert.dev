@@ -235,6 +235,7 @@ const NON_FLIGHT_VISITS: VisitedCountry[] = [
   { code: "CH", year: 2021 }, // Train from Kaiserslautern to Basel (DE) + Bus from Grenoble to Geneve (FR)
   { code: "FR", year: 2021 }, // Train from Kaiserslautern to Strasbourg (DE) + Bus from Freiburg to Grenoble (DE)
   { code: "IT", year: 2026 }, // Train from Zurich to Florence (CH)
+  { code: "MC", year: 2026 }, // Train from Nice (FR) to Monaco (MC)
 ]
 
 // Derived from FLIGHTS + AIRPORTS + the above supplements
