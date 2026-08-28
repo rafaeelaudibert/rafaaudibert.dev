@@ -231,11 +231,14 @@ const HOME_SINCE = 2000
 
 // Countries visited by non-flight means (train, bus, ferry, walk, etc.)
 const NON_FLIGHT_VISITS: VisitedCountry[] = [
-  { code: "LU", year: 2021 }, // Bus from Saarbrucken (DE) to Luxembourg City
-  { code: "CH", year: 2021 }, // Train from Kaiserslautern to Basel (DE) + Bus from Grenoble to Geneve (FR)
-  { code: "FR", year: 2021 }, // Train from Kaiserslautern to Strasbourg (DE) + Bus from Freiburg to Grenoble (DE)
-  { code: "IT", year: 2026 }, // Train from Zurich to Florence (CH)
+  { code: "LU", year: 2021 }, // Bus from Saarbrucken (DE) to Luxembourg City (LU)
+  { code: "CH", year: 2021 }, // Train from Kaiserslautern (DE) to Basel (CH)
+  { code: "CH", year: 2021 }, // Train from Grenoble (FR) to Geneve (CH)
+  { code: "FR", year: 2021 }, // Train from Kaiserslautern (DE) to Strasbourg (FR)
+  { code: "FR", year: 2021 }, // Bus from Freiburg (DE) to Grenoble (FR)
   { code: "MC", year: 2026 }, // Train from Nice (FR) to Monaco (MC)
+  { code: "IT", year: 2026 }, // Train from Zurich (CH) to Florence (IT)
+  { code: "VA", year: 2026 }, // Walk from Rome (IT) to Vatican City (VA)
 ]
 
 // Derived from FLIGHTS + AIRPORTS + the above supplements
