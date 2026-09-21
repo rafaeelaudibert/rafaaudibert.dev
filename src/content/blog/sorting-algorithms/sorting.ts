@@ -188,11 +188,9 @@ const gappedInsertionSort = (array: number[], h: number, f: number): number => {
 }
 
 /**
- * Note the loop bound: an earlier version of this wrote `sequence.length = 1`,
- * assigning rather than subtracting. That truncated the sequence to a single
- * element and left only the h=1 pass running, so all three gap sequences
- * silently degraded to plain insertion sort and reported identical change
- * counts. `sequence.length - 1` is what actually applies the gaps.
+ * Walks the gap sequence from largest to smallest, running a gapped insertion
+ * pass at each h. The big gaps move elements a long way cheaply, so by the time
+ * h reaches 1 the array is nearly sorted and the final pass is almost free.
  */
 const shellSort = (array: number[], type: ShellSequence): number => {
   const sequence = generateGapSequence(array.length, type)
