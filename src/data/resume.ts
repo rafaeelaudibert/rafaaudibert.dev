@@ -3,8 +3,14 @@
 // Company logos are looked up by company name in ./companyLogos.ts.
 
 export const FIRST_WORKING_YEAR = 2017
-export const BACKGROUND_CONTENT = [
-  `Rafael has ${new Date().getFullYear() - FIRST_WORKING_YEAR}+ years of experience in various industries, ranging from seed-stage SaaS startups to growth-stage scaleups. Proven track record of working with <b>Ruby on Rails</b>, <b>Python + Django</b>, <b>Typescript + React</b>, and <b>Elixir + Phoenix</b>, building reliable and scalable software. He's motivated by creating new and engaging customer-centric apps loved by clients.`,
+
+// Computed on call rather than at import: the Workers runtime pins the clock
+// to epoch 0 while a module is being evaluated, so a module-level
+// `new Date()` there reads as 1970.
+export const yearsOfExperience = () => new Date().getFullYear() - FIRST_WORKING_YEAR
+
+export const getBackgroundContent = () => [
+  `Rafael has ${yearsOfExperience()}+ years of experience in various industries, ranging from seed-stage SaaS startups to growth-stage scaleups. Proven track record of working with <b>Ruby on Rails</b>, <b>Python + Django</b>, <b>Typescript + React</b>, and <b>Elixir + Phoenix</b>, building reliable and scalable software. He's motivated by creating new and engaging customer-centric apps loved by clients.`,
   "His passion is to build products that are both functional and aesthetically pleasing. More importantly, he wants the product to do exactly what the customer needs it to do. He has a strong background in both front-end and back-end development, and he is always looking for new challenges to tackle.",
 ]
 

@@ -9,14 +9,17 @@ import {
   countryCodeToFlag,
 } from "../data/countries"
 import {
-  VISITED_COUNTRIES,
-  VISITED_COUNTRIES_TIMELINE,
+  getVisitedCountries,
+  getVisitedCountriesTimeline,
   AIRPORTS,
   FLIGHTS,
   type AirportCode,
 } from "../data/travel"
 import { imagesByCountry } from "../data/travelPhotos"
 import { joinerWithAnd } from "../utils/string"
+
+const VISITED_COUNTRIES_TIMELINE = getVisitedCountriesTimeline()
+const VISITED_COUNTRIES = getVisitedCountries()
 
 // Get unique countries with earliest visit year
 type VisitedCountryWithYears = (typeof VISITED_COUNTRIES_TIMELINE)[number] & {

@@ -1,5 +1,7 @@
 ---
-import { VISITED_COUNTRIES } from "../data/travel"
+import { getVisitedCountries } from "../data/travel"
+
+const visitedCountries = getVisitedCountries()
 import Icon from "./Icon.astro"
 import Link from "./Link.astro"
 ---
@@ -28,7 +30,7 @@ import Link from "./Link.astro"
     <h2>Traveler</h2>
     <p>
       I love to travel and explore new places. I have been to <Link
-        href="/travel">{VISITED_COUNTRIES.size} countries/territories</Link
+        href="/travel">{visitedCountries.size} countries/territories</Link
       > so far and counting 😊 🌎. <br /><br />
       It's not much yet, but I'm growing that number quickly . I am always looking
       for new adventures.

@@ -243,8 +243,13 @@ const NON_FLIGHT_VISITS: VisitedCountry[] = [
   { code: "VA", year: 2026 }, // Walk from Rome (IT) to Vatican City (VA)
 ]
 
-// Derived from FLIGHTS + AIRPORTS + the above supplements
-export const VISITED_COUNTRIES_TIMELINE: VisitedCountry[] = (() => {
+// Derived from FLIGHTS + AIRPORTS + the above supplements.
+//
+// A function rather than a constant because the home-country loop needs the
+// current year, and the Workers runtime pins the clock to epoch 0 while a
+// module is being evaluated: computed at import time there, the loop would
+// run from 2000 to 1970 and Brazil would never be added.
+export const getVisitedCountriesTimeline = (): VisitedCountry[] => {
   const seen = new Set<string>()
   const timeline: VisitedCountry[] = []
 
@@ -269,8 +274,7 @@ export const VISITED_COUNTRIES_TIMELINE: VisitedCountry[] = (() => {
 
   timeline.sort((a, b) => a.year - b.year)
   return timeline
-})()
+}
 
-export const VISITED_COUNTRIES = new Set(
-  VISITED_COUNTRIES_TIMELINE.map((country) => country.code)
-)
+export const getVisitedCountries = () =>
+  new Set(getVisitedCountriesTimeline().map((country) => country.code))

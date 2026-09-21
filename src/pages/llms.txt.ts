@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro"
 import {
-  BACKGROUND_CONTENT,
+  getBackgroundContent,
   EDUCATION_AND_ACHIEVEMENTS,
   PAST_EXPERIENCES,
   TECHNOLOGIES,
@@ -22,7 +22,7 @@ const getLlmsTxt = (siteUrl: URL) =>
 ## About me
 
 ### Background
-${BACKGROUND_CONTENT.join("\n")}
+${getBackgroundContent().join("\n")}
 
 ### Past Experiences
 ${PAST_EXPERIENCES.map(

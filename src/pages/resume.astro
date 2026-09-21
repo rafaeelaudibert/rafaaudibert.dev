@@ -10,15 +10,13 @@ import work from "../assets/work.jpg"
 import { Image } from "astro:assets"
 
 import {
-  FIRST_WORKING_YEAR,
-  BACKGROUND_CONTENT,
+  getBackgroundContent,
   PAST_EXPERIENCES,
   EDUCATION_AND_ACHIEVEMENTS,
   LANGUAGES,
   TECHNOLOGIES,
 } from "../data/resume"
 import { COMPANY_LOGOS } from "../data/companyLogos"
-
 ---
 
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
@@ -40,7 +38,7 @@ import { COMPANY_LOGOS } from "../data/companyLogos"
       <section>
         <h2 class="section-title">Background</h2>
         <div class="content">
-          {BACKGROUND_CONTENT.map((content) => <p set:html={content} />)}
+          {getBackgroundContent().map((content) => <p set:html={content} />)}
         </div>
       </section>
 
@@ -51,7 +49,10 @@ import { COMPANY_LOGOS } from "../data/companyLogos"
             PAST_EXPERIENCES.map((experience) => (
               <p>
                 <div class="company-header">
-                  <Image src={COMPANY_LOGOS[experience.company]} alt={experience.company} />
+                  <Image
+                    src={COMPANY_LOGOS[experience.company]}
+                    alt={experience.company}
+                  />
                   <span>
                     <strong>{experience.role}</strong> at{" "}
                     <Link href={experience.href}>{experience.company}</Link> —{" "}
