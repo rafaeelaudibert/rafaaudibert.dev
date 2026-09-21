@@ -10,8 +10,10 @@
 
 import sharp from "sharp"
 import { readdir, writeFile, rename, stat, unlink, access } from "fs/promises"
+import type { Dirent } from "node:fs"
 import { join, extname, dirname, basename } from "path"
 import { createInterface } from "readline"
+import { fileURLToPath } from "node:url"
 import {
   parseTravelImageExif,
   type TravelImageExif,
@@ -23,7 +25,10 @@ function fmtSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)}MB`
 }
 
-const TRAVEL_DIR = join(import.meta.dir, "../src/assets/travel")
+const TRAVEL_DIR = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "../src/assets/travel",
+)
 const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".webp"])
 const AUTO_MODE = process.argv.includes("--auto")
 const CHECK_MODE = process.argv.includes("--check")
@@ -42,7 +47,7 @@ function ask(question: string): Promise<string> {
 
 async function getImageFiles(dir: string): Promise<string[]> {
   const files: string[] = []
-  let entries: Awaited<ReturnType<typeof readdir>>
+  let entries: Dirent<string>[]
   try {
     entries = await readdir(dir, { withFileTypes: true })
   } catch {

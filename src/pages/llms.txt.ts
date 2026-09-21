@@ -5,7 +5,7 @@ import {
   PAST_EXPERIENCES,
   TECHNOLOGIES,
   LANGUAGES,
-} from "./resume.astro"
+} from "../data/resume"
 import { getCollection } from "astro:content"
 import { site } from "../data/site"
 

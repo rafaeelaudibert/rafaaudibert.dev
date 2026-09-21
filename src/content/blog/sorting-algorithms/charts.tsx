@@ -42,6 +42,9 @@ import {
   selectionTreeFilesData,
 } from "./csv"
 
+const toSeriesFormatter = (formatter?: (v: number) => string) =>
+  formatter ? (v: number | null) => (v == null ? "" : formatter(v)) : undefined
+
 const trimZero = (s: string) => s.replace(/\.0$/, "")
 
 const formatCompact = (value: number): string => {
@@ -387,14 +390,14 @@ const DoubleAxisChart = <D extends { arraySize: number }>({
         type: "line",
         yAxisId: "axis1",
         showMark: true,
-        valueFormatter: axis1.valueFormatter,
+        valueFormatter: toSeriesFormatter(axis1.valueFormatter),
       },
       {
         label: axis2.label,
         data: data.map(axis2.dataMapper),
         type: "bar",
         yAxisId: "axis2",
-        valueFormatter: axis2.valueFormatter ?? formatCompact,
+        valueFormatter: toSeriesFormatter(axis2.valueFormatter ?? formatCompact),
       },
     ]}
     margin={{ left: 80, right: 80 }}

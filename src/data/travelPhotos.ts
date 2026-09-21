@@ -1,5 +1,5 @@
 import { join } from "node:path"
-import { getImage, type ImageMetadata } from "astro:assets"
+import { getImage } from "astro:assets"
 import { COUNTRY_CODE_TO_LONG_NAME } from "./countries"
 import {
   buildTravelImageAlt,

@@ -1,4 +1,5 @@
 import { readdir } from "node:fs/promises"
+import type { Dirent } from "node:fs"
 import { basename, extname, join } from "node:path"
 
 export const TRAVEL_DIR = join(process.cwd(), "src/assets/travel")
@@ -9,7 +10,7 @@ export async function getTravelImageFiles(
   dir: string = TRAVEL_DIR,
 ): Promise<string[]> {
   const files: string[] = []
-  let entries: Awaited<ReturnType<typeof readdir>>
+  let entries: Dirent<string>[]
 
   try {
     entries = await readdir(dir, { withFileTypes: true })

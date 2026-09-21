@@ -1,20 +1,11 @@
 import type { CountryCode } from "../data/travel"
+import type { TravelGalleryImage } from "../data/travelPhotos"
 import { capture } from "../utils/analytics"
 import ImageGallery, { type GalleryImage } from "./ImageGallery"
 import styles from "./TravelGallery.module.css"
 
 interface TravelGalleryProps {
-  imagesByCountry: Partial<
-    Record<
-      CountryCode,
-      Array<{
-        src: string
-        alt?: string
-        description?: string
-        placeholderSrc?: string
-      }>
-    >
-  >
+  imagesByCountry: Partial<Record<CountryCode, TravelGalleryImage[]>>
   countryMeta: Partial<Record<CountryCode, { name: string; flag: string }>>
 }
 

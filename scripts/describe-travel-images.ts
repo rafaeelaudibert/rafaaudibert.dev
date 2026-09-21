@@ -285,6 +285,14 @@ async function main() {
       continue
     }
 
+    // No description to write: the prompt hands back the current value, which
+    // is null when the image never had one. Writing that would fail validation.
+    if (result === null) {
+      console.log("  No description given, skipped.")
+      skipped++
+      continue
+    }
+
     if (result === exif?.description && isValidTravelImageDescription(result)) {
       console.log("  Kept existing description.")
       skipped++
