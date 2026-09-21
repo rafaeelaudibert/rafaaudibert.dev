@@ -7,7 +7,7 @@ import {
   LANGUAGES,
 } from "../data/resume"
 import { getCollection } from "astro:content"
-import { site } from "../data/site"
+import { site, SOCIAL_LINKS } from "../data/site"
 
 const blogposts = (await getCollection("blog")).sort(
   (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
@@ -61,10 +61,7 @@ ${blogposts
   }/changelog): All the cools things that happened in my life
 
 ## External links
-- [LinkedIn](https://www.linkedin.com/in/rbaudibert/): My LinkedIn profile
-- [GitHub](https://github.com/rafaeelaudibert): My GitHub profile
-- [Instagram](https://www.instagram.com/rafaaudibeert/): My Instagram profile
-- [PostHog](https://posthog.com/community/profiles/32207): My profile on PostHog's team website
+${SOCIAL_LINKS.map((link) => `- [${link.label}](${link.href}): ${link.description}`).join("\n")}
 `.trim()
 
 export const GET: APIRoute = ({ site: siteUrl }) =>

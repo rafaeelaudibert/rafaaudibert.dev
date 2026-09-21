@@ -1,6 +1,10 @@
 ---
-import Icon from "./Icon.astro"
+import { site, SOCIAL_LINKS } from "../data/site"
+
 const currentYear = new Date().getFullYear()
+const footerLinks = SOCIAL_LINKS.filter((link) =>
+  ["GitHub", "LinkedIn"].includes(link.label),
+)
 ---
 
 <footer>
@@ -11,11 +15,10 @@ const currentYear = new Date().getFullYear()
       >
       🚀
     </p>
-    <p>&copy; {currentYear} Rafael Baldasso Audibert</p>
+    <p>&copy; {currentYear} {site.fullName}</p>
   </div>
   <p class="socials">
-    <a href="https://github.com/rafaeelaudibert"> GitHub</a>
-    <a href="https://www.linkedin.com/in/rbaudibert/"> LinkedIn</a>
+    {footerLinks.map((link) => <a href={link.href}>{link.label}</a>)}
   </p>
 </footer>
 <style>
