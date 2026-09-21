@@ -46,18 +46,18 @@ ${LANGUAGES.map((language) => `${language.language}: (${language.level})`).join(
 )}
 
 ## Website content
-- [Blog](${siteUrl.href}/blog): My blog posts
+- [Blog](${siteUrl.origin}/blog): My blog posts
 ${blogposts
   .map(
     (post) =>
-      `  - [${post.data.title}](${siteUrl.href}/blog/${post.id}): ${post.data.title}`
+      `  - [${post.data.title}](${siteUrl.origin}/blog/${post.id}): ${post.data.title}`
   )
   .join("\n")}	
 - [Resume](${
-    siteUrl.href
+    siteUrl.origin
   }/resume): A little bit about me, my background, my past experiences, and my skills
 - [Changelog](${
-    siteUrl.href
+    siteUrl.origin
   }/changelog): All the cools things that happened in my life
 
 ## External links
