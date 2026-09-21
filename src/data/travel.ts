@@ -69,6 +69,7 @@ export const AIRPORTS = {
   OPO: { code: "OPO", name: "Porto", location: [41.24, -8.68], countryCode: "PT" },
   // United Kingdom
   LHR: { code: "LHR", name: "London-Heathrow", location: [51.47, -0.46], countryCode: "GB" },
+  LGW: { code: "LGW", name: "London-Gatwick", location: [51.15, -0.19], countryCode: "GB" },
   LCY: { code: "LCY", name: "London City", location: [51.50, 0.05], countryCode: "GB" },
   STN: { code: "STN", name: "London-Stansted", location: [51.89, 0.26], countryCode: "GB" },
   EDI: { code: "EDI", name: "Edinburgh", location: [55.95, -3.37], countryCode: "GB" },
@@ -221,7 +222,8 @@ export const FLIGHTS: Flight[] = [
   { from: "GRU", to: "POA", year: 2026 },
   { from: "POA", to: "GRU", year: 2026, layover: true },
   { from: "GRU", to: "MAD", year: 2026 },
-  { from: "MAD", to: "GRU", year: 2026, layover: true },
+  { from: "MAD", to: "LGW", year: 2026 },
+  { from: "LHR", to: "GRU", year: 2026, layover: true },
   { from: "GRU", to: "POA", year: 2026 },
 ]
 
