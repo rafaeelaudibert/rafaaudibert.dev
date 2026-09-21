@@ -11,7 +11,15 @@
     "not_found_handling": "404-page",
     // Bound so the Worker can hand non-API requests straight back to the
     // asset server rather than reimplementing static serving.
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // Paths the Worker sees before the asset server does. /mcp needs it
+    // because a docs page (GET from a browser) and the MCP endpoint (POST)
+    // share the path, and assets would win for anything with a file behind
+    // it. Once this is a list, every other path is asset-only and a miss
+    // gets the 404 page instead of reaching the Worker, so /api/* has to be
+    // listed too or the sorting playground stops working. Add any new Worker
+    // route here.
+    "run_worker_first": ["/mcp", "/mcp/", "/api/*"]
   },
   "routes": [
     { "pattern": "rafaaudibert.dev", "custom_domain": true },

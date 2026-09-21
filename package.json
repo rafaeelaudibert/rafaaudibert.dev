@@ -29,8 +29,10 @@
     "@astrojs/mdx": "7.0.3",
     "@astrojs/react": "6.0.1",
     "@astrojs/sitemap": "3.7.3",
+    "@cfworker/json-schema": "^4.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@mui/material": "^7.3.0",
     "@mui/system": "^7.3.0",
     "@mui/x-charts": "^9.0.1",
@@ -49,11 +51,13 @@
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "satori": "^0.26.0",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
     "@types/d3-sankey": "^0.12.5",
-    "node-addon-api": "^8.7.0"
+    "node-addon-api": "^8.7.0",
+    "wrangler": "^4.135.0"
   }
 }

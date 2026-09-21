@@ -2,8 +2,13 @@
  * Worker entry point.
  *
  * Almost every request is a static asset and never reaches this code - the
- * assets binding serves those directly. This exists for /api/sorting/*, which
- * runs the sorting algorithms server-side for the sorting-algorithms posts.
+ * assets binding serves those directly. This exists for:
+ *
+ * - /api/sorting/*, which runs the sorting algorithms server-side for the
+ *   sorting-algorithms posts.
+ * - /mcp, the MCP server (see ./mcp/server.ts). wrangler.jsonc routes that
+ *   path here first, so POST reaches the server while a browser GET is
+ *   handed back to the assets binding and gets the docs page.
  *
  * The response deliberately carries no timing. Workers freeze the clock during
  * synchronous execution as a Spectre mitigation, so any duration measured in
@@ -19,8 +24,9 @@ import {
   type ShellSequence,
   type SortingAlgorithm,
 } from "../src/content/blog/sorting-algorithms/sorting"
+import { handleMcpRequest, MCP_PATH, type McpEnv } from "./mcp/server"
 
-interface Env {
+interface Env extends McpEnv {
   ASSETS: Fetcher
 }
 
@@ -117,6 +123,10 @@ function handleSort(url: URL): Response {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
+
+    if (url.pathname === MCP_PATH || url.pathname === `${MCP_PATH}/`) {
+      return handleMcpRequest(request, env)
+    }
 
     if (url.pathname.startsWith("/api/sorting")) {
       if (request.method !== "GET") {
