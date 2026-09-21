@@ -59,6 +59,9 @@ ${blogposts
 - [Changelog](${
     siteUrl.origin
   }/changelog): All the cools things that happened in my life
+- [MCP server](${
+    siteUrl.origin
+  }/mcp): Connect an AI assistant to this site over the Model Context Protocol (Streamable HTTP, no auth)
 
 ## External links
 ${SOCIAL_LINKS.map((link) => `- [${link.label}](${link.href}): ${link.description}`).join("\n")}

@@ -1,0 +1,360 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import Hero from "../components/Hero.astro"
+import ContactCTA from "../components/ContactCTA.astro"
+import Link from "../components/Link.astro"
+
+import { site } from "../data/site"
+// The same definitions the Worker registers, so this list cannot drift from
+// what the server actually answers.
+import { TOOLS } from "../../worker/mcp/tools"
+
+const endpoint = `${site.url}/mcp`
+const serverName = "rafaaudibert"
+
+type Snippet = {
+  id: string
+  label: string
+  note?: string
+  file?: string
+  code: string
+}
+
+const snippets: Snippet[] = [
+  {
+    id: "claude-code",
+    label: "Claude Code",
+    note: "One command in your terminal, then ask away in any session.",
+    code: `claude mcp add --transport http ${serverName} ${endpoint}`,
+  },
+  {
+    id: "claude",
+    label: "Claude.ai & Claude Desktop",
+    note: "Settings → Connectors → Add custom connector. Paste the URL, leave authentication empty.",
+    code: endpoint,
+  },
+  {
+    id: "cursor",
+    label: "Cursor",
+    file: ".cursor/mcp.json",
+    code: JSON.stringify({ mcpServers: { [serverName]: { url: endpoint } } }, null, 2),
+  },
+  {
+    id: "vscode",
+    label: "VS Code",
+    file: ".vscode/mcp.json",
+    code: JSON.stringify({ servers: { [serverName]: { type: "http", url: endpoint } } }, null, 2),
+  },
+  {
+    id: "curl",
+    label: "No client at all",
+    note: "It is plain JSON-RPC over HTTP, so curl works too.",
+    code: [
+      `curl -X POST ${endpoint} \\`,
+      `  -H 'content-type: application/json' \\`,
+      `  -H 'accept: application/json, text/event-stream' \\`,
+      `  -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_profile","arguments":{}}}'`,
+    ].join("\n"),
+  },
+]
+
+const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/master/worker/mcp"
+---
+
+<BaseLayout
+  title="MCP server | Rafa Audibert"
+  description="Connect your AI assistant to rafaaudibert.dev over the Model Context Protocol and ask it about me."
+>
+  <div class="stack gap-20">
+    <main class="wrapper stack gap-8 lg:gap-10 mcp">
+      <Hero
+        title="Ask your AI about me"
+        tagline="This site runs a Model Context Protocol server. Point an assistant at it and it can read my resume, my travels and my blog."
+        align="start"
+      />
+
+      <section class="stack gap-4" aria-labelledby="endpoint-heading">
+        <h2 id="endpoint-heading">Endpoint</h2>
+        <div class="endpoint">
+          <code>{endpoint}</code>
+          <button type="button" class="copy" data-copy={endpoint} aria-label="Copy endpoint URL">
+            Copy
+          </button>
+        </div>
+        <p>
+          Streamable HTTP transport, no authentication, no sessions. Everything it
+          returns is already public on this website; the server just makes it
+          machine-readable. A key-gated layer for non-public information is
+          planned, which is why the server accepts a bearer token it does not
+          yet use.
+        </p>
+      </section>
+
+      <section class="stack gap-4" aria-labelledby="connect-heading">
+        <h2 id="connect-heading">Connect</h2>
+        <div class="stack gap-8">
+          {
+            snippets.map((snippet) => (
+              <article class="stack gap-2" aria-labelledby={`snippet-${snippet.id}`}>
+                <h3 id={`snippet-${snippet.id}`}>{snippet.label}</h3>
+                {snippet.note && <p>{snippet.note}</p>}
+                {snippet.file && (
+                  <p class="file">
+                    Add to <code>{snippet.file}</code>:
+                  </p>
+                )}
+                <div class="snippet">
+                  <pre tabindex="0"><code>{snippet.code}</code></pre>
+                  <button
+                    type="button"
+                    class="copy"
+                    data-copy={snippet.code}
+                    aria-label={`Copy ${snippet.label} snippet`}
+                  >
+                    Copy
+                  </button>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="stack gap-4" aria-labelledby="tools-heading">
+        <h2 id="tools-heading">Tools</h2>
+        <p>
+          All read-only. Assistants usually pick the right one on their own, but
+          here is what is on offer:
+        </p>
+        <dl class="tools">
+          {
+            TOOLS.map((tool) => (
+              <div class="tool">
+                <dt>
+                  <code>{tool.name}</code>
+                </dt>
+                <dd>{tool.description}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p>
+          It also exposes <Link href={`${site.url}/llms.txt`} external={false}
+            >llms.txt</Link
+          > as a resource. The implementation lives in{" "}
+          <Link href={sourceUrl}>the site's repository</Link>, built on the
+          official TypeScript SDK and running on the same Cloudflare Worker that
+          serves these pages.
+        </p>
+      </section>
+
+      <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
+    </main>
+    <ContactCTA />
+  </div>
+</BaseLayout>
+
+<script>
+  // Copy buttons. Clipboard access needs a user gesture and a secure context,
+  // both of which a click on a served page satisfies. Failure leaves the
+  // text selectable in the <pre>, so nothing is lost if it does not work.
+  const status = document.querySelector<HTMLElement>("[data-copy-status]")
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+    const original = button.textContent
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? "")
+        button.textContent = "Copied"
+        if (status) status.textContent = "Copied to clipboard"
+      } catch {
+        button.textContent = "Select to copy"
+        if (status) status.textContent = "Clipboard unavailable, select the text to copy it"
+      }
+      setTimeout(() => {
+        button.textContent = original
+      }, 2000)
+    })
+  }
+</script>
+
+<style>
+  .mcp {
+    color: var(--gray-300);
+    font-size: var(--text-md);
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    color: var(--gray-0);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    color: var(--gray-100);
+  }
+
+  p {
+    max-width: 65ch;
+  }
+
+  code {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+    font-size: 0.9em;
+  }
+
+  .endpoint,
+  .snippet {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid var(--gray-800);
+    border-radius: 0.75rem;
+    background-color: var(--gray-999_40);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .endpoint {
+    padding: 1rem 1.25rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .endpoint code {
+    color: var(--gray-0);
+    word-break: break-all;
+  }
+
+  .snippet {
+    align-items: flex-start;
+  }
+
+  pre {
+    flex: 1;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    color: var(--gray-100);
+    line-height: 1.5;
+    /* Room for the absolutely positioned button on narrow screens */
+    padding-right: 5.5rem;
+  }
+
+  pre:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
+
+  .snippet .copy {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  .copy {
+    flex-shrink: 0;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--gray-800);
+    border-radius: 999px;
+    background-color: var(--gray-999);
+    color: var(--gray-200);
+    font-size: var(--text-sm);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+      color var(--theme-transition),
+      border-color var(--theme-transition),
+      background-color var(--theme-transition);
+  }
+
+  .copy:hover,
+  .copy:focus-visible {
+    color: var(--gray-0);
+    border-color: var(--accent-regular);
+  }
+
+  .copy:focus-visible {
+    outline: 2px solid var(--accent-regular);
+    outline-offset: 2px;
+  }
+
+  .file {
+    margin: 0;
+  }
+
+  .tools {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tool {
+    display: grid;
+    /* Cards in a row stretch to the tallest; keep the text at the top */
+    align-content: start;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--gray-800);
+    border-radius: 0.75rem;
+    background-color: var(--gray-999_40);
+  }
+
+  /* global.css renders <dt> as a bulleted list item; these are cards */
+  .tool dt {
+    display: block;
+    list-style: none;
+    margin: 0;
+  }
+
+  .tool dt code {
+    color: var(--accent-regular);
+    font-weight: 600;
+  }
+
+  .tool dd {
+    margin: 0;
+  }
+
+  /* Narrow screens: long code lines scroll under an overlaid button, so the
+     button sits below the code instead. */
+  @media (max-width: 50em) {
+    .snippet {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .snippet pre {
+      padding-right: 1.25rem;
+    }
+
+    .snippet .copy {
+      position: static;
+      align-self: flex-end;
+      margin: 0 0.75rem 0.75rem;
+    }
+  }
+
+  @media (min-width: 50em) {
+    .tools {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .copy,
+    .tool,
+    .endpoint,
+    .snippet {
+      border-color: CanvasText;
+    }
+  }
+</style>
