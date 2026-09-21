@@ -1,0 +1,213 @@
+---
+title: Moving off AWS in one evening, with Claude doing the digging
+publishDate: 2026-09-21 03:15:00 -0300
+description: >
+  I asked Claude to move this site from AWS to Cloudflare. It found a six-year-old
+  bug, eight forgotten admin keys, and a bunch of dumb things I'd forgotten about.
+img: migrating-from-aws-to-cloudflare-with-claude.jpg
+img_alt: >
+  A small white robot carries glowing cargo containers along a conveyor from an
+  orange AWS cloud on the left, stacked with server racks and crates marked with
+  database and file icons, toward a blue Cloudflare cloud on the right set against
+  a networked globe.
+tags: [Cloudflare, AWS, Claude, Migration, Infrastructure]
+---
+
+I had an AWS account I'd stopped thinking about. It cost about `$1.50` a month, which is
+cheap enough that "I should clean that up" never made it to the top of any list. This site
+lived there, behind S3 and CloudFront. So did a wedding website, a bus visualisation, and
+a pile of things from university that I'd genuinely forgotten existed.
+
+One evening I asked Claude to move all of it to Cloudflare. What follows is less a
+migration guide than a list of things neither of us expected to find.
+
+## Starting with an inventory 🔍
+
+The first useful thing was refusing to trust my own memory of what was in there. I gave
+Claude a read-only IAM user and asked it to enumerate the account properly, which turned
+up rather more than the two things I would have listed:
+
+- **18** S3 buckets
+- **3** CloudFront distributions
+- **45** Lambda functions
+- **8** API Gateways
+- **4** DynamoDB tables
+- **2** Route 53 hosted zones
+- **3** orphaned snapshots attached to nothing
+
+Cost Explorer turned out to be the sharpest tool: it showed
+line items for `EC2 - Other` and `RDS` even though I had no EC2 instances and no
+databases. Those were orphaned snapshots - an 8 GB EBS snapshot from 2022, a Postgres
+snapshot from 2019, a MySQL one from 2024 - quietly billing for storage attached to
+nothing at all.
+
+## The thing that actually mattered 🔑
+
+Buried in the IAM listing:
+
+```
+blog                 AdministratorAccess   key created 2020-05-17
+ifanalytics          AdministratorAccess   key created 2020-05-26
+lilierafa-wedding    AdministratorAccess   key created 2025-09-15
+poabus               AdministratorAccess   key created 2021-08-22
+serverless-admin     AdministratorAccess   key created 2020-01-20
+urlshortener         AdministratorAccess   key created 2020-12-13
+website              AdministratorAccess   key created 2020-05-17
+windows              AdministratorAccess   key created 2020-06-02
+```
+
+Eight IAM users, every one of them with `AdministratorAccess`, every one with a live
+access key, the oldest from **January 2020**. Never rotated, which [AWS itself will tell you not to do](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html). Six of them were CI users
+whose keys sat in GitHub Actions secrets, which means six repositories each held
+credentials that could do anything at all to the account.
+
+This would be solved either way because that account would be going away, but damn, was I lazy huh.
+Worth checking your o
+
+## A bug that had been lying for six years 🐛
+
+This is my favourite part.
+
+Porting the sorting Lambdas meant reading them. Claude got to the [Shell sort](https://en.wikipedia.org/wiki/Shellsort):
+
+```js
+for (let i = sequence.length = 1; i >= 0; i--) {
+```
+
+That's `sequence.length = 1`. An assignment, not `sequence.length - 1`. It truncates the
+gap sequence to a single element, so `sequence[1]` is `undefined`, the inner loop never
+runs, and only the `h = 1` pass executes.
+
+Which is plain insertion sort.
+
+The API was still live at that point, so it was testable rather than theoretical. On a
+reversed array of 500 elements:
+
+```
+insertion-sort        changes = 124750
+shell-sort (Shell)    changes = 124750
+shell-sort (Knuth)    changes = 124750
+shell-sort (Tokuda)   changes = 124750
+```
+
+All identical. And `124750` is exactly `n(n-1)/2` — textbook insertion sort. Three
+different [gap sequences](https://en.wikipedia.org/wiki/Shellsort#Gap_sequences), all reporting the same number, on an article whose entire
+argument is that gap sequences matter. Every reader who played with that widget since
+2018 got insertion sort three times over.
+
+Fixed, on the same input:
+
+```
+Shell    1532    (98.8% fewer)
+Knuth    1804
+Tokuda   1714
+```
+
+The post had been describing one thing and demonstrating another for six years. Nobody
+told me - not even the professor who reviewed that assignment lol.
+
+## Where Workers get interesting ⏱️
+
+I wanted the sorting API to stay server-side. Claude said it couldn't report timings on
+Workers, which sounded like the kind of claim worth checking, so it deployed a throwaway
+Worker and measured.
+
+Sorting 20,000 elements. Roughly 200 million operations. Hundreds of milliseconds of real
+CPU:
+
+```json
+{
+  "performance_now_delta_ms": 0,
+  "date_now_delta_ms": 0,
+  "with_yield_delta_ms": 0,
+  "cpu_actually_did_work": true
+}
+```
+
+Zero. Not approximately zero — exactly zero, on every clock available, including with an
+`await` in the middle to try to break the freeze.
+
+This is documented, it turns out, and I'd simply never read that page. Cloudflare's
+[runtime docs](https://developers.cloudflare.com/workers/runtime-apis/performance/) say
+that timers "only advance or increment after I/O occurs", explicitly to "mitigate against
+[Spectre](https://spectreattack.com/) attacks". A high-resolution timer plus predictable
+compute is the raw material for a side-channel attack, so the runtime simply doesn't let
+your code observe time passing while it computes. Their
+[security model write-up](https://blog.cloudflare.com/mitigating-spectre-and-other-security-threats-the-cloudflare-workers-security-model/)
+is worth reading if you want the reasoning in full. Entirely sensible, and completely
+fatal to a benchmark widget.
+
+The compromise: the Worker does the sorting and returns the operation count, which is
+exact. The browser times the round trip, which is honest as long as you say so. The page
+now says so, and the numbers include roughly 100ms of network latency that you should
+mentally subtract.
+
+While we were there, we also found the ceiling by walking it up until it broke:
+
+```
+n = 35,000   →  200 OK, 2.1s
+n = 40,000   →  error 1102   (CPU limit exceeded)
+```
+
+[Error 1102](https://developers.cloudflare.com/workers/platform/limits/#cpu-time) is the
+Worker exceeding its CPU budget.
+
+So the cap is 25,000 now.
+
+## Where everything ended up 🏁
+
+| Was | Is |
+| --- | --- |
+| S3 + CloudFront | [Workers static assets](https://developers.cloudflare.com/workers/static-assets/) |
+| Lambda + API Gateway | one Worker route on the same domain |
+| Route 53 | Cloudflare DNS |
+| ACM | [Universal SSL](https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/) |
+| Zoho Mail | [Email Routing](https://developers.cloudflare.com/email-routing/) |
+| GitHub Actions + AWS keys | [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) |
+
+The AWS account is empty. Zero buckets, zero distributions, zero functions, zero tables,
+zero zones, zero roles.
+
+One row in that table wasn't part of the plan. I'd been on Zoho for mail and never liked
+it, and since the DNS was already moving I figured I'd look at what Cloudflare had.
+[Email Routing](https://developers.cloudflare.com/email-routing/) is free, took about two
+minutes, and gives you a catch-all: anything `@rafaaudibert.dev` now lands in my normal
+inbox, so I can hand out a throwaway address per service and see who leaks it. Genuinely
+one of the nicer things I've set up this year, and I only found it because I happened to
+be in the neighbourhood.
+
+The deployment story got a lot less silly too. Every one of these repos used to carry its
+own `deploy.yml`: check out, install, build, `configure-aws-credentials`, `aws s3 sync`,
+then `aws cloudfront create-invalidation` and sit there blocking on
+`wait invalidation-completed` so the job wouldn't go green before the cache had actually
+turned over. Forty-odd lines, duplicated with small mutations across six repositories,
+each needing `AWS_ACCESS_KEY_ID`, `AWS_SECRET_KEY_ID` and a `DISTRIBUTION` id pasted into
+GitHub secrets.
+
+Now there is no workflow file at all.
+[Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) watches the repo
+and a push to `master` builds and deploys it. The variables that genuinely are build
+variables - a PostHog key, a Mapbox token - live in the Cloudflare project settings
+instead of being handed to a CI runner alongside the keys to my entire cloud account.
+Deleting those workflow files felt disproportionately good.
+
+## Was the AI actually useful? 🤖
+
+Yes, though not in the way I expected. The mechanical parts — rewriting deploy pipelines,
+porting seven sorting algorithms, swapping DNS records — were fine but not the interesting
+bit. I could have done those, slowly.
+
+What I couldn't have done is the noticing. The Shell sort bug was found by reading code
+that was being ported anyway. The dangling DNS record turned up because something compared
+the Route 53 zone against the actual CloudFront distribution list. The eight admin keys
+surfaced from a permissions check for something else entirely. The EventBridge rule
+appeared in a sweep looking for something different again.
+
+It also disagreed with me usefully. When I said to point DNS at the new setup, it pointed
+out that removing the Route 53 zone before delegation had propagated would take down my
+MX records along with the website, and did the website half only. When I said to delete
+everything, it stopped before the IAM users and asked. When I asked it to add a secret to
+a public repo to save me a dashboard click, it said no and explained what scrapers do with
+Mapbox tokens.
+
+So, yeah, Claude was very useful, thank you, buddy.
