@@ -17,6 +17,7 @@ import {
   LANGUAGES,
   TECHNOLOGIES,
 } from "../data/resume"
+import { COMPANY_LOGOS } from "../data/companyLogos"
 
 ---
 
@@ -50,7 +51,7 @@ import {
             PAST_EXPERIENCES.map((experience) => (
               <p>
                 <div class="company-header">
-                  <Image src={experience.imageSrc} alt={experience.company} />
+                  <Image src={COMPANY_LOGOS[experience.company]} alt={experience.company} />
                   <span>
                     <strong>{experience.role}</strong> at{" "}
                     <Link href={experience.href}>{experience.company}</Link> —{" "}

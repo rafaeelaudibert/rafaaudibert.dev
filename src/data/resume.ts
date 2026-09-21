@@ -1,7 +1,6 @@
-import posthog from "../assets/companies/posthog.svg"
-import leadsimple from "../assets/companies/leadsimple.png"
-import taglivros from "../assets/companies/taglivros.png"
-import feeng from "../assets/companies/feeng.png"
+// Plain data only: this module is imported by the Worker as well as the site,
+// so anything that needs the Astro build (images, astro:* modules) lives elsewhere.
+// Company logos are looked up by company name in ./companyLogos.ts.
 
 export const FIRST_WORKING_YEAR = 2017
 export const BACKGROUND_CONTENT = [
@@ -12,7 +11,6 @@ export const BACKGROUND_CONTENT = [
 export const PAST_EXPERIENCES = [
   {
     company: "PostHog",
-    imageSrc: posthog,
     href: "https://posthog.com",
     role: "Product Engineer",
     startDate: "Nov 2024",
@@ -25,7 +23,6 @@ export const PAST_EXPERIENCES = [
   },
   {
     company: "LeadSimple",
-    imageSrc: leadsimple,
     href: "https://leadsimple.com",
     role: "Senior Software Engineer",
     startDate: "Mar 2021",
@@ -39,7 +36,6 @@ export const PAST_EXPERIENCES = [
   },
   {
     company: "TAG Livros",
-    imageSrc: taglivros,
     href: "https://taglivros.com.br/",
     role: "Software Engineer",
     startDate: "Nov 2019",
@@ -52,7 +48,6 @@ export const PAST_EXPERIENCES = [
   },
   {
     company: "FEENG/UFRGS",
-    imageSrc: feeng,
     href: "https://www.feeng.com.br/",
     role: "Software Engineer",
     startDate: "Mar 2017",
