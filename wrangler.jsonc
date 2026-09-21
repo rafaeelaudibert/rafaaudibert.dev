@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rafaaudibert-dev",
+  "compatibility_date": "2026-09-21",
+  "assets": {
+    "directory": "./dist",
+    // Astro defaults here (trailingSlash "ignore", build.format "directory"),
+    // so auto-trailing-slash matches: /blog and /blog/ both resolve.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "rafaaudibert.dev", "custom_domain": true },
+    { "pattern": "www.rafaaudibert.dev", "custom_domain": true }
+  ]
+}
