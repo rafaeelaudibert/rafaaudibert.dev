@@ -70,3 +70,5 @@ yarn-error.log
 yarn.lock
 
 now.json
+# wrangler local state (miniflare)
+.wrangler/
