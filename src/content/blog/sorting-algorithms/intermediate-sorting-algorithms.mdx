@@ -18,7 +18,7 @@ import ThemeSetLight from '../../../components/ThemeSetLight.astro'
 
 This is the second article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. In this one, we will see intermediate sorting algorithms with better time complexity. We will also have a playground at the end of the article,  with `async` JavaScript code running with a remote API, similar to the one you saw in the first article (but better).
 
-> The JavaScript code runs directly in your browser. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-2.zip) zip file containing the CSV data used as input.
+> The JavaScript code runs on a Cloudflare Worker, called from the page. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-2.zip) zip file containing the CSV data used as input.
 
 ## Introduction 🔃
 
@@ -123,7 +123,7 @@ It's interesting, because QuickSort gets the prize for fastest, although I wasn'
 
 ## Playground ⏳
 
-These algorithms were also "translated" to JavaScript, which you can play with in the table below. Everything runs directly in your browser, so there is no API call and no request timeout getting in the way. The timings come from a real clock on your own machine, so they will vary a bit between runs and will be much slower than the C ones used for the graphics above, but if you run the same code yourself you will see that asynchronous JavaScript makes some sorting algorithms REALLY fast (you can see the explanation in the latter article). Hope you enjoyed, and see you next time!
+These algorithms were also "translated" to JavaScript, which you can play with in the table below. The sorting runs on a Cloudflare Worker rather than in your browser. The Time column is the round trip measured from the page, network latency included, because the Worker runtime freezes its clock during synchronous execution and so cannot time itself - expect a floor of about a tenth of a second regardless of the array. Arrays are capped at 25,000 elements to stay inside the Worker CPU budget. These times are much slower than the C ones used for the graphics above, but if you run the same code yourself you will see that asynchronous JavaScript makes some sorting algorithms REALLY fast (you can see the explanation in the latter article). Hope you enjoyed, and see you next time!
 
 <SortingTable extended client:load />
 

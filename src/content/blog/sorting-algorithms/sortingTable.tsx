@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { capture } from '../../../utils/analytics'
-import { buildArray, runSort, type ArrayType, type ShellSequence, type SortingAlgorithm } from './sorting'
+import type { ArrayType } from './sorting'
+
+/** Shape returned by /api/sorting/*; errors carry `error` instead. */
+type SortResponse = { size: number; changes: number; error?: string }
 
 
 const capitalize = (str: string) => str.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
@@ -37,6 +40,8 @@ export default function SortingTable({ extended = false }: Props) {
   const [arraySize, setArraySize] = useState(100)
   const [customField, setCustomField] = useState("")
   const [data, setData] = useState<Data[]>([])
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const submit = async () => {
     const [parsedSortingAlgorithm, shellType = ""] = sortingAlgorithm.split("/")
@@ -47,15 +52,37 @@ export default function SortingTable({ extended = false }: Props) {
 
     if (arrayType === "custom" && custom.length === 0) return
 
-    // Sorts run here rather than on a server: a real monotonic clock is the
-    // whole point, and runSort mutates the array it is given.
-    const array = buildArray(arrayType as ArrayType, arraySize, custom)
-    const size = array.length
-    const { changes, time } = runSort(
-      parsedSortingAlgorithm as SortingAlgorithm,
-      array,
-      (shellType || "0") as ShellSequence,
+    const params = new URLSearchParams(
+      arrayType === "custom"
+        ? { array: custom.join(","), type: shellType || "0" }
+        : { size: String(arraySize), type: shellType || "0" },
     )
+    const url = `/api/sorting/${arrayType}/${parsedSortingAlgorithm}?${params}`
+
+    setError(null)
+    setPending(true)
+
+    // The sort runs in the Worker. Workers freeze the clock during synchronous
+    // execution, so the server cannot time itself - we measure the round trip
+    // here instead, which necessarily includes network latency.
+    const start = performance.now()
+    let size: number
+    let changes: number
+    try {
+      const res = await fetch(url)
+      const body = (await res.json()) as SortResponse
+      if (!res.ok) {
+        setError(body?.error ?? `Request failed (${res.status})`)
+        return
+      }
+      ;({ size, changes } = body)
+    } catch {
+      setError("Could not reach the sorting service. Check your connection and try again.")
+      return
+    } finally {
+      setPending(false)
+    }
+    const time = `${((performance.now() - start) / 1000).toFixed(3)} s`
 
     capture("sorting playground run", {
       algorithm: parsedSortingAlgorithm,
@@ -127,7 +154,22 @@ export default function SortingTable({ extended = false }: Props) {
     </div>
 
 
-    <button onClick={submit} style={{ width: "50%" }}>Run</button>
+    <button onClick={submit} disabled={pending} style={{ width: "50%" }}>
+      {pending ? "Sorting…" : "Run"}
+    </button>
+
+    {error && (
+      <p role="alert" style={{ margin: 0, padding: "0.5rem 1rem", width: "100%", textAlign: "center", border: "1px solid currentColor", borderRadius: "0.5rem" }}>
+        {error}
+      </p>
+    )}
+
+    <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.75, textAlign: "center" }}>
+      Sorting runs on the server. The time shown is the full round trip, so it
+      includes network latency — expect a floor of roughly 0.1s however small
+      the array is.
+    </p>
+
     <hr />
 
     <div style={{ width: "100%" }}>

@@ -32,9 +32,9 @@ import ThemeSetLight from '../../../components/ThemeSetLight.astro'
     > *Warning*: This is a legacy article, therefore it won't work well on dark mode. I suggest you turn light mode on to read this article. <ThemeSetLight/>
 </div>
 
-This is the first article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. On this first one, we will also explore asymptotic complexity in general. We will also have a playground at the end of the article, running `async` JavaScript code live on this page, right in your browser. You will be able to experiment some stuff (check it later).
+This is the first article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. On this first one, we will also explore asymptotic complexity in general. We will also have a playground at the end of the article, running `async` JavaScript code on a Cloudflare Worker, so you can experiment with the algorithms live. You will be able to experiment some stuff (check it later).
 
-> The JavaScript code runs directly in your browser. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-1.zip) zip file containing the CSV data used as input.
+> The JavaScript code runs on a Cloudflare Worker, called from the page. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-1.zip) zip file containing the CSV data used as input.
 
 ## Analyzing complexity time cases ⏱️
 
@@ -215,7 +215,7 @@ This is over for today! Hope you enjoyed the article, and that it gave you some 
 
 ## Playground ⏳
 
-These algorithms were also "translated" to JavaScript, which you can play with in the table below. Everything runs directly in your browser, so there is no API call and no request timeout to worry about: you are free to throw a big array at BubbleSort and watch it suffer. It also means the timings are measured on a real clock on your own machine, so they will vary with whatever else your laptop happens to be doing, and they will be slower than the C ones used for the graphics above. Do try the same code locally, though, and you will see that asynchronous JavaScript makes the sorting algorithms REALLY faster when using Bubble or Insertion sort, although it makes the Shell algorithm slower (we can't process a lot of things at the same time, as we must make all the different sequence values of $h$ in strict order). Hope you enjoyed, and see you next time!
+These algorithms were also "translated" to JavaScript, which you can play with in the table below. The sorting itself happens on a Cloudflare Worker rather than in your browser, so the numbers do not depend on what your laptop is doing. One caveat on the Time column: the Worker cannot time itself, because the runtime freezes its clock during synchronous execution as a side-channel mitigation. What you see is the full round trip measured from the browser, which includes network latency - so expect a floor of roughly a tenth of a second no matter how trivial the array, and treat small numbers as noise. Arrays are capped at 25,000 elements, since the quadratic algorithms exceed the Worker CPU budget above that. The times will be slower than the C ones used for the graphics above, but if you run the same code locally you will see that asynchronous JavaScript makes the sorting algorithms REALLY faster when using Bubble or Insertion sort, although it makes the Shell algorithm slower (we can't process a lot of things at the same time, as we must make all the different sequence values of $h$ in strict order). Hope you enjoyed, and see you next time!
 
 <hr/>
 
