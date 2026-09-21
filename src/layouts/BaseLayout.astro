@@ -36,6 +36,16 @@ const { title, description, ogImage, type } = Astro.props
     <EasterEggs />
     <ShortcutsManager client:load navigationShortcuts={NAV_SHORTCUTS} />
 
+    <script>
+      // Windows has no country flag glyphs, so Chromium there renders "BR"
+      // rather than the flag. This injects an @font-face for "Twemoji Country
+      // Flags" (already first in --font-body) scoped by unicode-range to the
+      // flag codepoints. It feature-detects, so browsers with native flags
+      // never download the 78kB font.
+      import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill"
+      polyfillCountryFlagEmojis()
+    </script>
+
     <style>
       .skip-link {
         position: absolute;
