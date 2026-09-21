@@ -18,7 +18,7 @@ import ThemeSetLight from '../../../components/ThemeSetLight.astro'
 
 This is the second article, in a series of 3, on which we will talk about Sorting Algorithms with tons of charts. In this one, we will see intermediate sorting algorithms with better time complexity. We will also have a playground at the end of the article,  with `async` JavaScript code running with a remote API, similar to the one you saw in the first article (but better).
 
-> The JavaScript code will run in an AWS server, which will be requested through an API call. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-2.zip) zip file containing the CSV data used as input.
+> The JavaScript code runs directly in your browser. The graphics data were generated with a code written in C, compiled with GCC version $$5.1.0$$ which can be downloaded in [this](/assets/zip/sorting-2.zip) zip file containing the CSV data used as input.
 
 ## Introduction 🔃
 
@@ -123,7 +123,7 @@ It's interesting, because QuickSort gets the prize for fastest, although I wasn'
 
 ## Playground ⏳
 
-These algorithms were also "translated" to JavaScript which can be accessed through the table below. The table makes API calls, hosted with the [AWS API Gateway](https://aws.amazon.com/api-gateway/) which uses an [AWS Lambda](https://aws.amazon.com/lambda/) Node.JS runtime to make the calculations, so that we can make non-blocking requests. So that I wouldn't be surprised with a big bill on my credit card at the end of the month, the requests to the API are limited to last at most 3 seconds, so you probably won't be able to order 50000 numbers with BubbleSort. As we don't have that much computation power on an AWS machine, the times here will be much slower than the C ones which we used to make the graphics above, but if you run the same code in your machine, you would see that asynchronous Javascript makes some sorting algorithms REALLY fast (you can see the explanation in the latter article). Hope you enjoyed, and see you next time!
+These algorithms were also "translated" to JavaScript, which you can play with in the table below. Everything runs directly in your browser, so there is no API call and no request timeout getting in the way. The timings come from a real clock on your own machine, so they will vary a bit between runs and will be much slower than the C ones used for the graphics above, but if you run the same code yourself you will see that asynchronous JavaScript makes some sorting algorithms REALLY fast (you can see the explanation in the latter article). Hope you enjoyed, and see you next time!
 
 <SortingTable extended client:load />
 

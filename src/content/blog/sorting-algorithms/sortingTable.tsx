@@ -1,5 +1,6 @@
-import { AMAZON_SORTING_TABLE_API_URL } from 'astro:env/client'
 import { useState } from 'react'
+import { buildArray, runSort, type ArrayType, type ShellSequence, type SortingAlgorithm } from './sorting'
+
 
 const capitalize = (str: string) => str.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
 
@@ -7,12 +8,15 @@ type Data = {
   sortingAlgorithm: string
   arrayType: string
   arraySize: number
-  time: number
+  time: string
   changes: number
 }
 
-type SortingAlgorithm = "bubble-sort" | "insertion-sort" | "binary-insertion-sort" | "shell-sort/0" | "shell-sort/1" | "shell-sort/2" | "quick-sort" | "merge-sort" | "radix-sort"
-type ArrayType = "sorted" | "reversed" | "random" | "custom"
+/** Select values: shell sort carries its gap sequence as a suffix. */
+type AlgorithmChoice =
+  | "bubble-sort" | "insertion-sort" | "binary-insertion-sort"
+  | "shell-sort/0" | "shell-sort/1" | "shell-sort/2"
+  | "quick-sort" | "merge-sort" | "radix-sort"
 
 // Whitespace because it's concatenating with the sorting algorithm name
 const SHELL_TYPE_MAP = {
@@ -27,7 +31,7 @@ type Props = {
 }
 
 export default function SortingTable({ extended = false }: Props) {
-  const [sortingAlgorithm, setSortingAlgorithm] = useState<SortingAlgorithm>("bubble-sort")
+  const [sortingAlgorithm, setSortingAlgorithm] = useState<AlgorithmChoice>("bubble-sort")
   const [arrayType, setArrayType] = useState<ArrayType>("sorted")
   const [arraySize, setArraySize] = useState(100)
   const [customField, setCustomField] = useState("")
@@ -35,14 +39,22 @@ export default function SortingTable({ extended = false }: Props) {
 
   const submit = async () => {
     const [parsedSortingAlgorithm, shellType = ""] = sortingAlgorithm.split("/")
-    const customValue = arrayType === "custom" ? customField.split(" ").map(x => parseInt(x)).join(",") : ""
 
-    const url =
-      arrayType === "custom"
-        ? `${AMAZON_SORTING_TABLE_API_URL}/custom/${parsedSortingAlgorithm}?array=${customValue}&type=${shellType}`
-        : `${AMAZON_SORTING_TABLE_API_URL}/${arrayType}/${parsedSortingAlgorithm}?size=${arraySize}&type=${shellType}`
+    const custom = arrayType === "custom"
+      ? customField.split(" ").map(x => parseInt(x)).filter(x => !Number.isNaN(x))
+      : []
 
-    const { response: { changes, time }, size } = await fetch(url).then(res => res.json())
+    if (arrayType === "custom" && custom.length === 0) return
+
+    // Sorts run here rather than on a server: a real monotonic clock is the
+    // whole point, and runSort mutates the array it is given.
+    const array = buildArray(arrayType as ArrayType, arraySize, custom)
+    const size = array.length
+    const { changes, time } = runSort(
+      parsedSortingAlgorithm as SortingAlgorithm,
+      array,
+      (shellType || "0") as ShellSequence,
+    )
 
     setData([
       ...data,
@@ -51,8 +63,8 @@ export default function SortingTable({ extended = false }: Props) {
         arrayType: capitalize(arrayType),
         arraySize: size,
         time,
-        changes
-      } as Data])
+        changes,
+      }])
     clearInputFields()
   }
 
@@ -71,7 +83,7 @@ export default function SortingTable({ extended = false }: Props) {
     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: "1rem" }}>
       <div style={{ flexGrow: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
         <label htmlFor="sortingAlgorithm">Sorting Algorithm</label>
-        <select id="sortingAlgorithm" value={sortingAlgorithm} onChange={e => setSortingAlgorithm(e.target.value as SortingAlgorithm)} style={{ width: "100%" }}>
+        <select id="sortingAlgorithm" value={sortingAlgorithm} onChange={e => setSortingAlgorithm(e.target.value as AlgorithmChoice)} style={{ width: "100%" }}>
           <option value='bubble-sort'>Bubble Sort</option>
           <option value='insertion-sort'>Insertion Sort</option>
           <option value='binary-insertion-sort'>Binary Insertion Sort</option>
