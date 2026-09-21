@@ -53,14 +53,19 @@ export default function TravelGallery({
       labels={labels}
       openEvent="travel:open-gallery"
       ariaLabel="Travel photo gallery"
-      onOpen={(galleryId) =>
-        capture("travel_gallery_open", { country: galleryId })
-      }
-      onClose={(galleryId) =>
-        capture("travel_gallery_close", { country: galleryId })
-      }
-      onNavigate={(direction) =>
-        capture("travel_gallery_navigate", { direction })
+      onOpen={(galleryId) => capture("gallery opened", { surface: "travel", country: galleryId })}
+      onClose={(galleryId) => capture("gallery closed", { surface: "travel", country: galleryId })}
+      onNavigate={(direction) => capture("gallery navigated", { surface: "travel", direction })}
+      onViewImage={(image, index, galleryId) =>
+        capture("photo viewed", {
+          surface: "travel",
+          photo_id: image.src.split("/").pop(),
+          photo_title: image.alt || image.description,
+          photo_src: image.src,
+          photo_index: index,
+          country: galleryId,
+          country_name: countryMeta[galleryId as CountryCode]?.name,
+        })
       }
       footer={({ galleryId, setGalleryId, setIndex }) =>
         countryCodes.length > 1 ? (
@@ -73,7 +78,7 @@ export default function TravelGallery({
                 onClick={() => {
                   setGalleryId(code)
                   setIndex(0)
-                  capture("travel_gallery_switch_country", { country: code })
+                  capture("gallery country switched", { country: code })
                 }}
               >
                 {countryMeta[code]?.flag} {countryMeta[code]?.name}

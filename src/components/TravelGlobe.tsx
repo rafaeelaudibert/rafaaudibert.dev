@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import createGlobe from "cobe"
 import type { AirportCode, CountryCode } from "../data/travel"
 import { capture } from "../utils/analytics"
@@ -104,6 +104,24 @@ export default function TravelGlobe({
   const [allFlightsRevealed, setAllFlightsRevealed] = useState(false)
   const showAllFlightsRef = useRef(false)
 
+  // Dragging and zooming fire continuously. Collapse a burst into a single
+  // event once the user pauses, so one spin of the globe is one event rather
+  // than several hundred.
+  const interactionTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const reportInteraction = useCallback((interactionType: "drag" | "zoom") => {
+    if (interactionTimer.current) clearTimeout(interactionTimer.current)
+    interactionTimer.current = setTimeout(() => {
+      capture("world view interacted", { interaction_type: interactionType })
+    }, 700)
+  }, [])
+
+  useEffect(
+    () => () => {
+      if (interactionTimer.current) clearTimeout(interactionTimer.current)
+    },
+    [],
+  )
+
   // Theme detection
   useEffect(() => {
     const check = () =>
@@ -135,6 +153,7 @@ export default function TravelGlobe({
         0.8,
         Math.min(3, scaleRef.current - e.deltaY * 0.001)
       )
+      reportInteraction("zoom")
     }
     canvas.addEventListener("wheel", onWheel, { passive: false })
 
@@ -248,7 +267,7 @@ export default function TravelGlobe({
             })
 
             popup.addEventListener("click", () => {
-              capture("travel_photo_popup_click", { country: code })
+              capture("photo card clicked", { source: "globe popup", country: code })
               document.dispatchEvent(
                 new CustomEvent("travel:open-gallery", {
                   detail: { countryCode: code, imageIndex: imgIndex },
@@ -418,6 +437,7 @@ export default function TravelGlobe({
               canvasRef.current.style.cursor = "grabbing"
           }}
           onPointerUp={(e) => {
+            if (pointerInteracting.current !== null) reportInteraction("drag")
             pointerInteracting.current = null
             canvasRef.current?.releasePointerCapture(e.pointerId)
             if (canvasRef.current)
@@ -458,7 +478,7 @@ export default function TravelGlobe({
             onClick={() => {
               showAllFlightsRef.current = true
               setAllFlightsRevealed(true)
-              capture("travel_globe_show_all_flights")
+              capture("flights viewed all", { flight_count: arcs.length })
             }}
           >
             Show all flights

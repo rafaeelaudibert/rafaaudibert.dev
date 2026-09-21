@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { capture } from '../../../utils/analytics'
 import { buildArray, runSort, type ArrayType, type ShellSequence, type SortingAlgorithm } from './sorting'
 
 
@@ -55,6 +56,15 @@ export default function SortingTable({ extended = false }: Props) {
       array,
       (shellType || "0") as ShellSequence,
     )
+
+    capture("sorting playground run", {
+      algorithm: parsedSortingAlgorithm,
+      shell_sequence: shellType || undefined,
+      array_type: arrayType,
+      array_size: size,
+      changes,
+      duration_seconds: Number.parseFloat(time),
+    })
 
     setData([
       ...data,

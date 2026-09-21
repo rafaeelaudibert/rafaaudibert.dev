@@ -39,9 +39,19 @@ export default function ChangelogGallery({
       galleries={galleries}
       labels={labels}
       ariaLabel="Changelog photo gallery"
-      onOpen={(galleryId) => capture("changelog_gallery_open", { entry: galleryId })}
-      onClose={(galleryId) => capture("changelog_gallery_close", { entry: galleryId })}
-      onNavigate={(direction) => capture("changelog_gallery_navigate", { direction })}
+      onOpen={(galleryId) => capture("gallery opened", { surface: "changelog", entry: galleryId })}
+      onClose={(galleryId) => capture("gallery closed", { surface: "changelog", entry: galleryId })}
+      onNavigate={(direction) => capture("gallery navigated", { surface: "changelog", direction })}
+      onViewImage={(image, index, galleryId) =>
+        capture("photo viewed", {
+          surface: "changelog",
+          photo_id: image.src.split("/").pop(),
+          photo_title: image.alt || image.description,
+          photo_src: image.src,
+          photo_index: index,
+          entry: galleryId,
+        })
+      }
     />
   )
 }

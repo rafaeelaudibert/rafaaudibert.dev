@@ -30,6 +30,11 @@ interface ImageGalleryProps {
   onOpen?: (galleryId: string) => void
   onClose?: (galleryId: string | null) => void
   onNavigate?: (direction: "prev" | "next") => void
+  /**
+   * Fired whenever a different image becomes visible, whichever way the user
+   * got there - buttons, arrow keys, swipe, opening, or switching gallery.
+   */
+  onViewImage?: (image: GalleryImage, index: number, galleryId: string) => void
 }
 
 export default function ImageGallery({
@@ -41,6 +46,7 @@ export default function ImageGallery({
   onOpen,
   onClose,
   onNavigate,
+  onViewImage,
 }: ImageGalleryProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [galleryId, setGalleryId] = useState<string | null>(null)
@@ -74,6 +80,12 @@ export default function ImageGallery({
   const onImageLoad = useCallback(() => {
     setFullImageLoaded(true)
   }, [])
+
+  useEffect(() => {
+    if (!isOpen || !currentItem || !galleryId) return
+    onViewImage?.(currentItem, currentIndex, galleryId)
+    // Keyed on src so re-renders that leave the same image visible stay quiet.
+  }, [isOpen, galleryId, currentItem?.src]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const openGallery = useCallback(
     (id: string, imageIndex = 0) => {

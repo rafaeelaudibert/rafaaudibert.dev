@@ -86,7 +86,7 @@ import Icon from "./Icon.astro"
       button.addEventListener("click", () => {
         const dark = !this.isDark()
         setTheme(dark)
-        window.posthog?.capture("theme_toggled", { theme: dark ? "dark" : "light" })
+        window.posthog?.capture("theme toggled", { theme: dark ? "dark" : "light" })
       })
 
       // Initialize button state to reflect current theme.

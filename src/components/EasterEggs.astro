@@ -99,7 +99,7 @@
     type: string,
     extraProperties: Record<string, any> = {},
   ) {
-    window.posthog?.capture("easter_egg_triggered", {
+    window.posthog?.capture("easter egg triggered", {
       type,
       ...extraProperties,
     })

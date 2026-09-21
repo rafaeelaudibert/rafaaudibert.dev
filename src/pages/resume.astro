@@ -263,6 +263,23 @@ export const TECHNOLOGIES = [
   <ContactCTA />
 </BaseLayout>
 
+<script>
+  // There is no print button - the page just suggests Ctrl/Cmd+P - so hook the
+  // browser's own print event. That also covers the File menu and mobile share
+  // sheets, which a button never would.
+  window.addEventListener("beforeprint", () => {
+    window.posthog?.capture("resume printed")
+  })
+
+  // Safari does not fire beforeprint, so fall back to the print media query.
+  if (!("onbeforeprint" in window) && window.matchMedia) {
+    const printQuery = window.matchMedia("print")
+    printQuery.addEventListener("change", (e) => {
+      if (e.matches) window.posthog?.capture("resume printed")
+    })
+  }
+</script>
+
 <style>
   ul {
     margin-bottom: 1.5rem;
