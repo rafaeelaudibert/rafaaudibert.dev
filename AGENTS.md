@@ -125,6 +125,23 @@ Use the `.sr-only` utility class for screen-reader-only text:
 - Respect `prefers-reduced-motion` for animations
 - Support `forced-colors` mode for high contrast users
 
+## Typography
+
+Fonts are self-hosted through the Astro Fonts API (`fonts` in `astro.config.mjs`), which defines `--font-rubik`, `--font-literata`, `--font-public-sans` and `--font-ibm-plex-mono`. Never reference those directly; use the role variables from `src/styles/global.css`:
+
+| Variable         | Family        | Role                                          |
+| ---------------- | ------------- | --------------------------------------------- |
+| `--font-brand`   | Rubik         | Headings                                      |
+| `--font-reading` | Literata      | Prose read as sentences (`.text-reading`, `.text-dek`) |
+| `--font-body`    | Public Sans   | Interface text: nav, buttons, forms, cards    |
+| `--font-mono`    | IBM Plex Mono | Metadata, labels and code (`.text-meta`, `.eyebrow`, `code`) |
+
+Every role stack starts with `--font-flags`, the `@font-face` that `country-flag-emoji-polyfill` injects on browsers without flag glyphs (Windows). It is scoped by `unicode-range` to flag codepoints, so it is harmless elsewhere, but a flag emoji in an element whose stack does not include it renders as two letters. When adding a new `font-family` declaration, use a role variable rather than a raw family list.
+
+Open Graph images (`src/pages/og.png.ts`, `src/pages/blog/[...slug]/og.png.ts`) are rendered with satori from `src/components/og/*`. They use the same families, read from the `@fontsource/*` dev dependencies via `src/utils/og.ts` because satori needs raw WOFF/TTF bytes. Adding a weight or style to an OG image means adding the matching file there. Check a card at `/og.png` or `/blog/<slug>/og.png` on the dev server.
+
+Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`, not `astro.config.mjs`, because the `<Code>` component on `/mcp` reads them at render time.
+
 ## Component Patterns
 
 ### Creating New Components
