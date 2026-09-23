@@ -1,8 +1,9 @@
 ---
 /**
- * The header the travel and changelog pages open with: eyebrow, title and
- * dek on the left, a large photo on the right, stacked on narrow screens.
- * The default slot goes under the dek (a meta line); `media` is the photo.
+ * The header the travel and changelog pages open with: eyebrow, title, dek
+ * and a "last updated" line on the left, a large photo on the right,
+ * stacked on narrow screens. `media` is the photo. The date is the build
+ * date, so it changes on deploy only.
  */
 interface Props {
   title: string
@@ -11,6 +12,11 @@ interface Props {
 }
 
 const { title, eyebrow, dek } = Astro.props
+const lastUpdated = new Date().toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+})
 ---
 
 <header class="split-header">
@@ -18,7 +24,7 @@ const { title, eyebrow, dek } = Astro.props
     {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1 class="title">{title}</h1>
     {dek && <p class="text-dek">{dek}</p>}
-    <slot />
+    <p class="text-meta">Last updated {lastUpdated}</p>
   </div>
   <div class="media">
     <slot name="media" />
@@ -41,6 +47,10 @@ const { title, eyebrow, dek } = Astro.props
 
   .title {
     color: var(--gray-0);
+  }
+
+  .text-meta {
+    margin-top: 0.5rem;
   }
 
   .media :global(img) {

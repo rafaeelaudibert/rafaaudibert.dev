@@ -23,12 +23,6 @@ import {
   <div class="stack gap-20 mb-4">
     <main class="wrapper changelog">
       <SplitHeader eyebrow="Changelog" title="What's going on in my life" dek="A timeline, newest first.">
-        {/* Written at build time, so it changes on deploy only */}
-        <p class="text-meta">
-          Last updated {
-            new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-          }
-        </p>
         <Image
           slot="media"
           src={changelogImage}
@@ -422,9 +416,5 @@ import {
     display: flex;
     flex-direction: column;
     gap: 3rem;
-  }
-
-  .text-meta {
-    margin-top: 0.5rem;
   }
 </style>
