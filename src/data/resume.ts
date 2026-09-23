@@ -85,15 +85,15 @@ export const EDUCATION_AND_ACHIEVEMENTS = [
 ]
 
 // `cefr` is the Common European Framework band the working-proficiency label
-// maps onto: Native ≈ C2, Professional Working ≈ C1, Limited Working ≈ B1,
-// Elementary ≈ A2.
+// maps onto: Native ≈ C2, Professional Working ≈ C1, Limited Working ≈ B2,
+// Elementary ≈ A1.
 export const LANGUAGES = [
   { language: "Portuguese", level: "Native", cefr: "C2", flag: "🇧🇷" },
   { language: "English", level: "Professional Working Proficiency", cefr: "C1", flag: "🇺🇸" },
   { language: "Spanish", level: "Limited Working Proficiency", cefr: "B2", flag: "🇪🇸" },
-  { language: "German", level: "Elementary Proficiency", cefr: "A2", flag: "🇩🇪" },
-  { language: "French", level: "Elementary Proficiency", cefr: "A2", flag: "🇫🇷" },
-  { language: "Italian", level: "Elementary Proficiency", cefr: "A2", flag: "🇮🇹" },
+  { language: "German", level: "Elementary Proficiency", cefr: "A1", flag: "🇩🇪" },
+  { language: "French", level: "Elementary Proficiency", cefr: "A1", flag: "🇫🇷" },
+  { language: "Italian", level: "Elementary Proficiency", cefr: "A1", flag: "🇮🇹" },
 ]
 
 export const TECHNOLOGIES = [
