@@ -126,7 +126,9 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
           {
             LANGUAGES.map((language) => (
               <li>
-                <span class="language">{language.language}</span>
+                <span class="language">
+                  <span class="flag" aria-hidden="true">{language.flag}</span> {language.language}
+                </span>
                 <span class="level text-meta">{language.level}</span>
               </li>
             ))
@@ -482,6 +484,10 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
   .language {
     font-weight: 600;
     color: var(--gray-0);
+  }
+
+  .flag {
+    margin-right: 0.125rem;
   }
 
   /* Technologies */

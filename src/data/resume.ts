@@ -85,12 +85,12 @@ export const EDUCATION_AND_ACHIEVEMENTS = [
 ]
 
 export const LANGUAGES = [
-  { language: "Portuguese", level: "Native" },
-  { language: "English", level: "Professional Working Proficiency" },
-  { language: "Spanish", level: "Limited Working Proficiency" },
-  { language: "German", level: "Elementary Proficiency" },
-  { language: "French", level: "Elementary Proficiency" },
-  { language: "Italian", level: "Elementary Proficiency" },
+  { language: "Portuguese", level: "Native", flag: "🇧🇷" },
+  { language: "English", level: "Professional Working Proficiency", flag: "🇺🇸" },
+  { language: "Spanish", level: "Limited Working Proficiency", flag: "🇪🇸" },
+  { language: "German", level: "Elementary Proficiency", flag: "🇩🇪" },
+  { language: "French", level: "Elementary Proficiency", flag: "🇫🇷" },
+  { language: "Italian", level: "Elementary Proficiency", flag: "🇮🇹" },
 ]
 
 export const TECHNOLOGIES = [
