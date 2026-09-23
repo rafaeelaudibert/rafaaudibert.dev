@@ -4,8 +4,9 @@
  * for "Twemoji Country Flags" at runtime, scoped by unicode-range to the flag
  * codepoints and only on browsers that actually need it. See BaseLayout.astro.
  *
- * "Twemoji Country Flags" is referenced first in --font-body below; because of
- * the unicode-range, every other character falls straight through to Public Sans.
+ * "Twemoji Country Flags" (--font-flags) leads every type-role stack below;
+ * because of the unicode-range, every other character falls straight through
+ * to the role's real family.
  */
 
 /* Global variables */
@@ -83,12 +84,16 @@
   /* Fonts */
   --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* The flag polyfill's font (see the note at the top of this file). It only
+     covers flag codepoints, so it must lead every stack a flag can appear in:
+     the footer is mono, the changelog is Literata, headings are Rubik. */
+  --font-flags: "Twemoji Country Flags";
   /* Type roles. The families are loaded by the Astro Fonts API
      (astro.config.mjs), which defines the --font-rubik etc. variables. */
-  --font-body: "Twemoji Country Flags", var(--font-public-sans);
-  --font-brand: var(--font-rubik);
-  --font-reading: var(--font-literata);
-  --font-mono: var(--font-ibm-plex-mono);
+  --font-body: var(--font-flags), var(--font-public-sans);
+  --font-brand: var(--font-flags), var(--font-rubik);
+  --font-reading: var(--font-flags), var(--font-literata);
+  --font-mono: var(--font-flags), var(--font-ibm-plex-mono);
 
   /* Transitions */
   --theme-transition: 0.2s ease-in-out;
