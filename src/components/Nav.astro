@@ -340,17 +340,9 @@ const isCurrentPage = (href: string) => {
       display: contents;
     }
 
-    /* Only the pill stays put while the page scrolls: fixed to the viewport,
-       centred, at the height it occupies in the header row. Fixed makes it a
-       stacking context, so the gradient stroke is a border-box background
-       layer rather than a ::before behind the element. */
+    /* The gradient stroke is a border-box background layer */
     .nav-items {
-      position: fixed;
-      top: 2.5rem;
-      left: 0;
-      right: 0;
-      width: fit-content;
-      margin-inline: auto;
+      position: relative;
       flex-direction: row;
       font-size: var(--text-sm);
       border-radius: var(--radius-pill);
@@ -384,8 +376,6 @@ const isCurrentPage = (href: string) => {
     .menu-footer {
       --icon-padding: 0.375rem;
 
-      /* The pill is out of flow, so the footer must be placed explicitly */
-      grid-column: 3;
       justify-self: flex-end;
       align-items: center;
       padding: 0;
@@ -405,12 +395,6 @@ const isCurrentPage = (href: string) => {
       gap: 0;
     }
   }
-  @media print {
-    .nav-items {
-      position: static;
-    }
-  }
-
   @media (forced-colors: active) {
     .link[aria-current="page"] {
       color: SelectedItem;
