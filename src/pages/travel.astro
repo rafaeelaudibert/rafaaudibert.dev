@@ -2,7 +2,6 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 import TravelGlobe from "../components/TravelGlobe"
 import TravelGallery from "../components/TravelGallery"
-import Hero from "../components/Hero.astro"
 import {
   COUNTRY_CODE_TO_LONG_NAME,
   COUNTRIES_GEOMETRY,
@@ -93,10 +92,30 @@ const arcs = FLIGHTS.map((f) => ({
 >
   <div class="stack gap-20 mb-4">
     <main class="wrapper travel">
-      <Hero
-        title="My Travel Journey"
-        tagline="Exploring the world, one flight at a time."
-      />
+      <header class="travel-header">
+        <p class="eyebrow">Travel</p>
+        <h1 class="travel-title">My Travel Journey</h1>
+        <p class="text-dek">Exploring the world, one flight at a time.</p>
+
+        <ul class="stat-strip">
+          <li class="stat">
+            <span class="stat-number">{uniqueCountries.length}</span>
+            <span class="stat-label eyebrow">Countries and territories</span>
+          </li>
+          <li class="stat">
+            <span class="stat-number">{((uniqueCountries.length / 210) * 100).toFixed(1)}%</span>
+            <span class="stat-label eyebrow">Of the world</span>
+          </li>
+          <li class="stat">
+            <span class="stat-number">{uniqueContinents.size}</span>
+            <span class="stat-label eyebrow">Continents</span>
+          </li>
+          <li class="stat">
+            <span class="stat-number">{FLIGHTS.length}</span>
+            <span class="stat-label eyebrow">Flights</span>
+          </li>
+        </ul>
+      </header>
 
       <TravelGlobe
         client:visible
@@ -105,8 +124,8 @@ const arcs = FLIGHTS.map((f) => ({
         imagesByCountry={imagesByCountry}
       />
 
-      <section class="countries-list">
-        <h2>Countries I've Explored</h2>
+      <section class="labelled-section" aria-labelledby="countries">
+        <h2 class="section-title" id="countries">Countries I've explored</h2>
         <div class="countries-grid">
           {
             uniqueCountries.map((country) => {
@@ -170,38 +189,20 @@ const arcs = FLIGHTS.map((f) => ({
         </div>
       </section>
 
-      <section class="travel-stats-section">
-        <h2>Travel Statistics</h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number">{uniqueCountries.length}</div>
-            <div class="stat-label">Countries Visited</div>
+      <section class="labelled-section" aria-labelledby="bucket-list">
+        <h2 class="section-title" id="bucket-list">Bucket list</h2>
+        <div class="bucket-list">
+          <p class="bucket-list-subtitle text-reading">
+            Places I'd love to visit at some point in my life — not necessarily where I'm heading next, but destinations I dream about.
+          </p>
+          <div class="bucket-list-grid">
+            {(["AQ", "AT", "CN", "CO", "NO", "ZA"] as const).map((code) => (
+              <div class="bucket-list-card">
+                <span class="flag">{countryCodeToFlag(code)}</span>
+                <span class="name">{COUNTRY_CODE_TO_LONG_NAME[code]}</span>
+              </div>
+            ))}
           </div>
-          <div class="stat-card">
-            <div class="stat-number">
-              {((uniqueCountries.length / 210) * 100).toFixed(2)}%
-            </div>
-            <div class="stat-label">Of the World</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">{uniqueContinents.size}</div>
-            <div class="stat-label">Continents</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bucket-list-section">
-        <h2>Bucket List</h2>
-        <p class="bucket-list-subtitle">
-          Places I'd love to visit at some point in my life — not necessarily where I'm heading next, but destinations I dream about.
-        </p>
-        <div class="bucket-list-grid">
-          {(["AQ", "AT", "CN", "CO", "NO", "ZA"] as const).map((code) => (
-            <div class="bucket-list-card">
-              <span class="flag">{countryCodeToFlag(code)}</span>
-              <span class="name">{COUNTRY_CODE_TO_LONG_NAME[code]}</span>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -243,78 +244,52 @@ const arcs = FLIGHTS.map((f) => ({
   .travel {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 3rem;
   }
 
-  .travel-stats-section {
-    margin-top: 2rem;
+  /* Header: type over the gradient, then the numbers as a strip */
+  .travel-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1rem;
   }
 
-  .travel-stats-section h2 {
+  .travel-title {
     color: var(--gray-0);
-    margin-bottom: 2rem;
-    text-align: center;
   }
 
-  .stats-grid {
+  .stat-strip {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin: 1.75rem 0 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--gray-800);
+    list-style: none;
   }
 
-  .stat-card {
-    background: var(--gray-999_40);
-    border: 1px solid var(--gray-800);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.2s ease;
-  }
-
-  .stat-card:hover {
-    border-color: var(--accent-regular);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
   }
 
   /* Counts are data: mono numerals */
   .stat-number {
     font-family: var(--font-mono);
-    font-size: var(--text-3xl);
+    font-size: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.02em;
     color: var(--accent-regular);
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--gray-400);
-  }
-
-  @media (max-width: 768px) {
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .countries-list {
-    margin-top: 3rem;
-  }
-
-  .countries-list h2 {
-    color: var(--gray-0);
-    margin-bottom: 2rem;
-    text-align: center;
   }
 
   .countries-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.75rem;
   }
 
   .country-card {
@@ -329,10 +304,9 @@ const arcs = FLIGHTS.map((f) => ({
     position: relative;
   }
 
-  .country-card:hover {
+  .country-card.has-images:hover,
+  .country-card.has-images:focus-visible {
     border-color: var(--accent-regular);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
   }
 
   .country-card.has-images {
@@ -426,31 +400,16 @@ const arcs = FLIGHTS.map((f) => ({
     hyphens: auto;
   }
 
-  .bucket-list-section {
-    margin-top: 2rem;
-  }
-
-  .bucket-list-section h2 {
-    color: var(--gray-0);
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-
   .bucket-list-subtitle {
-    max-width: 40em;
-    margin-inline: auto;
-    text-align: center;
-    font-family: var(--font-reading);
-    line-height: 1.6;
-    text-wrap: balance;
+    max-width: 60ch;
     color: var(--gray-300);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
   }
 
   .bucket-list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 0.75rem;
   }
 
   .bucket-list-card {
@@ -467,8 +426,21 @@ const arcs = FLIGHTS.map((f) => ({
 
   .bucket-list-card:hover {
     opacity: 1;
-    border-color: var(--accent-regular);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 50em) {
+    .travel-header {
+      padding-top: 2rem;
+    }
+
+    .stat-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 2rem;
+    }
+
+    .stat + .stat {
+      padding-left: 2rem;
+      border-left: 1px solid var(--gray-800);
+    }
   }
 </style>
