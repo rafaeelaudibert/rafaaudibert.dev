@@ -1,0 +1,109 @@
+---
+/**
+ * Registers the MCP server's tools with the browser through WebMCP
+ * (https://webmachinelearning.github.io/webmcp/), so an agent built into the
+ * browser can call them from any page without being configured to reach /mcp.
+ *
+ * The tools are not reimplemented here. The script asks /mcp for its tool
+ * list and registers each one with an execute callback that forwards the call
+ * back to /mcp, so the browser gets exactly what every other MCP client gets
+ * and nothing about the tools is bundled into the page. Browsers without
+ * WebMCP skip all of it, including the request.
+ */
+---
+
+<script>
+  // Hardcoded rather than imported from worker/mcp/server.ts, which would
+  // pull the MCP SDK into the page bundle.
+  const MCP_ENDPOINT = "/mcp"
+
+  // Not in lib.dom yet. Only the parts used here, per the spec draft.
+  type ModelContextTool = {
+    name: string
+    title?: string
+    description: string
+    inputSchema?: object
+    annotations?: { readOnlyHint?: boolean }
+    execute: (input: object, options: { signal: AbortSignal }) => Promise<unknown>
+  }
+
+  type ModelContext = {
+    registerTool: (tool: ModelContextTool, options?: { signal?: AbortSignal }) => Promise<void>
+  }
+
+  type McpTool = {
+    name: string
+    title?: string
+    description?: string
+    inputSchema?: object
+    annotations?: { readOnlyHint?: boolean }
+  }
+
+  type McpContent = { type: string; text?: string }
+
+  let requestId = 0
+
+  async function rpc<T>(method: string, params: object, signal?: AbortSignal): Promise<T> {
+    const response = await fetch(MCP_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json, text/event-stream",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: ++requestId, method, params }),
+      signal,
+    })
+    if (!response.ok) throw new Error(`${method} failed with HTTP ${response.status}`)
+
+    const message = await response.json()
+    if (message.error) throw new Error(`${method} failed: ${message.error.message}`)
+    return message.result as T
+  }
+
+  // The server returns each result as one JSON text block. WebMCP serialises
+  // whatever execute resolves with, so returning the text as-is would encode
+  // it twice; parse it back into the value it was.
+  function unwrap(content: McpContent[]): unknown {
+    const text = content
+      .filter((block) => block.type === "text")
+      .map((block) => block.text ?? "")
+      .join("\n")
+    try {
+      return JSON.parse(text)
+    } catch {
+      return text
+    }
+  }
+
+  async function registerTools(modelContext: ModelContext) {
+    const { tools } = await rpc<{ tools: McpTool[] }>("tools/list", {})
+
+    for (const tool of tools) {
+      await modelContext.registerTool({
+        name: tool.name,
+        title: tool.title,
+        description: tool.description ?? tool.title ?? tool.name,
+        inputSchema: tool.inputSchema,
+        annotations: { readOnlyHint: tool.annotations?.readOnlyHint ?? false },
+        execute: async (input, { signal }) => {
+          const result = await rpc<{ content: McpContent[]; isError?: boolean }>(
+            "tools/call",
+            { name: tool.name, arguments: input ?? {} },
+            signal
+          )
+          // A rejection reaches the agent as a bare UnknownError, which would
+          // drop messages like "Known slugs: ...". Resolve with them instead.
+          if (result.isError) return { error: unwrap(result.content) }
+          return unwrap(result.content)
+        },
+      })
+    }
+  }
+
+  const modelContext = (document as Document & { modelContext?: ModelContext }).modelContext
+  if (modelContext) {
+    registerTools(modelContext).catch((error) => {
+      console.warn("WebMCP: could not register the MCP tools", error)
+    })
+  }
+</script>
