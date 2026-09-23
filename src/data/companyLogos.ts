@@ -1,5 +1,6 @@
 import type { ImageMetadata } from "astro"
 import posthog from "../assets/companies/posthog.svg"
+import posthogDark from "../assets/companies/posthog-dark.svg"
 import leadsimple from "../assets/companies/leadsimple.png"
 import taglivros from "../assets/companies/taglivros.png"
 import feeng from "../assets/companies/feeng.png"
@@ -16,4 +17,9 @@ export const COMPANY_LOGOS: Record<Company, ImageMetadata> = {
   LeadSimple: leadsimple,
   "TAG Livros": taglivros,
   "FEENG/UFRGS": feeng,
+}
+
+/** Variants for dark mode, for logos that would disappear on a dark background. */
+export const COMPANY_LOGOS_DARK: Partial<Record<Company, ImageMetadata>> = {
+  PostHog: posthogDark,
 }

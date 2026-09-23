@@ -16,7 +16,7 @@ import {
   LANGUAGES,
   TECHNOLOGIES,
 } from "../data/resume"
-import { COMPANY_LOGOS } from "../data/companyLogos"
+import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
 ---
 
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
@@ -52,7 +52,15 @@ import { COMPANY_LOGOS } from "../data/companyLogos"
                   <Image
                     src={COMPANY_LOGOS[experience.company]}
                     alt={experience.company}
+                    class:list={{ "logo-light": COMPANY_LOGOS_DARK[experience.company] }}
                   />
+                  {COMPANY_LOGOS_DARK[experience.company] && (
+                    <Image
+                      src={COMPANY_LOGOS_DARK[experience.company]!}
+                      alt={experience.company}
+                      class="logo-dark"
+                    />
+                  )}
                   <span>
                     <strong>{experience.role}</strong> at{" "}
                     <Link href={experience.href}>{experience.company}</Link> —{" "}
@@ -158,6 +166,16 @@ import { COMPANY_LOGOS } from "../data/companyLogos"
   .company-header img {
     height: 24px;
     width: 24px;
+  }
+
+  /* Only one of a logo's light/dark variants shows at a time */
+  .company-header .logo-dark,
+  :global(.theme-dark) .company-header .logo-light {
+    display: none;
+  }
+
+  :global(.theme-dark) .company-header .logo-dark {
+    display: block;
   }
 
   .about {
@@ -386,6 +404,15 @@ import { COMPANY_LOGOS } from "../data/companyLogos"
     .company-header img {
       width: 16px !important;
       height: 16px !important;
+    }
+
+    /* Paper is white, so always print the light logo */
+    :global(.theme-dark) .company-header .logo-light {
+      display: block;
+    }
+
+    .company-header .logo-dark {
+      display: none !important;
     }
 
     /* List optimizations */
