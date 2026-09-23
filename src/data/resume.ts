@@ -89,6 +89,8 @@ export const LANGUAGES = [
   { language: "English", level: "Professional Working Proficiency" },
   { language: "Spanish", level: "Limited Working Proficiency" },
   { language: "German", level: "Elementary Proficiency" },
+  { language: "French", level: "Elementary Proficiency" },
+  { language: "Italian", level: "Elementary Proficiency" },
 ]
 
 export const TECHNOLOGIES = [
