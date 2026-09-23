@@ -105,6 +105,9 @@
   --radius-md: 6px;
   --radius-lg: 8px;
 
+  /* Height of the sticky nav, so anchors and sticky rails clear it */
+  --nav-height: 4.25rem;
+
   /* Transitions */
   --theme-transition: 0.2s ease-in-out;
 }
@@ -165,6 +168,8 @@ body {
   /* clip rather than hidden: hidden makes body a scroll container, which
      breaks position: sticky (the blog contents rail) */
   overflow-x: clip;
+  /* Anchor targets land below the sticky nav */
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
 }
 
 body {

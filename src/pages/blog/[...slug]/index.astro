@@ -276,8 +276,8 @@ const showContents = sections.length >= 3
 
   .toc {
     position: sticky;
-    top: 2rem;
-    max-height: calc(100vh - 4rem);
+    top: calc(var(--nav-height) + 1.5rem);
+    max-height: calc(100vh - var(--nav-height) - 3rem);
     overflow-y: auto;
   }
 
@@ -410,7 +410,7 @@ const showContents = sections.length >= 3
   .prose > h3,
   .prose > h4 {
     color: var(--gray-0);
-    scroll-margin-top: 2rem;
+    scroll-margin-top: calc(var(--nav-height) + 1.5rem);
   }
 
   .prose > h2 {
