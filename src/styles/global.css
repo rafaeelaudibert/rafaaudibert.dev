@@ -305,6 +305,47 @@ pre {
   color: var(--gray-400);
 }
 
+/*
+ * Labelled sections, used by the resume, travel and changelog pages: a short
+ * label beside the content on wide screens, above it on narrow ones, with a
+ * hairline between sections. The label stays in view while its section
+ * scrolls. Each section holds exactly the label and one content element.
+ */
+.labelled-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--gray-800);
+  color: var(--gray-200);
+}
+
+.labelled-section > .section-title {
+  font-size: var(--text-lg);
+  color: var(--gray-0);
+}
+
+@media (min-width: 50em) {
+  .labelled-section {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: 2rem;
+    padding-top: 3rem;
+  }
+
+  .labelled-section > .section-title {
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+  }
+}
+
+@media (min-width: 72em) {
+  .labelled-section {
+    grid-template-columns: 16rem minmax(0, 1fr);
+  }
+}
+
 /* Definition Lists */
 dl {
   display: flex;

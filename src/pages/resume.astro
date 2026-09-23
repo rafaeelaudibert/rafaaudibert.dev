@@ -5,6 +5,7 @@ import ContactCTA from "../components/ContactCTA.astro"
 import Icon from "../components/Icon.astro"
 import KeyboardShortcut from "../components/KeyboardShortcut.astro"
 import Link from "../components/Link.astro"
+import PageHeader from "../components/PageHeader.astro"
 
 import work from "../assets/work.jpg"
 
@@ -29,21 +30,16 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
   <div class="stack gap-20 mb-4">
     <main class="wrapper resume">
-      <header class="cv-header">
-        <Image src={work} alt="Rafael Audibert at his desk" class="profile-image" />
+      <PageHeader eyebrow="Resume" title={site.fullName} dek="Senior Product Engineer">
+        <Image slot="media" src={work} alt="Rafael Audibert at his desk" class="profile-image" />
 
-        <div class="identity">
-          <p class="eyebrow">Resume</p>
-          <h1 class="cv-name">{site.fullName}</h1>
-          <p class="cv-title text-dek">Senior Product Engineer</p>
-          <ul class="facts text-meta">
-            <li>{site.location}</li>
-            <li>{yearsOfExperience()}+ years of experience</li>
-            <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
-          </ul>
-        </div>
+        <ul class="facts text-meta">
+          <li>{site.location}</li>
+          <li>{yearsOfExperience()}+ years of experience</li>
+          <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+        </ul>
 
-        <div class="actions">
+        <div slot="aside" class="actions">
           <button type="button" class="action action-primary" data-print>
             Save as PDF
             <KeyboardShortcut keys={["Ctrl/Cmd", "P"]} class="action-shortcut" />
@@ -58,16 +54,16 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
             ))
           }
         </div>
-      </header>
+      </PageHeader>
 
-      <section aria-labelledby="background">
+      <section class="labelled-section" aria-labelledby="background">
         <h2 class="section-title" id="background">Background</h2>
         <div class="content text-reading">
           {getBackgroundContent().map((content) => <p set:html={content} />)}
         </div>
       </section>
 
-      <section aria-labelledby="experience">
+      <section class="labelled-section" aria-labelledby="experience">
         <h2 class="section-title" id="experience">Experience</h2>
         <ol class="content jobs">
           {
@@ -106,7 +102,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         </ol>
       </section>
 
-      <section aria-labelledby="education">
+      <section class="labelled-section" aria-labelledby="education">
         <h2 class="section-title" id="education">Education &amp; Achievements</h2>
         <ul class="content timeline text-reading">
           {
@@ -120,7 +116,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         </ul>
       </section>
 
-      <section aria-labelledby="languages">
+      <section class="labelled-section" aria-labelledby="languages">
         <h2 class="section-title" id="languages">Languages</h2>
         <ul class="content languages">
           {
@@ -139,7 +135,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         </ul>
       </section>
 
-      <section aria-labelledby="technologies">
+      <section class="labelled-section" aria-labelledby="technologies">
         <h2 class="section-title" id="technologies">Technologies</h2>
         <div class="content">
           <p class="help-text text-meta">
@@ -192,44 +188,12 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     gap: 3rem;
   }
 
-  /* Header: a frosted card, so the name and role read clearly over the page
-     gradient in both themes. */
-  .cv-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    border: 1px solid var(--gray-800);
-    border-radius: var(--radius-lg);
-    background-color: color-mix(in srgb, var(--gray-999) 70%, transparent);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    box-shadow: var(--shadow-md);
-  }
-
   .profile-image {
     width: 10rem;
     height: 12.5rem;
     border-radius: var(--radius-md);
     object-fit: cover;
     flex-shrink: 0;
-  }
-
-  .identity {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 0;
-  }
-
-  .cv-name {
-    font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
-  }
-
-  .cv-title {
-    margin: 0;
   }
 
   .facts {
@@ -254,10 +218,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
   }
 
   .actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
+    display: contents;
   }
 
   .action {
@@ -315,21 +276,6 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
   .action-primary :global(.key-separator) {
     color: rgba(255, 255, 255, 0.7);
-  }
-
-  /* Sections: label above content, then side by side on wide screens */
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding-top: 2.5rem;
-    border-top: 1px solid var(--gray-800);
-    color: var(--gray-200);
-  }
-
-  .section-title {
-    font-size: var(--text-lg);
-    color: var(--gray-0);
   }
 
   .content {
@@ -562,21 +508,9 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       gap: 3.5rem;
     }
 
-    .cv-header {
-      flex-direction: row;
-      align-items: center;
-      text-align: left;
-      gap: 2rem;
-      padding: 2rem;
-    }
-
     .profile-image {
       width: 7.5rem;
       height: 9.5rem;
-    }
-
-    .identity {
-      flex: 1;
     }
 
     .facts {
@@ -595,30 +529,8 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       justify-content: flex-start;
     }
 
-    .actions {
-      flex-direction: column;
-      align-self: stretch;
-      justify-content: center;
-      align-items: stretch;
-      min-width: 9rem;
-    }
-
     .action {
       justify-content: center;
-    }
-
-    section {
-      display: grid;
-      grid-template-columns: 12rem minmax(0, 1fr);
-      gap: 2rem;
-      padding-top: 3rem;
-    }
-
-    /* The label stays in view while a long section scrolls */
-    .section-title {
-      position: sticky;
-      top: 1.5rem;
-      align-self: start;
     }
 
     .content {
@@ -630,12 +542,6 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       grid-template-columns: 11rem minmax(0, 1fr);
       gap: 1rem;
       align-items: baseline;
-    }
-  }
-
-  @media (min-width: 72em) {
-    section {
-      grid-template-columns: 16rem minmax(0, 1fr);
     }
   }
 
@@ -651,8 +557,6 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     :global(nav),
     :global(footer),
     :global(aside),
-    .actions,
-    .identity .eyebrow,
     .help-text {
       display: none !important;
     }
@@ -684,38 +588,10 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       gap: 1rem;
     }
 
-    .cv-header {
-      flex-direction: row;
-      align-items: center;
-      text-align: left;
-      gap: 0.75rem;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: none;
-      backdrop-filter: none;
-      box-shadow: none;
-      page-break-after: avoid;
-    }
-
     .profile-image {
       width: 60px;
       height: 75px;
       border-radius: 0;
-    }
-
-    .identity {
-      gap: 0.125rem;
-    }
-
-    .cv-name {
-      font-size: 18pt;
-      color: #1a1a1a;
-    }
-
-    .cv-title {
-      font-size: 12pt;
-      color: #333;
     }
 
     .facts {
