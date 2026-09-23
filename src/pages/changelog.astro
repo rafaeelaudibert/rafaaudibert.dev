@@ -1,13 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
 
-import Hero from "../components/Hero.astro"
 
 import changelogImage from "../assets/changelog.jpg"
 
 import { Image } from "astro:assets"
 import Link from "../components/Link.astro"
 import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
+import ChangelogYear from "../components/changelog/ChangelogYear.astro"
 import ChangelogGallery from "../components/changelog/ChangelogGallery"
 import {
   changelogGalleries,
@@ -21,31 +21,29 @@ import {
 >
   <div class="stack gap-20 mb-4">
     <main class="wrapper changelog">
-      <Hero
-        title="Changelog"
-        tagline="A timeline of what's going on in my life."
-      >
+      <header class="changelog-header">
+        <div class="changelog-intro">
+          <p class="eyebrow">Changelog</p>
+          <h1 class="changelog-title">What's going on in my life</h1>
+          <p class="text-dek">A timeline, newest first.</p>
+          {/* Written at build time, so it changes on deploy only */}
+          <p class="text-meta">
+            Last updated {
+              new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+            }
+          </p>
+        </div>
         <Image
           src={changelogImage}
-          alt="Rafa Audibert and his beautiful fiancée at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
+          alt="Rafa Audibert and his wife at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
           class="hero-image"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 50em) 40vw, 100vw"
         />
-
-        {
-          /* This is written during build time which means it'll be updated on deploy only */
-        }
-        <div class="last-updated-note text-meta">
-          Last updated: {
-            new Date().toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })
-          }
-        </div>
-      </Hero>
+      </header>
 
       <!-- =========== 2026 =========== -->
+      <ChangelogYear year={2026}>
       <ChangelogEntry year={2026} month="August">
         <p>
           Yet another Eurotrip 🇪🇺 with Lili. We are very lucky to have friends
@@ -122,6 +120,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2025 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2025}>
       <ChangelogEntry year={2025} month="December">
         <p>
           PostHog Christmas meet-up in Buenos Aires 🇦🇷, my first time in the
@@ -228,6 +229,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2024 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2024}>
       <ChangelogEntry year={2024} month="November">
         <p>
           Started working at <Link href="https://posthog.com">PostHog</Link> 🦔, one
@@ -265,6 +269,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2023 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2023}>
       <ChangelogEntry year={2023} month="December">
         <p>
           Attended the <Link href="https://www.leadsimple.com">LeadSimple</Link>
@@ -286,6 +293,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2022 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2022}>
       <ChangelogEntry year={2022} month="July">
         <p>Aura 😻 joined our lives.</p>
       </ChangelogEntry>
@@ -308,6 +318,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2021 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2021}>
       <ChangelogEntry year={2021} month="December">
         <p>
           Lili came to visit me in Europe and we toured around Portugal 🇵🇹 and
@@ -347,12 +360,18 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2020 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2020}>
       <ChangelogEntry year={2020} month="March">
         <p>March 15th, 2020. The world changed. 🦠</p>
         <p>I moved back to my home town with my parents and younger brother.</p>
       </ChangelogEntry>
 
       <!-- =========== 2019 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2019}>
       <ChangelogEntry year={2019} month="September">
         <p>
           Started working at <Link href="https://taglivros.com.br"
@@ -362,6 +381,9 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2017 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2017}>
       <ChangelogEntry year={2017} month="July">
         <p>
           Started studying Computer Science at the <Link
@@ -373,14 +395,22 @@ import {
       </ChangelogEntry>
 
       <!-- =========== 2015 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2015}>
       <ChangelogEntry year={2015} month="December">
         <p>Started dating my now-fiancée, Lili 🌹.</p>
       </ChangelogEntry>
 
       <!-- =========== 2000 =========== -->
+      </ChangelogYear>
+
+      <ChangelogYear year={2000}>
       <ChangelogEntry year={2000} month="February">
         <p>👶🏻🍼</p>
       </ChangelogEntry>
+
+      </ChangelogYear>
 
       <ChangelogGallery
         client:idle
@@ -395,28 +425,47 @@ import {
   .changelog {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 3rem;
   }
 
-  img .hero-image {
-    margin-top: 1.5rem;
+  /* Header: text beside a large photo, like the home page */
+  .changelog-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 1rem;
+  }
+
+  .changelog-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .changelog-title {
+    color: var(--gray-0);
+  }
+
+  .changelog-intro .text-meta {
+    margin-top: 0.5rem;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
   }
 
-  .last-updated-note {
-    text-align: right;
-    margin-bottom: 2rem;
-  }
-
   @media (min-width: 50em) {
-    .changelog {
+    .changelog-header {
       display: grid;
-      grid-template-columns: 1fr 1fr 60% 1fr;
-    }
-
-    .changelog > :global(:first-child) {
-      grid-column-start: 3;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: center;
+      gap: 3rem;
+      padding-top: 2rem;
     }
   }
 </style>

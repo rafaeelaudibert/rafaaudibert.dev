@@ -1,0 +1,28 @@
+---
+/** One year of the changelog: the year as the section label, entries as content. */
+interface Props {
+  year: number
+}
+
+const { year } = Astro.props
+---
+
+<section class="labelled-section" aria-labelledby={`year-${year}`}>
+  <h2 class="section-title" id={`year-${year}`}>{year}</h2>
+  <div class="entries">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section-title {
+    font-variant-numeric: lining-nums;
+  }
+
+  .entries {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    min-width: 0;
+  }
+</style>
