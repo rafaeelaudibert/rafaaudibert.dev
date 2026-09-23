@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { capture } from '../../../utils/analytics'
 import type { ArrayType } from './sorting'
+import styles from './ui.module.css'
 
 /** Shape returned by /api/sorting/*; errors carry `error` instead. */
 type SortResponse = { size: number; changes: number; error?: string }
 
 
-const capitalize = (str: string) => str.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+const sentenceCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
 type Data = {
   sortingAlgorithm: string
@@ -25,10 +26,13 @@ type AlgorithmChoice =
 // Whitespace because it's concatenating with the sorting algorithm name
 const SHELL_TYPE_MAP = {
   "": "",
-  "0": " (Shell)",
-  "1": " (Knuth)",
-  "2": " (Tokuda)"
+  "0": ", Shell sequence",
+  "1": ", Knuth sequence",
+  "2": ", Tokuda sequence"
 }
+
+/** The Worker rejects anything bigger; the quadratic sorts exceed its CPU budget. */
+const MAX_SIZE = 25000
 
 type Props = {
   extended?: boolean
@@ -50,7 +54,14 @@ export default function SortingTable({ extended = false }: Props) {
       ? customField.split(" ").map(x => parseInt(x)).filter(x => !Number.isNaN(x))
       : []
 
-    if (arrayType === "custom" && custom.length === 0) return
+    if (arrayType === "custom" && custom.length === 0) {
+      setError("Enter at least one number, separated by spaces.")
+      return
+    }
+    if (arrayType !== "custom" && !(arraySize >= 1 && arraySize <= MAX_SIZE)) {
+      setError(`Enter a size between 1 and ${MAX_SIZE.toLocaleString("en-US")}.`)
+      return
+    }
 
     const params = new URLSearchParams(
       arrayType === "custom"
@@ -96,8 +107,8 @@ export default function SortingTable({ extended = false }: Props) {
     setData([
       ...data,
       {
-        sortingAlgorithm: capitalize(parsedSortingAlgorithm.split("-").join(" ")) + SHELL_TYPE_MAP[shellType as keyof typeof SHELL_TYPE_MAP],
-        arrayType: capitalize(arrayType),
+        sortingAlgorithm: sentenceCase(parsedSortingAlgorithm.split("-").join(" ")) + SHELL_TYPE_MAP[shellType as keyof typeof SHELL_TYPE_MAP],
+        arrayType: sentenceCase(arrayType),
         arraySize: size,
         time,
         changes,
@@ -116,90 +127,92 @@ export default function SortingTable({ extended = false }: Props) {
   }
 
 
-  return <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", width: "100%" }}>
-    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: "1rem" }}>
-      <div style={{ flexGrow: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-        <label htmlFor="sortingAlgorithm">Sorting Algorithm</label>
-        <select id="sortingAlgorithm" value={sortingAlgorithm} onChange={e => setSortingAlgorithm(e.target.value as AlgorithmChoice)} style={{ width: "100%" }}>
-          <option value='bubble-sort'>Bubble Sort</option>
-          <option value='insertion-sort'>Insertion Sort</option>
-          <option value='binary-insertion-sort'>Binary Insertion Sort</option>
-          <option value='shell-sort/0'>Shell Sort - Shell Sequence</option>
-          <option value='shell-sort/1'>Shell Sort - Knuth Sequence</option>
-          <option value='shell-sort/2'>Shell Sort - Tokuda Sequence</option>
-          {extended && <option value='quick-sort'>Quick Sort</option>}
-          {extended && <option value='merge-sort'>Merge Sort</option>}
-          {extended && <option value='radix-sort'>Radix Sort</option>}
+  return <section className={styles.panel} aria-label="Sorting playground">
+    <form className={`${styles.form} ${styles.sortForm}`} onSubmit={e => { e.preventDefault(); submit() }}>
+      <div className={`${styles.field} ${styles.fieldWide}`}>
+        <label className={styles.label} htmlFor="sortingAlgorithm">Algorithm</label>
+        <select className={styles.input} id="sortingAlgorithm" value={sortingAlgorithm} onChange={e => setSortingAlgorithm(e.target.value as AlgorithmChoice)}>
+          <option value='bubble-sort'>Bubble sort</option>
+          <option value='insertion-sort'>Insertion sort</option>
+          <option value='binary-insertion-sort'>Binary insertion sort</option>
+          <option value='shell-sort/0'>Shell sort, Shell sequence</option>
+          <option value='shell-sort/1'>Shell sort, Knuth sequence</option>
+          <option value='shell-sort/2'>Shell sort, Tokuda sequence</option>
+          {extended && <option value='quick-sort'>Quick sort</option>}
+          {extended && <option value='merge-sort'>Merge sort</option>}
+          {extended && <option value='radix-sort'>Radix sort</option>}
         </select>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "45%" }}>
-        <label htmlFor="arrayType">Array Type</label>
-        <select id="arrayType" value={arrayType} onChange={e => setArrayType(e.target.value as ArrayType)} style={{ width: "100%" }}>
-          <option value='sorted'>Sorted Array</option>
-          <option value='reversed'>Reversed Array</option>
-          <option value='random'>Random Array</option>
-          <option value='custom'>Custom Array</option>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="arrayType">Input</label>
+        <select className={styles.input} id="arrayType" value={arrayType} onChange={e => setArrayType(e.target.value as ArrayType)}>
+          <option value='sorted'>Sorted</option>
+          <option value='reversed'>Reversed</option>
+          <option value='random'>Random</option>
+          <option value='custom'>Custom numbers</option>
         </select>
       </div>
 
-      <div style={{ display: arrayType === "custom" ? "none" : "flex", flexDirection: "column", alignItems: "flex-start", flexGrow: 2 }}>
-        <label htmlFor="arraySize">Array Size</label>
-        <input type="text" id="arraySize" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))} style={{ width: "100%" }} />
+      {arrayType === "custom" ? (
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="customField">Numbers</label>
+          <input className={styles.input} type="text" id="customField" placeholder="5 3 8 1" aria-describedby="customFieldHint" value={customField} onChange={e => setCustomField(e.target.value)} />
+          <span id="customFieldHint" className="sr-only">Separate numbers with spaces</span>
+        </div>
+      ) : (
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="arraySize">Size</label>
+          <input className={styles.input} type="number" inputMode="numeric" min={1} max={MAX_SIZE} id="arraySize" value={Number.isNaN(arraySize) ? "" : arraySize} onChange={e => setArraySize(parseInt(e.target.value))} />
+        </div>
+      )}
+
+      <div className={styles.actions}>
+        <button type="submit" className={styles.primary} disabled={pending}>
+          {pending ? "Sorting…" : "Run"}
+        </button>
       </div>
-      <div style={{ display: arrayType === "custom" ? "flex" : "none", flexDirection: "column", alignItems: "flex-start", flexGrow: 2 }}>
-        <label htmlFor="customField">Custom field</label>
-        <input type="text" id="customField" placeholder="1 2 3 4" value={customField} onChange={e => setCustomField(e.target.value)} style={{ width: "100%" }} />
-      </div>
+    </form>
+
+    {error && <p role="alert" className={styles.error}>{error}</p>}
+
+    <div className={styles.results} aria-live="polite">
+      {data.length > 0 ? (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Algorithm</th>
+              <th scope="col">Input</th>
+              <th scope="col" className={styles.num}>Size</th>
+              <th scope="col" className={styles.num}>Time</th>
+              <th scope="col" className={styles.num}>Changes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((d, i) => <tr key={i}>
+              <td className={styles.index}>{i + 1}</td>
+              <td>{d.sortingAlgorithm}</td>
+              <td>{d.arrayType}</td>
+              <td className={styles.num}>{d.arraySize.toLocaleString("en-US")}</td>
+              <td className={styles.num}>{d.time}</td>
+              <td className={styles.num}>{d.changes.toLocaleString("en-US")}</td>
+            </tr>)}
+          </tbody>
+        </table>
+      ) : (
+        <p className={styles.empty}>No runs yet. Pick an algorithm and an input, then press Run.</p>
+      )}
     </div>
 
-
-    <button onClick={submit} disabled={pending} style={{ width: "50%" }}>
-      {pending ? "Sorting…" : "Run"}
-    </button>
-
-    {error && (
-      <p role="alert" style={{ margin: 0, padding: "0.5rem 1rem", width: "100%", textAlign: "center", border: "1px solid currentColor", borderRadius: "0.5rem" }}>
-        {error}
+    <div className={styles.footer}>
+      <p className={styles.hint}>
+        Sorting runs on a Cloudflare Worker. Time is the full round trip, so
+        expect a floor of about 0.1 s however small the array.
       </p>
-    )}
-
-    <p style={{ margin: 0, fontSize: "0.85rem", opacity: 0.75, textAlign: "center" }}>
-      Sorting runs on the server. The time shown is the full round trip, so it
-      includes network latency — expect a floor of roughly 0.1s however small
-      the array is.
-    </p>
-
-    <hr />
-
-    <div style={{ width: "100%" }}>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Sorting Algorithm</th>
-            <th scope="col">Array Type</th>
-            <th scope="col">Array Size</th>
-            <th scope="col">Time</th>
-            <th scope="col">Changes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? data.map((d, i) => <tr key={i}>
-            <td>{i + 1}</td>
-            <td>{d.sortingAlgorithm}</td>
-            <td>{d.arrayType}</td>
-            <td>{d.arraySize}</td>
-            <td>{d.time}</td>
-            <td>{d.changes}</td>
-          </tr>) : (<tr>
-            <td></td>
-            <td colSpan={5}>Nothing here yet, you should make requests there, so that I can show u smth ⬆️</td>
-          </tr>)}
-        </tbody>
-      </table>
+      <button type="button" className={styles.secondary} onClick={resetTable} disabled={data.length === 0}>
+        Clear results
+      </button>
     </div>
-
-    <button onClick={resetTable}>Reset Table</button>
-  </div>
+  </section>
 }

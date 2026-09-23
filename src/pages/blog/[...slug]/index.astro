@@ -4,9 +4,7 @@ import { type CollectionEntry, getCollection } from "astro:content"
 import BaseLayout from "../../../layouts/BaseLayout.astro"
 
 import ContactCTA from "../../../components/ContactCTA.astro"
-import Hero from "../../../components/Hero.astro"
 import Icon from "../../../components/Icon.astro"
-import Pill from "../../../components/Pill.astro"
 import { render } from "astro:content"
 import { Image } from "astro:assets"
 import { convertToHumanReadableDate } from "../../../utils/date"
@@ -27,7 +25,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props
-const { Content } = await render(entry)
+const { Content, headings } = await render(entry)
 
 const pathFor = (path: string) => `../../../assets/blog/${path}`
 
@@ -38,6 +36,21 @@ if (!images[pathFor(entry.data.img)])
   throw new Error(
     `"${entry.data.img}" does not exist in glob: "../../../assets/blog/*.{png,jpg}"`
   )
+
+// Rough reading time: drop MDX imports, tags and code fences before counting words
+const words = (entry.body ?? "")
+  .replace(/^import .*$/gm, "")
+  .replace(/```[\s\S]*?```/g, "")
+  .replace(/<[^>]+>/g, " ")
+  .split(/\s+/)
+  .filter(Boolean).length
+const readingMinutes = Math.max(1, Math.round(words / 230))
+
+// The contents rail lists the top-level sections only. Posts differ in which
+// level they start at (some open with ###), so use the shallowest one present.
+const topDepth = Math.min(...headings.map((h) => h.depth))
+const sections = headings.filter((h) => h.depth === topDepth)
+const showContents = sections.length >= 3
 ---
 
 <BaseLayout
@@ -47,152 +60,566 @@ if (!images[pathFor(entry.data.img)])
   type="article"
 >
   <div class="stack gap-20">
-    <div class="stack gap-15">
-      <header>
-        <div class="wrapper stack gap-2">
-          <a class="back-link" href="/blog/"><Icon icon="arrow-left" /> Blog</a>
-          <Hero title={entry.data.title} align="start">
-            <div class="details">
-              <div class="tags">
-                {entry.data.tags.map((t) => <Pill>{t}</Pill>)}
-              </div>
-              <div class="description">
-                <p>{entry.data.description}</p>
-              </div>
-            </div>
-
-            <p class="muted">
-              {convertToHumanReadableDate(entry.data.publishDate)}
-              <br />
-              Rafa Audibert
-            </p>
-          </Hero>
-        </div>
+    <main class="layout">
+      <header class="head">
+        <a class="back-link" href="/blog/"><Icon icon="arrow-left" /> All posts</a>
+        <p class="meta">
+          <time datetime={entry.data.publishDate.toISOString()}>
+            {convertToHumanReadableDate(entry.data.publishDate)}
+          </time>
+          <span aria-hidden="true">·</span>
+          {readingMinutes} min read
+        </p>
+        <h1>{entry.data.title}</h1>
+        <p class="dek">{entry.data.description}</p>
+        <ul class="tags" aria-label="Tags">
+          {entry.data.tags.map((t) => <li>{t}</li>)}
+        </ul>
       </header>
-      <main class="wrapper">
-        <div class="stack gap-10 content">
-          {
-            entry.data.img && (
-              <Image
-                src={images[pathFor(entry.data.img)]()}
-                alt={entry.data.img_alt || ""}
-                loading="eager"
-              />
-            )
-          }
-          <div class="content">
-            <Content />
-          </div>
-        </div>
-      </main>
-    </div>
+
+      {
+        entry.data.img && (
+          <Image
+            class="cover"
+            src={images[pathFor(entry.data.img)]()}
+            alt={entry.data.img_alt || ""}
+            loading="eager"
+          />
+        )
+      }
+
+      {
+        showContents && (
+          <aside class="rail">
+            <nav class="toc" aria-label="Contents">
+              <p class="toc-label">Contents</p>
+              <ol>
+                {sections.map((s) => (
+                  <li>
+                    <a href={`#${s.slug}`}>
+                      <span class="toc-text">{s.text}</span>
+                      <span class="toc-bar" aria-hidden="true">
+                        <span class="toc-fill" />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        )
+      }
+
+      <article class="prose">
+        <Content />
+      </article>
+    </main>
     <ContactCTA />
   </div>
 </BaseLayout>
 
+<script>
+  // Contents rail: each section's bar is sized by how long the section is on
+  // the page, and fills as you read through it.
+  const setup = () => {
+    const prose = document.querySelector<HTMLElement>(".prose")
+    const items = [...document.querySelectorAll<HTMLLIElement>(".toc li")]
+    if (!prose || items.length === 0) return
+
+    const heads = items.map((li) => {
+      const hash = li.querySelector("a")!.hash.slice(1)
+      return document.getElementById(decodeURIComponent(hash))
+    })
+    if (heads.some((h) => !h)) return
+
+    let tops: number[] = []
+    let lengths: number[] = []
+
+    const measure = () => {
+      tops = heads.map((h) => h!.getBoundingClientRect().top + window.scrollY)
+      const end = prose.getBoundingClientRect().bottom + window.scrollY
+      lengths = tops.map((top, i) => (tops[i + 1] ?? end) - top)
+      const longest = Math.max(...lengths)
+      items.forEach((li, i) =>
+        li.style.setProperty("--length", String(lengths[i] / longest))
+      )
+      update()
+    }
+
+    const update = () => {
+      // Read position sits a third of the way down the viewport
+      const y = window.scrollY + window.innerHeight / 3
+      let current = -1
+      items.forEach((li, i) => {
+        const progress = Math.min(1, Math.max(0, (y - tops[i]) / lengths[i]))
+        li.style.setProperty("--progress", String(progress))
+        if (y >= tops[i]) current = i
+      })
+      items.forEach((li, i) => {
+        const link = li.querySelector("a")!
+        if (i === current) link.setAttribute("aria-current", "location")
+        else link.removeAttribute("aria-current")
+      })
+    }
+
+    let frame = 0
+    window.addEventListener(
+      "scroll",
+      () => {
+        cancelAnimationFrame(frame)
+        frame = requestAnimationFrame(update)
+      },
+      { passive: true }
+    )
+    // Charts hydrate after load and change the page height, so re-measure
+    new ResizeObserver(measure).observe(prose)
+    measure()
+  }
+
+  setup()
+</script>
+
 <style>
-  header {
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid var(--gray-800);
+  .layout {
+    --column: 42rem;
+    display: grid;
+    grid-template-columns:
+      minmax(1.5rem, 1fr)
+      minmax(0, var(--column))
+      minmax(1.5rem, 1fr);
+    align-items: start;
+  }
+
+  .layout > * {
+    grid-column: 2;
+  }
+
+  /* Header */
+
+  .head {
+    padding-top: 2rem;
   }
 
   .back-link {
-    display: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--gray-300);
+    text-decoration: none;
+    transition: color var(--theme-transition);
   }
 
-  .details {
+  .back-link :global(svg) {
+    width: 1em;
+    height: 1em;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--link-color);
+  }
+
+  .meta {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 0.5rem;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--gray-300);
+  }
+
+  h1 {
+    margin-top: 0.875rem;
+    max-width: 20ch;
+    font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    color: var(--gray-0);
+    text-wrap: balance;
+  }
+
+  .dek {
+    margin-top: 1.25rem;
+    max-width: 36em;
+    font-family: var(--font-reading);
+    font-size: clamp(1.125rem, 1rem + 0.5vw, 1.3125rem);
+    line-height: 1.5;
+    color: var(--gray-300);
+    text-wrap: pretty;
   }
 
   .tags {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 0.5rem;
+    margin-top: 1.75rem;
+    padding: 0;
+    list-style: none;
   }
 
-  .description {
-    font-size: var(--text-lg);
-    max-width: 54ch;
+  .tags li {
+    padding: 0.1875rem 0.625rem;
+    border: 1px solid var(--gray-700);
+    border-radius: 999rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--gray-200);
   }
 
-  .muted {
-    font-size: var(--text-sm);
-    color: var(--gray-400);
-  }
-
-  .content {
+  .cover {
     width: 100%;
-    max-width: 65ch;
-    margin-inline: auto;
-  }
-
-  .content > :global(* + *) {
-    margin-top: 1rem;
-  }
-
-  .content :global(h1),
-  .content :global(h2),
-  .content :global(h3),
-  .content :global(h4),
-  .content :global(h5) {
-    margin: 1.5rem 0;
-  }
-
-  .content :global(img) {
-    border-radius: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    background: var(--gradient-subtle);
+    margin-top: 3rem;
+    border-radius: 0.75rem;
     border: 1px solid var(--gray-800);
   }
 
-  .content :global(blockquote) {
-    font-size: var(--text-sm);
-    font-family: var(--font-brand);
-    line-height: 1.1;
-    padding-inline-start: 1.5rem;
-    border-inline-start: 0.25rem solid var(--accent-dark);
+  .prose {
+    margin-top: 3.5rem;
+  }
+
+  /* Contents rail */
+
+  .rail {
+    display: none;
+  }
+
+  .toc {
+    position: sticky;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  .toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--gray-400);
   }
 
-  .back-link,
-  .content :global(a) {
-    text-decoration: 1px solid underline transparent;
-    text-underline-offset: 0.25em;
-    transition: text-decoration-color var(--theme-transition);
+  .toc ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-top: 1rem;
+    padding: 0;
+    list-style: none;
   }
 
-  .back-link:hover,
-  .back-link:focus,
-  .content :global(a:hover),
-  .content :global(a:focus) {
-    text-decoration-color: currentColor;
+  .toc a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4375rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
+    color: var(--gray-400);
+    text-decoration: none;
+    transition: color var(--theme-transition);
+  }
+
+  .toc a:hover,
+  .toc a:focus-visible,
+  .toc a[aria-current] {
+    color: var(--gray-0);
+  }
+
+  .toc-bar {
+    display: block;
+    width: calc(var(--length, 1) * 100%);
+    height: 3px;
+    border-radius: 3px;
+    background: var(--gray-800);
+    overflow: hidden;
+  }
+
+  .toc-fill {
+    display: block;
+    height: 100%;
+    background: var(--link-color);
+    transform: scaleX(var(--progress, 0));
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .toc-fill {
+      transition: transform 0.15s linear;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .toc-bar {
+      background: GrayText;
+    }
+    .toc-fill {
+      background: Highlight;
+    }
   }
 
   @media (min-width: 50em) {
-    .back-link {
+    .head {
+      padding-top: 3rem;
+    }
+
+    .meta {
+      margin-top: 3rem;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .layout {
+      column-gap: 3rem;
+      grid-template-columns:
+        minmax(12rem, 1fr)
+        minmax(0, var(--column))
+        minmax(12rem, 1fr);
+    }
+
+    /* Header and cover run past the text column on the right */
+    .layout > .head,
+    .layout > :global(.cover) {
+      grid-column: 2 / 4;
+      max-width: 60rem;
+    }
+
+    .layout > .rail {
       display: block;
-      align-self: flex-start;
+      grid-column: 1;
+      grid-row: 3;
+      align-self: stretch;
+      justify-self: end;
+      width: min(100%, 15rem);
+      margin-top: 3.5rem;
     }
 
-    .details {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 2.5rem;
+    .layout > .prose {
+      grid-row: 3;
     }
+  }
+</style>
 
-    .tags {
-      flex: 1;
-      justify-content: flex-start;
+<style is:global>
+  /* Article body. Block rules target direct children so they don't leak into
+     embedded components (charts, playgrounds). */
+
+  .prose {
+    font-family: var(--font-reading);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--gray-100);
+    font-variant-numeric: oldstyle-nums;
+  }
+
+  .prose > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .prose > h2,
+  .prose > h3,
+  .prose > h4 {
+    color: var(--gray-0);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    scroll-margin-top: 2rem;
+  }
+
+  .prose > h2 {
+    margin-top: 3.5rem;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .prose > h3 {
+    margin-top: 2.75rem;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.4375rem);
+    line-height: 1.3;
+  }
+
+  .prose > h4 {
+    margin-top: 2.25rem;
+    font-size: 1.125rem;
+    line-height: 1.35;
+  }
+
+  .prose > :is(h2, h3, h4) + * {
+    margin-top: 0.875rem;
+  }
+
+  .prose > :first-child {
+    margin-top: 0;
+  }
+
+  .prose strong {
+    font-weight: 600;
+    color: var(--gray-0);
+  }
+
+  .prose a {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--theme-transition);
+  }
+
+  .prose a:hover,
+  .prose a:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  /* Lists */
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25rem;
+  }
+
+  .prose li + li {
+    margin-top: 0.5rem;
+  }
+
+  .prose li::marker {
+    color: var(--gray-500);
+  }
+
+  .prose li > p {
+    margin-top: 0.5rem;
+  }
+
+  /* A list of worked examples, each led by its formula */
+  .prose > ul.cases {
+    padding: 0;
+    list-style: none;
+  }
+
+  .prose > ul.cases > li + li {
+    margin-top: 2.5rem;
+  }
+
+  .prose > ul.cases > li > p:first-child {
+    font-size: 1.375em;
+    color: var(--gray-0);
+  }
+
+  /* Code */
+
+  .prose :not(pre) > code {
+    padding: 0.125em 0.3em;
+    border-radius: 0.25em;
+    background: var(--gray-900);
+    font-family: var(--font-mono);
+    font-size: 0.84em;
+    font-variant-numeric: normal;
+    color: var(--gray-0);
+    overflow-wrap: break-word;
+  }
+
+  .prose pre {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--gray-800);
+    border-radius: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    font-variant-numeric: normal;
+    overflow-x: auto;
+  }
+
+  .prose pre code {
+    font-family: inherit;
+  }
+
+  :root:not(.theme-dark) .prose pre.astro-code {
+    background-color: var(--gray-900) !important;
+  }
+
+  /* Asides and quotes: set in the sans so they read as notes beside the text */
+
+  .prose blockquote {
+    padding: 0.125rem 0 0.125rem 1.125rem;
+    border-left: 2px solid var(--link-color);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--gray-300);
+  }
+
+  .prose blockquote > * + * {
+    margin-top: 0.75rem;
+  }
+
+  .prose blockquote strong {
+    color: var(--gray-100);
+  }
+
+  /* Media */
+
+  .prose img {
+    display: block;
+    margin-inline: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--gray-800);
+  }
+
+  .prose .katex {
+    font-size: 1.05em;
+  }
+
+  .prose .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.25rem;
+  }
+
+  .prose > hr {
+    height: 1px;
+    margin-block: 3rem;
+    border: 0;
+    background: var(--gray-800);
+  }
+
+  /* Tables */
+
+  .prose > table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .prose > table th {
+    padding: 0 1rem 0.5rem 0;
+    border-bottom: 1px solid var(--gray-700);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gray-400);
+  }
+
+  .prose > table td {
+    padding: 0.625rem 1rem 0.625rem 0;
+    border-bottom: 1px solid var(--gray-800);
+    vertical-align: top;
+  }
+
+  @media (max-width: 40em) {
+    .prose > table {
+      display: block;
+      overflow-x: auto;
     }
+  }
 
-    .content :global(blockquote) {
-      font-size: var(--text-sm);
+  @media (min-width: 50em) {
+    .prose {
+      font-size: 1.1563rem;
     }
   }
 </style>

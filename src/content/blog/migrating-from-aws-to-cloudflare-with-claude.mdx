@@ -21,7 +21,7 @@ a pile of things from university that I'd genuinely forgotten existed.
 One evening I asked Claude to move all of it to Cloudflare. What follows is less a
 migration guide than a list of things neither of us expected to find.
 
-## Starting with an inventory 🔍
+## Starting with an inventory
 
 The first useful thing was refusing to trust my own memory of what was in there. I gave
 Claude a read-only IAM user and asked it to enumerate the account properly, which turned
@@ -41,7 +41,7 @@ databases. Those were orphaned snapshots - an 8 GB EBS snapshot from 2022, a Pos
 snapshot from 2019, a MySQL one from 2024 - quietly billing for storage attached to
 nothing at all.
 
-## The thing that actually mattered 🔑
+## The thing that actually mattered
 
 Buried in the IAM listing:
 
@@ -64,7 +64,7 @@ credentials that could do anything at all to the account.
 This would be solved either way because that account would be going away, but damn, was I lazy huh.
 Worth checking your o
 
-## A bug that had been lying for six years 🐛
+## A bug that had been lying for six years
 
 This is my favourite part.
 
@@ -106,7 +106,7 @@ Tokuda   1714
 The post had been describing one thing and demonstrating another for six years. Nobody
 told me - not even the professor who reviewed that assignment lol.
 
-## Where Workers get interesting ⏱️
+## Where Workers get interesting
 
 I wanted the sorting API to stay server-side. Claude said it couldn't report timings on
 Workers, which sounded like the kind of claim worth checking, so it deployed a throwaway
@@ -154,7 +154,7 @@ Worker exceeding its CPU budget.
 
 So the cap is 25,000 now.
 
-## Where everything ended up 🏁
+## Where everything ended up
 
 | Was | Is |
 | --- | --- |
@@ -191,7 +191,7 @@ variables - a PostHog key, a Mapbox token - live in the Cloudflare project setti
 instead of being handed to a CI runner alongside the keys to my entire cloud account.
 Deleting those workflow files felt disproportionately good.
 
-## Was the AI actually useful? 🤖
+## Was the AI actually useful?
 
 Yes, though not in the way I expected. The mechanical parts — rewriting deploy pipelines,
 porting seven sorting algorithms, swapping DNS records — were fine but not the interesting

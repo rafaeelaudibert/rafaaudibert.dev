@@ -39,6 +39,10 @@ export default defineConfig({
       remarkPlugins: [remarkMath], // Detect math equations in markdown
       rehypePlugins: [rehypeKatex], // Render latex equations in markdown
     }),
+    // Emit both palettes so code blocks follow the site theme (see global.css)
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark" },
+    },
   },
 
   // Image optimization settings

@@ -9,7 +9,9 @@ import {
   ChartsYAxis,
   LinePlot,
   MarkPlot,
-  ChartsContainer,
+  ChartsDataProvider,
+  ChartsSurface,
+  ChartsWrapper,
 } from "@mui/x-charts"
 import type {
   ParsedRecursiveSortingAlgorithmData,
@@ -41,6 +43,7 @@ import {
   mergeArraysFilesData,
   selectionTreeFilesData,
 } from "./csv"
+import { ChartFigure, Segmented, usePalette } from "./ui"
 
 const toSeriesFormatter = (formatter?: (v: number) => string) =>
   formatter ? (v: number | null) => (v == null ? "" : formatter(v)) : undefined
@@ -64,19 +67,28 @@ const formatTime = (seconds: number): string => {
   return `${trimZero((seconds * 1e9).toFixed(1))}ns`
 }
 
-const CHART_COLORS = [
-  "#7611a6",
-  "#c561f6",
-  "#ca7879",
-  "#4c6ef5",
-  "#37b24d",
-  "#f59f00",
-  "#e64980",
-  "#0ca678",
-  "#ae3ec9",
-]
+const SUPERSCRIPT = "⁰¹²³⁴⁵⁶⁷⁸⁹"
+
+/** Array sizes are powers of two, so label them as 2ⁿ to keep the axis short. */
+const formatSize = (value: number): string => {
+  const exponent = Math.log2(value)
+  if (!Number.isInteger(exponent)) return formatCompact(value)
+  return "2" + [...String(exponent)].map((d) => SUPERSCRIPT[+d]).join("")
+}
 
 type ScaleType = "linear" | "log"
+type Order = "random" | "reversed" | "sorted"
+
+const SCALE_OPTIONS = [
+  ["linear", "Linear"],
+  ["log", "Log"],
+] as const
+
+const ORDER_OPTIONS = [
+  ["random", "Random"],
+  ["reversed", "Reversed"],
+  ["sorted", "Sorted"],
+] as const
 
 const ScaleToggle = ({
   scaleType,
@@ -85,58 +97,11 @@ const ScaleToggle = ({
   scaleType: ScaleType
   setScaleType: (s: ScaleType) => void
 }) => (
-  <button
-    onClick={() => setScaleType(scaleType === "linear" ? "log" : "linear")}
-    style={{
-      background: "none",
-      border: "1px solid #c3cadb",
-      borderRadius: "999px",
-      padding: "0.25rem 0.875rem",
-      fontSize: "0.8rem",
-      color: "#505d84",
-      cursor: "pointer",
-      fontFamily: "inherit",
-      letterSpacing: "0.02em",
-    }}
-  >
-    Scale: {scaleType === "linear" ? "Linear" : "Logarithmic"}
-  </button>
+  <Segmented label="Scale" options={SCALE_OPTIONS} value={scaleType} onChange={setScaleType} />
 )
 
-const ChartSection = ({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      alignItems: "center",
-      gap: "0.5rem",
-    }}
-  >
-    <strong style={{ fontSize: "0.95rem", color: "#283044" }}>{title}</strong>
-    {children}
-  </div>
-)
-
-const ChartGroup = ({ children }: { children: React.ReactNode }) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "3rem",
-      width: "100%",
-      alignItems: "center",
-      marginTop: "2.5rem",
-    }}
-  >
-    {children}
-  </div>
+const OrderToggle = ({ order, setOrder }: { order: Order; setOrder: (o: Order) => void }) => (
+  <Segmented label="Input" options={ORDER_OPTIONS} value={order} onChange={setOrder} />
 )
 
 // --- Dataset generation ---
@@ -154,20 +119,49 @@ const generateDatasets = (
 
   return {
     xAxis: [{ data: xAxis }],
-    series: generators.map(([label, func], i) => ({
+    series: generators.map(([label, func]) => ({
       label,
       data: Array.from({ length }, (_, idx) =>
         func(idx * increaseBy + startAt)
       ),
-      color: CHART_COLORS[i % CHART_COLORS.length],
     })),
   }
 }
 
 // --- Theoretical complexity charts ---
 
-const CHART_WIDTH = 600
-const CHART_HEIGHT = 450
+const CHART_HEIGHT = 320
+const DATA_CHART_HEIGHT = 360
+
+/**
+ * Each complexity chart plots a function between two bounds. The prose refers
+ * to them by color: the function is purple, the bounds blue and yellow.
+ */
+const ComplexityChart = ({
+  title,
+  dataset,
+}: {
+  title: string
+  dataset: ReturnType<typeof generateDatasets>
+}) => {
+  const palette = usePalette()
+  return (
+    <ChartFigure title={title}>
+      <LineChart
+        height={CHART_HEIGHT}
+        series={dataset.series.map((s, i) => ({
+          ...s,
+          curve: "catmullRom" as const,
+          showMark: false,
+          color: palette.bounds[i],
+        }))}
+        xAxis={dataset.xAxis}
+        yAxis={[{ valueFormatter: formatCompact, width: 48 }]}
+        grid={{ horizontal: true }}
+      />
+    </ChartFigure>
+  )
+}
 
 const LINEAR_COMPLEXITY_CHART_DATASET = generateDatasets(50, [
   ["40n", (n) => n * 40],
@@ -175,38 +169,16 @@ const LINEAR_COMPLEXITY_CHART_DATASET = generateDatasets(50, [
   ["60n", (n) => n * 60],
 ])
 export const LinearComplexityChart = () => (
-  <LineChart
-    key="linear-complexity-chart"
-    title="Linear Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={LINEAR_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={LINEAR_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Linear complexity" dataset={LINEAR_COMPLEXITY_CHART_DATASET} />
 )
 
 const SQUARE_COMPLEXITY_CHART_DATASET = generateDatasets(50, [
-  ["n\u00B2", (n) => n * n],
-  ["n\u00B2 + 2n + 10", (n) => n * n + 2 * n + 10],
-  ["2n\u00B2", (n) => 2 * n * n],
+  ["n²", (n) => n * n],
+  ["n² + 2n + 10", (n) => n * n + 2 * n + 10],
+  ["2n²", (n) => 2 * n * n],
 ])
 export const SquareComplexityChart = () => (
-  <LineChart
-    key="square-complexity-chart"
-    title="Square Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={SQUARE_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={SQUARE_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Quadratic complexity" dataset={SQUARE_COMPLEXITY_CHART_DATASET} />
 )
 
 const LOG_COMPLEXITY_CHART_DATASET = generateDatasets(
@@ -219,66 +191,33 @@ const LOG_COMPLEXITY_CHART_DATASET = generateDatasets(
   { increaseBy: 10, startAt: 1 }
 )
 export const LogComplexityChart = () => (
-  <LineChart
-    key="log-complexity-chart"
-    title="Logarithmic Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={LOG_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={LOG_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Linear plus logarithmic" dataset={LOG_COMPLEXITY_CHART_DATASET} />
 )
 
 const CUBIC_COMPLEXITY_CHART_DATASET = generateDatasets(
   30,
   [
-    ["n\u00B3", (n) => n * n * n],
-    ["n\u00B3 - 100n\u00B2", (n) => n * n * n - 100 * (n * n)],
-    ["n\u00B3/2", (n) => (n * n * n) / 2],
+    ["n³", (n) => n * n * n],
+    ["n³ - 100n²", (n) => n * n * n - 100 * (n * n)],
+    ["n³/2", (n) => (n * n * n) / 2],
   ],
   { increaseBy: 10 }
 )
 export const CubicComplexityChart = () => (
-  <LineChart
-    key="cubic-complexity-chart"
-    title="Cubic Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={CUBIC_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={CUBIC_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Cubic complexity" dataset={CUBIC_COMPLEXITY_CHART_DATASET} />
 )
 
 const CONSTANT_COMPLEXITY_CHART_DATASET = generateDatasets(
   40,
   [
     ["1", () => 1],
-    ["(2n\u00B2)/(3n\u00B2 - 1)", (n) => (2 * n * n) / (3 * n * n - 1)],
+    ["(2n²)/(3n² - 1)", (n) => (2 * n * n) / (3 * n * n - 1)],
     ["1/3", () => 1 / 3],
   ],
   { increaseBy: 0.5 }
 )
 export const ConstantComplexityChart = () => (
-  <LineChart
-    key="constant-complexity-chart"
-    title="Constant Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={CONSTANT_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={CONSTANT_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Constant complexity" dataset={CONSTANT_COMPLEXITY_CHART_DATASET} />
 )
 
 const LINEAR_LOG_COMPLEXITY_CHART_DATASET = generateDatasets(
@@ -291,18 +230,7 @@ const LINEAR_LOG_COMPLEXITY_CHART_DATASET = generateDatasets(
   { increaseBy: 1000, startAt: 1 }
 )
 export const LinearLogComplexityChart = () => (
-  <LineChart
-    key="linear-log-complexity-chart"
-    title="Linear Logarithmic Complexity"
-    width={CHART_WIDTH}
-    height={CHART_HEIGHT}
-    series={LINEAR_LOG_COMPLEXITY_CHART_DATASET.series.map((s) => ({
-      ...s,
-      curve: "catmullRom" as const,
-    }))}
-    xAxis={LINEAR_LOG_COMPLEXITY_CHART_DATASET.xAxis}
-    grid={{ horizontal: true }}
-  />
+  <ComplexityChart title="Linearithmic complexity" dataset={LINEAR_LOG_COMPLEXITY_CHART_DATASET} />
 )
 
 // --- Data-driven charts ---
@@ -332,9 +260,9 @@ const TimeAndRecursiveCallsChart = ({
   <DoubleAxisChart
     data={data}
     scaleType={scaleType}
-    axis1={{ label: "Average Time", dataMapper: (d) => d.timeAverage, valueFormatter: formatTime }}
+    axis1={{ label: "Average time", dataMapper: (d) => d.timeAverage, valueFormatter: formatTime }}
     axis2={{
-      label: "Average Recursive Calls",
+      label: "Average recursive calls",
       dataMapper: (d) => d.recursiveCallsAverage,
     }}
   />
@@ -350,71 +278,88 @@ const DoubleAxisChart = <D extends { arraySize: number }>({
   scaleType: ScaleType
   axis1: { label: string; dataMapper: (d: D) => number; valueFormatter?: (v: number) => string }
   axis2: { label: string; dataMapper: (d: D) => number; valueFormatter?: (v: number) => string }
-}) => (
-  <ChartsContainer
-    width={700}
-    height={450}
-    colors={CHART_COLORS}
-    xAxis={[
-      {
-        data: data.map((d) => d.arraySize),
-        scaleType: "band",
-        id: "x-axis-id",
-      },
-    ]}
-    yAxis={[
-      {
-        id: "axis1",
-        scaleType,
-        position: "left",
-        label: axis1.label,
-        domainLimit: (min, max) => ({ min, max }),
-        valueFormatter: axis1.valueFormatter,
-      },
-      {
-        id: "axis2",
-        scaleType: "linear",
-        position: "right",
-        label: axis2.label,
-        domainLimit: (min, max) => ({
-          min,
-          max: Number(max) * 1.1,
-        }),
-        valueFormatter: axis2.valueFormatter ?? formatCompact,
-      },
-    ]}
-    series={[
-      {
-        label: axis1.label,
-        data: data.map(axis1.dataMapper),
-        type: "line",
-        yAxisId: "axis1",
-        showMark: true,
-        valueFormatter: toSeriesFormatter(axis1.valueFormatter),
-      },
-      {
-        label: axis2.label,
-        data: data.map(axis2.dataMapper),
-        type: "bar",
-        yAxisId: "axis2",
-        valueFormatter: toSeriesFormatter(axis2.valueFormatter ?? formatCompact),
-      },
-    ]}
-    margin={{ left: 80, right: 80 }}
-  >
-    <ChartsLegend />
-    <ChartsGrid horizontal />
-    <BarPlot />
-    <LinePlot />
-    <MarkPlot />
-    <ChartsTooltip />
-    <ChartsXAxis label="Array Size" axisId="x-axis-id" />
-    <ChartsYAxis axisId="axis1" />
-    <ChartsYAxis axisId="axis2" />
-  </ChartsContainer>
-)
+}) => {
+  const palette = usePalette()
+  return (
+    <ChartsDataProvider
+      height={DATA_CHART_HEIGHT}
+      xAxis={[
+        {
+          data: data.map((d) => d.arraySize),
+          scaleType: "band",
+          id: "x-axis-id",
+          label: "Array size",
+          valueFormatter: formatSize,
+        },
+      ]}
+      yAxis={[
+        {
+          id: "axis1",
+          scaleType,
+          position: "left",
+          label: axis1.label,
+          domainLimit: (min, max) => ({ min, max }),
+          valueFormatter: axis1.valueFormatter,
+          width: 64,
+        },
+        {
+          id: "axis2",
+          scaleType: "linear",
+          position: "right",
+          label: axis2.label,
+          domainLimit: (min, max) => ({
+            min,
+            max: Number(max) * 1.1,
+          }),
+          valueFormatter: axis2.valueFormatter ?? formatCompact,
+          width: 64,
+        },
+      ]}
+      series={[
+        {
+          label: axis1.label,
+          data: data.map(axis1.dataMapper),
+          type: "line",
+          yAxisId: "axis1",
+          showMark: true,
+          color: palette.accent,
+          valueFormatter: toSeriesFormatter(axis1.valueFormatter),
+        },
+        {
+          label: axis2.label,
+          data: data.map(axis2.dataMapper),
+          type: "bar",
+          yAxisId: "axis2",
+          color: palette.bar,
+          valueFormatter: toSeriesFormatter(axis2.valueFormatter ?? formatCompact),
+        },
+      ]}
+    >
+      {/* The legend is HTML, so it sits beside the SVG surface, not inside it */}
+      <ChartsWrapper legendPosition={{ vertical: "top", horizontal: "center" }}>
+        <ChartsLegend />
+        <ChartsSurface>
+          <ChartsGrid horizontal />
+          <BarPlot />
+          <LinePlot />
+          <MarkPlot />
+          <ChartsXAxis axisId="x-axis-id" />
+          <ChartsYAxis axisId="axis1" />
+          <ChartsYAxis axisId="axis2" />
+        </ChartsSurface>
+        <ChartsTooltip />
+      </ChartsWrapper>
+    </ChartsDataProvider>
+  )
+}
 
 // --- Sorting algorithm chart groups ---
+
+const ORDER_LABEL: Record<Order, string> = {
+  random: "random input",
+  reversed: "reversed input",
+  sorted: "sorted input",
+}
 
 const SortChartTriple = ({
   name,
@@ -428,26 +373,27 @@ const SortChartTriple = ({
   sortedData: ParsedSortingAlgorithmData[]
 }) => {
   const [scaleType, setScaleType] = React.useState<ScaleType>("linear")
+  const [order, setOrder] = React.useState<Order>("random")
+  const data = { random: randomData, reversed: reversedData, sorted: sortedData }[order]
 
   return (
-    <ChartGroup>
-      <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
-      <ChartSection title={`${name} - Random Order`}>
-        <TimeAndSwapsChart data={randomData} scaleType={scaleType} />
-      </ChartSection>
-      <ChartSection title={`${name} - Reversed Order`}>
-        <TimeAndSwapsChart data={reversedData} scaleType={scaleType} />
-      </ChartSection>
-      <ChartSection title={`${name} - Sorted Order`}>
-        <TimeAndSwapsChart data={sortedData} scaleType={scaleType} />
-      </ChartSection>
-    </ChartGroup>
+    <ChartFigure
+      title={`${name}, ${ORDER_LABEL[order]}`}
+      controls={
+        <>
+          <OrderToggle order={order} setOrder={setOrder} />
+          <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
+        </>
+      }
+    >
+      <TimeAndSwapsChart data={data} scaleType={scaleType} />
+    </ChartFigure>
   )
 }
 
 export const BubbleSortCharts = () => (
   <SortChartTriple
-    name="Bubble Sort"
+    name="Bubble sort"
     randomData={bubbleSortRandom}
     reversedData={bubbleSortReversed}
     sortedData={bubbleSortSorted}
@@ -456,7 +402,7 @@ export const BubbleSortCharts = () => (
 
 export const InsertionSortCharts = () => (
   <SortChartTriple
-    name="Insertion Sort"
+    name="Insertion sort"
     randomData={insertionSortRandom}
     reversedData={insertionSortReversed}
     sortedData={insertionSortSorted}
@@ -465,37 +411,47 @@ export const InsertionSortCharts = () => (
 
 export const BinaryInsertionSortCharts = () => (
   <SortChartTriple
-    name="Binary Insertion Sort"
+    name="Binary insertion sort"
     randomData={binaryInsertionSortRandom}
     reversedData={binaryInsertionSortReversed}
     sortedData={binaryInsertionSortSorted}
   />
 )
 
+type Sequence = "shell" | "knuth" | "tokuda"
+
+const SEQUENCE_OPTIONS = [
+  ["shell", "Shell"],
+  ["knuth", "Knuth"],
+  ["tokuda", "Tokuda"],
+] as const
+
+const SHELL_DATA = {
+  shell: { random: shellSort0Random, reversed: shellSort0Reversed, sorted: shellSort0Sorted },
+  knuth: { random: shellSort1Random, reversed: shellSort1Reversed, sorted: shellSort1Sorted },
+  tokuda: { random: shellSort2Random, reversed: shellSort2Reversed, sorted: shellSort2Sorted },
+} as const
+
 export const ShellSortCharts = () => {
   const [scaleType, setScaleType] = React.useState<ScaleType>("linear")
+  const [order, setOrder] = React.useState<Order>("random")
+  const [sequence, setSequence] = React.useState<Sequence>("shell")
+  const data = SHELL_DATA[sequence][order] as unknown as ParsedSortingAlgorithmData[]
+  const sequenceName = SEQUENCE_OPTIONS.find(([s]) => s === sequence)![1]
 
   return (
-    <ChartGroup>
-      <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
-      {(
-        [
-          ["Shell Sequence", shellSort0Random, shellSort0Reversed, shellSort0Sorted],
-          ["Knuth Sequence", shellSort1Random, shellSort1Reversed, shellSort1Sorted],
-          ["Tokuda Sequence", shellSort2Random, shellSort2Reversed, shellSort2Sorted],
-        ] as const
-      ).flatMap(([seq, random, reversed, sorted]) => [
-        <ChartSection key={`${seq}-random`} title={`Shell Sort (${seq}) - Random Order`}>
-          <TimeAndSwapsChart data={random as unknown as ParsedSortingAlgorithmData[]} scaleType={scaleType} />
-        </ChartSection>,
-        <ChartSection key={`${seq}-reversed`} title={`Shell Sort (${seq}) - Reversed Order`}>
-          <TimeAndSwapsChart data={reversed as unknown as ParsedSortingAlgorithmData[]} scaleType={scaleType} />
-        </ChartSection>,
-        <ChartSection key={`${seq}-sorted`} title={`Shell Sort (${seq}) - Sorted Order`}>
-          <TimeAndSwapsChart data={sorted as unknown as ParsedSortingAlgorithmData[]} scaleType={scaleType} />
-        </ChartSection>,
-      ])}
-    </ChartGroup>
+    <ChartFigure
+      title={`Shell sort (${sequenceName} sequence), ${ORDER_LABEL[order]}`}
+      controls={
+        <>
+          <Segmented label="Sequence" options={SEQUENCE_OPTIONS} value={sequence} onChange={setSequence} />
+          <OrderToggle order={order} setOrder={setOrder} />
+          <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
+        </>
+      }
+    >
+      <TimeAndSwapsChart data={data} scaleType={scaleType} />
+    </ChartFigure>
   )
 }
 
@@ -509,99 +465,119 @@ const SingleRecursiveChart = ({
   const [scaleType, setScaleType] = React.useState<ScaleType>("linear")
 
   return (
-    <ChartGroup>
-      <ChartSection title={title}>
-        <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
-        <TimeAndRecursiveCallsChart data={data} scaleType={scaleType} />
-      </ChartSection>
-    </ChartGroup>
+    <ChartFigure
+      title={title}
+      controls={<ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />}
+    >
+      <TimeAndRecursiveCallsChart data={data} scaleType={scaleType} />
+    </ChartFigure>
   )
 }
 
 export const QuickSortCharts = () => (
-  <SingleRecursiveChart title="Quick Sort - Random Order" data={quickSortData} />
+  <SingleRecursiveChart title="Quick sort, random input" data={quickSortData} />
 )
 
 export const MergeSortCharts = () => (
-  <SingleRecursiveChart title="Merge Sort - Random Order" data={mergeSortData} />
+  <SingleRecursiveChart title="Merge sort, random input" data={mergeSortData} />
 )
 
 export const RadixSortCharts = () => (
-  <SingleRecursiveChart title="Radix Sort - Random Order" data={radixSortData} />
+  <SingleRecursiveChart title="Radix sort, random input" data={radixSortData} />
 )
 
 // --- Comparison charts ---
 
+const ComparisonChart = ({
+  sizes,
+  series,
+  scaleType = "linear",
+}: {
+  sizes: number[]
+  series: { label: string; data: number[] }[]
+  scaleType?: ScaleType
+}) => {
+  const palette = usePalette()
+  return (
+    <LineChart
+      height={DATA_CHART_HEIGHT}
+      series={series.map((s, i) => ({
+        ...s,
+        showMark: false,
+        color: palette.series[i],
+        valueFormatter: toSeriesFormatter(formatTime),
+      }))}
+      xAxis={[{ data: sizes, scaleType: "band", valueFormatter: formatSize, label: "Array size" }]}
+      yAxis={[{ scaleType, valueFormatter: formatTime, width: 56 }]}
+      grid={{ horizontal: true }}
+    />
+  )
+}
+
 export const RecursiveSortingCharts = () => (
-  <ChartGroup>
-    <ChartSection title="Random Array Times - Recursive Sorting Algorithms">
-      <LineChart
-        width={CHART_WIDTH}
-        height={CHART_HEIGHT}
-        colors={CHART_COLORS}
-        series={[
-          { label: "Quick Sort", data: quickSortData.map((d) => d.time), showMark: true },
-          { label: "Merge Sort", data: mergeSortData.map((d) => d.time), showMark: true },
-          { label: "Radix Sort", data: radixSortData.map((d) => d.time), showMark: true },
-        ]}
-        xAxis={[
-          { data: quickSortData.map((d) => d.arraySize), scaleType: "band" },
-        ]}
-        grid={{ horizontal: true }}
-      />
-    </ChartSection>
-  </ChartGroup>
+  <ChartFigure title="Quick, merge and radix sort, random input">
+    <ComparisonChart
+      sizes={quickSortData.map((d) => d.arraySize)}
+      series={[
+        { label: "Quick sort", data: quickSortData.map((d) => d.time) },
+        { label: "Merge sort", data: mergeSortData.map((d) => d.time) },
+        { label: "Radix sort", data: radixSortData.map((d) => d.time) },
+      ]}
+    />
+  </ChartFigure>
 )
 
 export const FileSortingCharts = () => (
-  <ChartGroup>
-    <ChartSection title="File Sorting Algorithms">
-      <LineChart
-        width={CHART_WIDTH}
-        height={CHART_HEIGHT}
-        colors={CHART_COLORS}
-        series={[
-          { label: "Quick Sort", data: quickSortFilesData.map((d) => d.time), showMark: true },
-          { label: "Merge Arrays", data: mergeArraysFilesData.map((d) => d.time), showMark: true },
-          { label: "Selection Tree", data: selectionTreeFilesData.map((d) => d.time), showMark: true },
-        ]}
-        xAxis={[
-          { data: selectionTreeFilesData.map((d) => d.arraySize), scaleType: "band" },
-        ]}
-        grid={{ horizontal: true }}
-      />
-    </ChartSection>
-  </ChartGroup>
+  <ChartFigure title="Merging 200 sorted files">
+    <ComparisonChart
+      sizes={selectionTreeFilesData.map((d) => d.arraySize)}
+      series={[
+        { label: "Quick sort", data: quickSortFilesData.map((d) => d.time) },
+        { label: "Merge arrays", data: mergeArraysFilesData.map((d) => d.time) },
+        { label: "Selection tree", data: selectionTreeFilesData.map((d) => d.time) },
+      ]}
+    />
+  </ChartFigure>
 )
 
-export const ArrayTimesCharts = () => (
-  <ChartGroup>
-    {(
-      [
-        ["Sorted Array Times", bubbleSortSorted, insertionSortSorted, binaryInsertionSortSorted, shellSort0Sorted, shellSort1Sorted, shellSort2Sorted],
-        ["Reversed Array Times", bubbleSortReversed, insertionSortReversed, binaryInsertionSortReversed, shellSort0Reversed, shellSort1Reversed, shellSort2Reversed],
-        ["Random Array Times", bubbleSortRandom, insertionSortRandom, binaryInsertionSortRandom, shellSort0Random, shellSort1Random, shellSort2Random],
-      ] as const
-    ).map(([title, bubble, insertion, binaryInsertion, shell0, shell1, shell2]) => (
-      <ChartSection key={title} title={title}>
-        <LineChart
-          width={CHART_WIDTH}
-          height={CHART_HEIGHT}
-          colors={CHART_COLORS}
-          series={[
-            { label: "Bubble Sort", data: bubble.map((d) => d.time), showMark: true },
-            { label: "Insertion Sort", data: insertion.map((d) => d.time), showMark: true },
-            { label: "Binary Insertion Sort", data: binaryInsertion.map((d) => d.time), showMark: true },
-            { label: "Shell Sort (Shell Sequence)", data: shell0.map((d) => d.time), showMark: true },
-            { label: "Shell Sort (Knuth Sequence)", data: shell1.map((d) => d.time), showMark: true },
-            { label: "Shell Sort (Tokuda Sequence)", data: shell2.map((d) => d.time), showMark: true },
-          ]}
-          xAxis={[
-            { data: shell0.map((d) => d.arraySize), scaleType: "band" },
-          ]}
-          grid={{ horizontal: true }}
-        />
-      </ChartSection>
-    ))}
-  </ChartGroup>
-)
+const ARRAY_TIMES = {
+  sorted: [bubbleSortSorted, insertionSortSorted, binaryInsertionSortSorted, shellSort0Sorted, shellSort1Sorted, shellSort2Sorted],
+  reversed: [bubbleSortReversed, insertionSortReversed, binaryInsertionSortReversed, shellSort0Reversed, shellSort1Reversed, shellSort2Reversed],
+  random: [bubbleSortRandom, insertionSortRandom, binaryInsertionSortRandom, shellSort0Random, shellSort1Random, shellSort2Random],
+} as const
+
+const ARRAY_TIMES_LABELS = [
+  "Bubble",
+  "Insertion",
+  "Binary insertion",
+  "Shell (Shell)",
+  "Shell (Knuth)",
+  "Shell (Tokuda)",
+]
+
+export const ArrayTimesCharts = () => {
+  const [scaleType, setScaleType] = React.useState<ScaleType>("linear")
+  const [order, setOrder] = React.useState<Order>("random")
+  const datasets = ARRAY_TIMES[order] as unknown as ParsedSortingAlgorithmData[][]
+
+  return (
+    <ChartFigure
+      title={`All six algorithms, ${ORDER_LABEL[order]}`}
+      controls={
+        <>
+          <OrderToggle order={order} setOrder={setOrder} />
+          <ScaleToggle scaleType={scaleType} setScaleType={setScaleType} />
+        </>
+      }
+    >
+      <ComparisonChart
+        scaleType={scaleType}
+        sizes={datasets[3].map((d) => d.arraySize)}
+        series={datasets.map((data, i) => ({
+          label: ARRAY_TIMES_LABELS[i],
+          data: data.map((d) => d.time),
+        }))}
+      />
+    </ChartFigure>
+  )
+}

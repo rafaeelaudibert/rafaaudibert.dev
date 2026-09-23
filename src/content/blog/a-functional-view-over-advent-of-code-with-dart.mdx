@@ -15,7 +15,7 @@ Today we are going to take a look at AOC 2019 solutions using Dart. We will try 
 
 [Dart](https://dart.dev) is an amazing language, which I'm having so much fun coding with. The syntax is pretty straightforward if you know Kotlin, Swift or JavaScript (it's kind of a mix-up). We have all the desirable features of a modern language: OOP, async/await built-in support, functional collection APIs (`map`, `where`, `reduce`, `fold`, etc.), spread operator, static typing (but with a powerful type inference) and a lot more. Important to notice that this article is being written as of `Dart 2.7`, so we already have the brand new `Extensions` functionality, which we might explore in another post.
 
-## Advent of Code 2019 🎅
+## Advent of Code 2019
 
 We will get to learn about Dart going through my solutions for the AOC 2019. Advent of Code runs through the days 01-25 of December (Advent time for Christians), with two different problems each day. The second is normally built up on top of the first problem, and it is only made available for the "contestants" after solving the first one. You can find out more about AOC [on their official website](https://adventofcode.com/2019/about).
 
@@ -23,13 +23,13 @@ We will get to learn about Dart going through my solutions for the AOC 2019. Adv
 
 I really encourage you to take it on next year, or solve the past ones as they remain available. I think it is a great opportunity to learn a new programming language, or if you are a really competitive person, you can try to go for the leaderboard with your mastered language.
 
-## How will it work 🔃
+## How this will work
 
 We will go through the days, but not all of them, as some of them are not that interesting from our point of view, but we will at least explain how it was meant to be done, just in case you are here looking for the solutions. We will be relying on the code available at my [Advent Of Dart repository](https://github.com/rafaeelaudibert/AdventOfCode.dart).
 
 ---
 
-### Day One 🚀
+### Day One
 
 We will start from the beginning. Day one, [**The Tyranny of the Rocket Equation**](https://adventofcode.com/2019/day/1).
 
@@ -59,11 +59,11 @@ For **part two**, we need to build up on top of Part 1 problem. Every fuel we ad
 
 ![day1-2](./assets/dart-1-day1-2.png)
 
-### Day Two 🖥️
+### Day Two
 
 Day 2 refers to the first problem using the **IntCode** interpreter. We won't talk about IntCode programs on this article, as I coded them in a pretty object-oriented manner. **Every odd day after day 4 is an IntCode program**, so they won't be listed. Maybe we can talk about the features used on it (_Enum_, _Queue_, _Map_, _Extensions_) on a future article.
 
-### Day Three ❌
+### Day Three
 
 Day 3, [**Crossed Wires**](https://adventofcode.com/2019/day/3), offers a pretty basic introduction to `Iterable.map<T>`, and an overview on `Iterable.reduce<T>` which is pretty similar to `fold` as stated before.
 
@@ -77,11 +77,11 @@ Earlier, we created an anonymous function inside the `fold` function parameters.
 
 ![day3-1](./assets/dart-1-day3-1.png)
 
-### Day Four 📦
+### Day Four
 
 **[Secure Container](https://adventofcode.com/2019/day/4)** wasn't much of a functional algorithm. The algorithm I coded is a simple iterative function that goes through the string trying to find the valid strings naively.
 
-### Day Six 🪐
+### Day Six
 
 > Remember Day Five is skipped as every odd number after it (and including it) refer to IntCode programs
 
@@ -100,7 +100,7 @@ So, we only need to make a graph walking from the root to the leaves, summing ev
 
 For **part two**, we have a simple BFS, which can be seen on the [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart).
 
-### Day Eight 🤳
+### Day Eight
 
 On Day Eight, **[Space Image Format](https://adventofcode.com/2019/day/8)**, **part one**, we are asked to multiply the number of `1`'s and `2`'s on an string (after we find the string). If you are curious to see how we did find this string (the one with most zeros in the middle of a lot of strings) you can look at the [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart), as, now, we are more interested in counting the numbers and multiplying them.
 
@@ -114,7 +114,7 @@ In Dart, we also have the `collection-for` syntax, which is clearly non function
 
 **Part two** has a kinda different focus than part one, and I didn't use anything worth noting (again, if you are here to find the answers, check the repository linked above). Let's move on!
 
-### Day Ten ☄️
+### Day Ten
 
 Day 10, [**Monitoring Station**](https://adventofcode.com/2019/day/10), won't add anything new to the functional bucket.
 
@@ -122,7 +122,7 @@ For **part one** and **two**, we need a function which computes, for a given ast
 
 Just to help you further, we can calculate the angle between two points $$A$$ and $$B$$ using the arctangent trigonometric function which is named `atan2` in Dart. The formula would be as follow: `atan2(A.y - B.y, A.x - B.x)`. We use the $$y$$ difference in the first parameter and $$x$$ on the second to get the values in the interval $$[-\pi, \pi]$$, which will make it easier on **part 2**.
 
-## Day Twelve ☀️
+### Day Twelve
 
 On day 12, [**The N-Body Problem**](https://adventofcode.com/2019/day/12), we are introduced to the `forEach` method. It is basically a replacement for a `for (var x in y) { doSomething(x); doOtherThing(x); }`. With a `forEach` we would write `y.forEach((x) { doSomething(x); doOtherThing(x); }`. It is actually [non-idiomatic](https://dart.dev/guides/language/effective-dart) to use a `forEach` in this case, but my functionally curious heart likes using it, sorry.
 
@@ -130,13 +130,13 @@ On day 12, [**The N-Body Problem**](https://adventofcode.com/2019/day/12), we ar
 
 ![day12-1](./assets/dart-1-day12-1.png)
 
-### Day Fourteen 🔭
+### Day Fourteen
 
 Day 14, [**Space Stoichiometry**](https://adventofcode.com/2019/day/14), wasn't actually pretty easy for me, so I kinda copied **part one**, sorry (acknowledgments on the code).
 
 **Part two** is actually interesting, where we just need to use a binary search on the part one answer (kinda known to those who like competitive programming). As a tip, when you have binary search on the answers you may have problems with your final result being one less or one more the real result, so always compute the neighbours of your "binary search answer" to find the real answer.
 
-### Day Sixteen 📻
+### Day Sixteen
 
 [**Flawed Frequency Transmission**](https://adventofcode.com/2019/day/16) doesn't have a lot of functional programming as well but there is a really nice curiosity about Dart (which I'm not exactly sure why it happens, comment it below if you know it for sure). On part one, we need to compute a value based iteratively. This is, we have a value $$x_n$$ on time $$n$$ and based on it we compute the value $$x_{n+1}$$ for the time $$n + 1$$. To do so, we will iterate over each digit of the number $$x_n$$.
 
@@ -166,15 +166,15 @@ On **part 2**, we needed to do the same thing but with **10 THOUSAND TIMES MORE 
 
 The named constructor `List.generate` receives the number of elements we want to generate on the `List` and we pass a function that receives the index, and generate an element for that position. After this step we would have a `List<List<int>>` but we need just a `List<int>` so we can use the `Iterable.expand<T>` function, to expand a `List<List<E>>` in a `List<T>` using a function which maps over the values, which, in our case, is just the identity function (`(_) => _`).
 
-### Day Eighteen 🗝️
+### Day Eighteen
 
 Holy buckets [**Many-worlds Interpretation**](https://adventofcode.com/2019/day/18), this was so damn hard. I really don't have anything to say about it. Next.
 
-### Day Twenty 🍩
+### Day Twenty
 
 Day 20, [**Donut Maze**](https://adventofcode.com/2019/day/20), is a trivial use of [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) with some real problems to parse the input (where the portals are) and some small problems to build the graph. For **part two** we have some small complications because we need to know if the portals are "inside" or "outside", which is kinda hard-coded for me. Nothing functional worthy.
 
-### Day Twenty-Two 🃏
+### Day Twenty-Two
 
 Day 22, [**Slam Suffle**](https://adventofcode.com/2019/day/22), is actually really fun to do, and we can use some functional programming on **part one**. On this problem, we have a deck of $$n$$ cards (which is represented by a `List<int>`), and we have three different shuffles we can apply on it.
 
@@ -190,7 +190,7 @@ You can see the code for shuffling the deck on this snippet:
 
 For **part two**, we are presented with a similar problem but with a HUGE amount of cards. We need to note that we can use [modular arithmetic](https://en.wikipedia.org/wiki/Modular_arithmetic) for everything, finding a way to represent modular division, which can be computed with [modular multiplicative inverse](https://en.wikipedia.org/wiki/Modular_multiplicative_inverse). We also need to compute a huge polynomial exponential. I won't explain the math behind this (I really don't know everything of it exactly, actually) but the code can be found on my [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart). Something interesting is that we need to use the Dart builtin `BigInt` type which has some pretty interesting methods (such as `BigInt.modInverse` already builtin).
 
-### Day Twenty-Four 🐛
+### Day Twenty-Four
 
 [**Planet of Fiscord**](https://adventofcode.com/2019/day/22) uses some pretty nice helper functions with Dart functional-like methods.
 
@@ -202,7 +202,7 @@ For **part two**, we are presented with a similar problem but with a HUGE amount
 
 ![day24-1](./assets/dart-1-day24-1.png)
 
-## Additional Methods ➕
+## Additional methods
 
 I just want to finish talking about some other functional methods we have in Dart `Iterable` class which I didn't have the opportunity to use:
 
@@ -214,7 +214,7 @@ I just want to finish talking about some other functional methods we have in Dar
 
 - **skipWhile** and **takeWhile**: Similar to the already spoken `skip` and `take`, but instead of receiving an `int` as parameter, they receive a `bool Function(T element)` which must return `false` when we should stop skipping or taking elements.
 
-## Conclusion 🎉
+## Conclusion
 
 Wow, such a long article (those kinda reliable methods to measure the reading time said you took 18 minutes to read this, lulz). I really hope you liked it. I know it is kinda complex, and I didn't use functional programming in all of the questions, but I think you should start slowly, just like I'm doing, trying to get every time more and more on this awesome world, praising the languages with first-order functions. It is nice to see, though, that we may have some problems in non-build-to-be-used-as-functional languages, because we can have problems like the ones I warned on Day 16.
 
