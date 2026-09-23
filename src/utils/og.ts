@@ -64,8 +64,11 @@ export function loadOGAssets(): Promise<OGAssets> {
         .resize(OG_WIDTH, OG_HEIGHT, { fit: "cover", position: "top" })
         .jpeg({ quality: 80 })
         .toBuffer(),
-      // "attention" cropping keys on skin tones, which finds the face
+      // The photo is stored sideways with an EXIF orientation tag, which
+      // sharp only honours when asked. "attention" cropping keys on skin
+      // tones, which finds the face.
       sharp("src/assets/portrait.jpg")
+        .rotate()
         .resize(320, 320, { fit: "cover", position: sharp.strategy.attention })
         .jpeg({ quality: 85 })
         .toBuffer(),
