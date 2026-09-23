@@ -2,8 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 
 import ContactCTA from "../components/ContactCTA.astro"
-import Link from "../components/Link.astro"
+import Icon from "../components/Icon.astro"
 import KeyboardShortcut from "../components/KeyboardShortcut.astro"
+import Link from "../components/Link.astro"
 
 import work from "../assets/work.jpg"
 
@@ -11,123 +12,147 @@ import { Image } from "astro:assets"
 
 import {
   getBackgroundContent,
+  yearsOfExperience,
   PAST_EXPERIENCES,
   EDUCATION_AND_ACHIEVEMENTS,
   LANGUAGES,
   TECHNOLOGIES,
 } from "../data/resume"
 import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
+import { site, SOCIAL_LINKS } from "../data/site"
+
+const EMAIL = "me@rafaaudibert.dev"
+const profiles = SOCIAL_LINKS.filter(({ label }) => label === "GitHub" || label === "LinkedIn")
+const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 ---
 
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
   <div class="stack gap-20 mb-4">
-    <main class="wrapper about">
-      <div class="cv-header">
-        <Image src={work} alt="Rafael Audibert" class="profile-image" />
-        <div class="name-title-section">
-          <h1 class="cv-name">Rafael Audibert</h1>
-          <p class="cv-title text-dek">Senior Product Engineer</p>
-          <div class="print-suggestion">
-            <span class="print-text text-meta"
-              >Tip: press <KeyboardShortcut keys={["Ctrl/Cmd", "P"]} /> to print</span
-            >
-          </div>
-        </div>
-      </div>
+    <main class="wrapper resume">
+      <header class="cv-header">
+        <Image src={work} alt="Rafael Audibert at his desk" class="profile-image" />
 
-      <section>
-        <h2 class="section-title">Background</h2>
-        <div class="content">
+        <div class="identity">
+          <p class="eyebrow">Resume</p>
+          <h1 class="cv-name">{site.fullName}</h1>
+          <p class="cv-title text-dek">Senior Product Engineer</p>
+          <ul class="facts text-meta">
+            <li>{site.location}</li>
+            <li>{yearsOfExperience()}+ years of experience</li>
+            <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+          </ul>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="action action-primary" data-print>
+            Save as PDF
+          </button>
+          {
+            profiles.map(({ label, href }) => (
+              <a class="action" href={href} target="_blank" rel="noopener noreferrer">
+                <Icon icon={iconFor[label]} size="1.1em" />
+                {label}
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+            ))
+          }
+        </div>
+      </header>
+
+      <section aria-labelledby="background">
+        <h2 class="section-title" id="background">Background</h2>
+        <div class="content text-reading">
           {getBackgroundContent().map((content) => <p set:html={content} />)}
         </div>
       </section>
 
-      <section>
-        <h2 class="section-title">Past Experience</h2>
-        <div class="content">
+      <section aria-labelledby="experience">
+        <h2 class="section-title" id="experience">Experience</h2>
+        <ol class="content jobs">
           {
             PAST_EXPERIENCES.map((experience) => (
-              <p>
-                <div class="company-header">
-                  <Image
-                    src={COMPANY_LOGOS[experience.company]}
-                    alt={experience.company}
-                    class:list={{ "logo-light": COMPANY_LOGOS_DARK[experience.company] }}
-                  />
-                  {COMPANY_LOGOS_DARK[experience.company] && (
+              <li class="job">
+                <div class="job-header">
+                  <span class="logo">
                     <Image
-                      src={COMPANY_LOGOS_DARK[experience.company]!}
-                      alt={experience.company}
-                      class="logo-dark"
+                      src={COMPANY_LOGOS[experience.company]}
+                      alt=""
+                      class:list={{ "logo-light": COMPANY_LOGOS_DARK[experience.company] }}
                     />
-                  )}
-                  <span>
-                    <strong>{experience.role}</strong> at{" "}
-                    <Link href={experience.href}>{experience.company}</Link>{" "}
+                    {COMPANY_LOGOS_DARK[experience.company] && (
+                      <Image src={COMPANY_LOGOS_DARK[experience.company]!} alt="" class="logo-dark" />
+                    )}
+                  </span>
+                  <div class="job-heading">
+                    <h3 class="job-role">
+                      {experience.role} <span class="at">at</span>{" "}
+                      <Link href={experience.href}>{experience.company}</Link>
+                    </h3>
                     <span class="dates text-meta">
                       {experience.startDate} – {experience.endDate}
                     </span>
-                  </span>
+                  </div>
                 </div>
 
-                <ul>
+                <ul class="bullets text-reading">
                   {experience.bulletPoints.map((bulletPoint) => (
                     <li set:html={bulletPoint} />
                   ))}
                 </ul>
-              </p>
+              </li>
             ))
           }
-        </div>
+        </ol>
       </section>
 
-      <section>
-        <h2 class="section-title">Education &amp; Achievements</h2>
-        <div class="content">
-          <ul>
-            {
-              EDUCATION_AND_ACHIEVEMENTS.map((content) => (
-                <li>
-                  <span class="year text-meta">{content.year}</span>{" "}
-                  <span set:html={content.description} />
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+      <section aria-labelledby="education">
+        <h2 class="section-title" id="education">Education &amp; Achievements</h2>
+        <ul class="content timeline text-reading">
+          {
+            EDUCATION_AND_ACHIEVEMENTS.map((content) => (
+              <li>
+                <span class="year text-meta">{content.year}</span>
+                <span set:html={content.description} />
+              </li>
+            ))
+          }
+        </ul>
       </section>
 
-      <section>
-        <h2 class="section-title">Languages</h2>
-        <div class="content">
-          <ul>
-            {
-              LANGUAGES.map((language) => (
-                <li>
-                  {language.language} ({language.level})
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+      <section aria-labelledby="languages">
+        <h2 class="section-title" id="languages">Languages</h2>
+        <ul class="content languages">
+          {
+            LANGUAGES.map((language) => (
+              <li>
+                <span class="language">{language.language}</span>
+                <span class="level text-meta">{language.level}</span>
+              </li>
+            ))
+          }
+        </ul>
       </section>
 
-      <section>
-        <h2 class="section-title">Things I've worked with before</h2>
+      <section aria-labelledby="technologies">
+        <h2 class="section-title" id="technologies">Technologies</h2>
         <div class="content">
-          In no specific order <span class="help-text"
-            >(help with <KeyboardShortcut keys={["Ctrl/Cmd", "F"]} />)</span
-          >:
-          <br />
-          <ul>
+          <p class="help-text text-meta">
+            In no particular order. <KeyboardShortcut keys={["Ctrl/Cmd", "F"]} /> is your friend.
+          </p>
+          <dl class="tech">
             {
               TECHNOLOGIES.map((technology) => (
-                <li>
-                  {technology.type}: {technology.technologies.join(", ")}
-                </li>
+                <div class="tech-group">
+                  <dt class="eyebrow">{technology.type}</dt>
+                  <dd>
+                    <ul class="chips">
+                      {technology.technologies.map((name) => <li>{name}</li>)}
+                    </ul>
+                  </dd>
+                </div>
               ))
             }
-          </ul>
+          </dl>
         </div>
       </section>
     </main>
@@ -137,9 +162,10 @@ import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
 </BaseLayout>
 
 <script>
-  // There is no print button - the page just suggests Ctrl/Cmd+P - so hook the
-  // browser's own print event. That also covers the File menu and mobile share
-  // sheets, which a button never would.
+  document.querySelector("[data-print]")?.addEventListener("click", () => window.print())
+
+  // Hook the browser's own print event rather than the button, so the File
+  // menu, Ctrl/Cmd+P and mobile share sheets are counted too.
   window.addEventListener("beforeprint", () => {
     window.posthog?.capture("resume printed")
   })
@@ -154,136 +180,444 @@ import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
 </script>
 
 <style>
-  ul {
-    margin-bottom: 1.5rem;
-  }
-
-  .company-header {
-    margin-left: 0.7rem;
-    display: inline-flex;
-    gap: 0.3rem;
-    align-items: center;
-  }
-
-  .company-header img {
-    height: 24px;
-    width: 24px;
-  }
-
-  /* Only one of a logo's light/dark variants shows at a time */
-  .company-header .logo-dark,
-  :global(.theme-dark) .company-header .logo-light {
-    display: none;
-  }
-
-  :global(.theme-dark) .company-header .logo-dark {
-    display: block;
-  }
-
-  .about {
+  .resume {
     display: flex;
     flex-direction: column;
-    gap: 3.5rem;
+    gap: 3rem;
   }
 
-  /* CV Header Styles */
+  /* Header: a frosted card, so the name and role read clearly over the page
+     gradient in both themes. */
   .cv-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
     gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem 0;
+    padding: 1.5rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-lg);
+    background-color: color-mix(in srgb, var(--gray-999) 70%, transparent);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-md);
   }
 
   .profile-image {
-    width: 120px;
-    height: 150px;
-    border-radius: var(--radius-lg);
+    width: 10rem;
+    height: 12.5rem;
+    border-radius: var(--radius-md);
     object-fit: cover;
-    box-shadow: var(--shadow-md);
     flex-shrink: 0;
   }
 
-  .name-title-section {
-    flex: 1;
+  .identity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
   }
 
   .cv-name {
-    color: var(--gray-0);
-    margin: 0;
-    margin-bottom: 0.5rem;
+    font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
   }
 
   .cv-title {
     margin: 0;
   }
 
-  /* Print Suggestion - Subtle */
-  .print-suggestion {
-    text-align: left;
+  .facts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem 0.75rem;
     margin-top: 0.5rem;
-    opacity: 0.7;
+    padding: 0;
+    list-style: none;
   }
 
-  .print-text {
+  .facts a {
+    color: inherit;
+    text-decoration-color: var(--gray-600);
+    text-underline-offset: 0.2em;
+  }
+
+  .facts a:hover,
+  .facts a:focus-visible {
+    color: var(--gray-0);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-sm);
+    background-color: var(--gray-999);
+    color: var(--gray-100);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--theme-transition),
+      border-color var(--theme-transition),
+      color var(--theme-transition);
+  }
+
+  .action:hover,
+  .action:focus-visible {
+    border-color: var(--accent-regular);
+    color: var(--gray-0);
+  }
+
+  .action-primary {
+    border-color: var(--accent-regular);
+    background-color: var(--accent-regular);
+    color: var(--accent-text-over);
+  }
+
+  .action-primary:hover,
+  .action-primary:focus-visible {
+    background-color: var(--accent-dark);
+    border-color: var(--accent-dark);
+    color: var(--accent-text-over);
+  }
+
+  /* Sections: label above content, then side by side on wide screens */
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--gray-800);
+    color: var(--gray-200);
+  }
+
+  .section-title {
+    font-size: var(--text-lg);
+    color: var(--gray-0);
+  }
+
+  .content {
+    max-width: 72ch;
+    min-width: 0;
+  }
+
+  .content :global(strong),
+  .content :global(b) {
+    color: var(--gray-0);
+    font-weight: 600;
+  }
+
+  .content :global(a) {
+    color: var(--link-color);
+    text-decoration: 1px solid underline transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--theme-transition);
+  }
+
+  .content :global(a:hover),
+  .content :global(a:focus-visible) {
+    text-decoration-color: currentColor;
+  }
+
+  .text-reading p + p {
+    margin-top: 1rem;
+  }
+
+  /* Experience */
+  .jobs {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .job-header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .logo {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-sm);
+    background-color: var(--gray-999);
+  }
+
+  .logo img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* Only one of a logo's light/dark variants shows at a time */
+  .logo .logo-dark,
+  :global(.theme-dark) .logo .logo-light {
+    display: none;
+  }
+
+  :global(.theme-dark) .logo .logo-dark {
+    display: block;
+  }
+
+  .job-heading {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.125rem 1rem;
+    min-width: 0;
+  }
+
+  .job-role {
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+
+  .job-role .at {
+    font-weight: 500;
     color: var(--gray-400);
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 50em) {
+  .job-role :global(a) {
+    color: var(--gray-0);
+  }
+
+  .dates {
+    white-space: nowrap;
+  }
+
+  .bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.875rem 0 0;
+    padding-left: 1.25rem;
+    list-style: disc; /* nested in the jobs list, which would make it circle */
+  }
+
+  .bullets li::marker {
+    color: var(--accent-regular);
+  }
+
+  /* Education */
+  .timeline {
+    padding: 0;
+    list-style: none;
+  }
+
+  .timeline li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--gray-800);
+  }
+
+  .timeline li:first-child {
+    padding-top: 0;
+  }
+
+  .timeline .year {
+    color: var(--gray-0);
+    padding-top: 0.3em;
+  }
+
+  /* Languages */
+  .languages {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .languages li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-md);
+    background-color: var(--gray-999_40);
+  }
+
+  .language {
+    font-weight: 600;
+    color: var(--gray-0);
+  }
+
+  /* Technologies */
+  .help-text {
+    margin-bottom: 1.25rem;
+  }
+
+  .tech {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tech dt {
+    display: block;
+    list-style: none;
+    margin-top: 0;
+    padding-top: 0.2em;
+  }
+
+  .tech-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tech dd {
+    margin: 0;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chips li {
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-sm);
+    background-color: var(--gray-999_40);
+    font-size: 0.875rem;
+    color: var(--gray-100);
+  }
+
+  @media (min-width: 50em) {
+    .resume {
+      gap: 3.5rem;
+    }
+
     .cv-header {
-      flex-direction: column;
-      text-align: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      padding: 0.5rem 0;
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      gap: 2rem;
+      padding: 2rem;
     }
 
     .profile-image {
-      width: 280px;
-      height: 350px;
-      align-self: center;
+      width: 7.5rem;
+      height: 9.5rem;
     }
 
-    .print-suggestion {
-      text-align: center;
+    .identity {
+      flex: 1;
+    }
+
+    .facts {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    .facts li + li::before {
+      content: "·";
+      margin-right: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .actions {
+      justify-content: flex-start;
+    }
+
+    .actions {
+      flex-direction: column;
+      align-self: stretch;
+      justify-content: center;
+      align-items: stretch;
+      min-width: 9rem;
+    }
+
+    .action {
+      justify-content: center;
+    }
+
+    section {
+      display: grid;
+      grid-template-columns: 12rem minmax(0, 1fr);
+      gap: 2rem;
+      padding-top: 3rem;
+    }
+
+    /* The label stays in view while a long section scrolls, below the nav */
+    .section-title {
+      position: sticky;
+      top: calc(var(--nav-height) + 1rem);
+      align-self: start;
+    }
+
+    .content {
+      font-size: 1.0625rem;
+    }
+
+    .tech-group {
+      display: grid;
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: 1rem;
+      align-items: baseline;
     }
   }
 
-  /* Print Optimizations */
+  @media (min-width: 72em) {
+    section {
+      grid-template-columns: 16rem minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .action,
+    .content :global(a) {
+      transition: none;
+    }
+  }
+
+  /* Print: a plain one-column document in black on white */
   @media print {
-    /* Hide unnecessary elements */
     :global(nav),
     :global(footer),
-    :global(aside) {
-      display: none !important;
-    }
-
-    /* Hide web-specific content */
-    .hero {
-      display: none !important;
-    }
-
-    /* Hide tagline when printing */
-    .tagline {
-      display: none !important;
-    }
-
-    /* Hide help text when printing */
+    :global(aside),
+    .actions,
+    .identity .eyebrow,
     .help-text {
       display: none !important;
     }
 
-    /* Hide print suggestion when actually printing */
-    .print-suggestion {
-      display: none !important;
-    }
-
-    /* Remove backgrounds and optimize for black & white printing */
     :global(body) {
       background: white !important;
       color: #1a1a1a !important;
-      font-size: 12pt;
+      font-size: 11pt;
       line-height: 1.4;
     }
 
@@ -291,7 +625,6 @@ import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
       background: none !important;
     }
 
-    /* Optimize layout for print */
     .stack {
       gap: 0 !important;
       margin: 0 !important;
@@ -304,215 +637,217 @@ import { COMPANY_LOGOS, COMPANY_LOGOS_DARK } from "../data/companyLogos"
       margin: 0 !important;
     }
 
-    .about {
-      gap: 1.5rem !important;
-      display: block !important;
-      grid-template-columns: none !important;
+    .resume {
+      gap: 1rem;
     }
 
-    /* Show CV header in print */
     .cv-header {
-      display: flex !important;
+      flex-direction: row;
       align-items: center;
+      text-align: left;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      backdrop-filter: none;
+      box-shadow: none;
       page-break-after: avoid;
-      padding: 0 !important;
     }
 
     .profile-image {
-      width: 60px !important;
-      height: 75px !important;
-      border-radius: var(--radius-sm) !important;
-      object-fit: cover;
-      box-shadow: none !important;
-      flex-shrink: 0;
+      width: 60px;
+      height: 75px;
+      border-radius: 0;
     }
 
-    .name-title-section {
-      flex: 1;
+    .identity {
+      gap: 0.125rem;
     }
 
     .cv-name {
-      font-size: 18pt !important;
-      font-weight: bold;
-      color: #1a1a1a !important;
-      margin: 0;
-      margin-bottom: 0.25rem;
+      font-size: 18pt;
+      color: #1a1a1a;
     }
 
     .cv-title {
-      font-size: 12pt !important;
-      color: #333 !important;
-      margin: 0;
-      font-weight: normal;
+      font-size: 12pt;
+      color: #333;
     }
 
-    /* Typography optimizations */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-      color: #1a1a1a !important;
-      page-break-after: avoid;
-      margin-top: 0.5rem;
-      margin-bottom: 0.25rem;
+    .facts {
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: 0.25rem;
+      color: #333;
+    }
+
+    .facts li + li::before {
+      content: "·";
+      margin-right: 0.75rem;
+    }
+
+    section {
+      display: block;
+      padding-top: 0.75rem;
+      border-top: 0;
+      color: #1a1a1a;
+      page-break-inside: avoid;
     }
 
     .section-title {
-      font-size: 14pt !important;
-      font-weight: bold;
-      color: #1a1a1a !important;
+      position: static;
+      font-size: 13pt;
+      color: #1a1a1a;
       border-bottom: 1pt solid #1a1a1a;
       padding-bottom: 2pt;
-      margin-bottom: 0.5rem !important;
+      margin-bottom: 0.5rem;
       page-break-after: avoid;
-    }
-
-    /* Content spacing */
-    section {
-      display: block !important;
-      margin-bottom: 1rem !important;
-      page-break-inside: avoid;
-      gap: 0.25rem !important;
     }
 
     .content {
-      margin-left: 0 !important;
-      grid-column: auto !important;
+      max-width: none;
+      font-size: 11pt;
     }
 
-    /* Company header optimizations */
-    .company-header {
-      margin-left: 0 !important;
-      margin-bottom: 0.25rem;
+    .content :global(strong),
+    .content :global(b),
+    .job-role :global(a),
+    .language,
+    .timeline .year {
+      color: #1a1a1a;
+    }
+
+    .jobs {
+      gap: 0.75rem;
+    }
+
+    .job {
       page-break-inside: avoid;
     }
 
-    /* Keep company logos in print - smaller size for clean appearance */
-    .company-header img {
-      width: 16px !important;
-      height: 16px !important;
+    .logo {
+      width: 16px;
+      height: 16px;
+      border: 0;
+      background: none;
+    }
+
+    .logo img {
+      width: 16px;
+      height: 16px;
     }
 
     /* Paper is white, so always print the light logo */
-    :global(.theme-dark) .company-header .logo-light {
+    :global(.theme-dark) .logo .logo-light {
       display: block;
     }
 
-    .company-header .logo-dark {
+    .logo .logo-dark {
       display: none !important;
     }
 
-    /* List optimizations */
-    ul {
-      margin-bottom: 0.75rem !important;
-      margin-left: 1rem;
+    .job-role {
+      font-size: 12pt;
     }
 
-    li {
-      margin-bottom: 0.25rem;
-      page-break-inside: avoid;
+    .job-role .at,
+    .dates,
+    .level {
+      color: #444;
     }
 
-    /* Link styling for print - company names not underlined */
+    .bullets {
+      gap: 0.125rem;
+      margin-top: 0.25rem;
+    }
+
+    .bullets li::marker {
+      color: #1a1a1a;
+    }
+
+    .timeline li {
+      padding: 0.125rem 0;
+      border-bottom: 0;
+    }
+
+    .languages {
+      display: block;
+    }
+
+    .languages li {
+      display: inline;
+      padding: 0;
+      border: 0;
+      background: none;
+    }
+
+    .languages li:not(:last-child)::after {
+      content: " · ";
+    }
+
+    .level::before {
+      content: " (";
+    }
+
+    .level::after {
+      content: ")";
+    }
+
+    .tech {
+      gap: 0.25rem;
+    }
+
+    .tech-group {
+      display: block;
+    }
+
+    .tech-group dt {
+      display: inline;
+      font-family: var(--font-body);
+      font-size: 11pt;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #1a1a1a;
+    }
+
+    .tech-group dt::after {
+      content: ": ";
+    }
+
+    .tech dd,
+    .chips {
+      display: inline;
+    }
+
+    .chips li {
+      display: inline;
+      padding: 0;
+      border: 0;
+      background: none;
+      font-size: 11pt;
+      color: #1a1a1a;
+    }
+
+    .chips li:not(:last-child)::after {
+      content: ", ";
+    }
+
+    /* Links print as plain text with the address after them */
     :global(a) {
       color: #1a1a1a !important;
       text-decoration: none !important;
-      font-size: 0.95em;
     }
 
-    /* Show URLs after links for print - smaller text, this is clickable */
-    :global(a[href]:after) {
+    .content :global(a[href^="http"])::after {
       content: " (" attr(href) ")";
       font-size: 0.8em;
       color: #444;
-      text-decoration: none;
-      cursor: pointer;
     }
 
-    /* Ensure page breaks work well */
-    p {
-      page-break-inside: avoid;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Remove shadows and decorative elements */
     * {
       box-shadow: none !important;
-      border-radius: 0 !important;
-    }
-
-    /* Page break controls */
-    section:nth-child(1) {
-      page-break-before: avoid;
-    }
-
-    section:nth-child(n + 2) {
-      page-break-before: avoid;
-    }
-
-    /* Ensure the first section (Background) stays with title */
-    section:first-of-type {
-      page-break-after: avoid;
-    }
-  }
-
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    color: var(--gray-200);
-  }
-
-  .section-title {
-    grid-column-start: 1;
-    font-size: var(--text-xl);
-    color: var(--gray-0);
-  }
-
-  .content {
-    grid-column: 2 / 4;
-    font-family: var(--font-reading);
-    line-height: 1.7;
-    text-wrap: pretty;
-  }
-
-  .dates {
-    margin-left: 0.375rem;
-    white-space: nowrap;
-  }
-
-  .year {
-    margin-right: 0.25rem;
-    color: var(--gray-0);
-  }
-
-  .content :global(a) {
-    text-decoration: 1px solid underline transparent;
-    text-underline-offset: 0.25em;
-    transition: text-decoration-color var(--theme-transition);
-  }
-
-  .content :global(a:hover),
-  .content :global(a:focus) {
-    text-decoration-color: currentColor;
-  }
-
-  @media (min-width: 50em) {
-    .about {
-      display: grid;
-      grid-template-columns: 1fr 60% 1fr;
-    }
-
-    .about > :global(:first-child) {
-      grid-column-start: 2;
-    }
-
-    section {
-      display: contents;
-      font-size: 1.125rem;
     }
   }
 </style>
