@@ -24,6 +24,15 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Chrome origin trial for WebMCP (see WebMCP.astro). The token is public by
+     design and only valid for https://rafaaudibert.dev; locally, enable
+     chrome://flags/#enable-webmcp-testing instead. Expires 2026-11-17, after
+     which Chrome ignores it: renew it or remove this tag. -->
+<meta
+  http-equiv="origin-trial"
+  content="AuEoDlfu/WcACUz0nKrs4zv6dqIH6I/n4/KwBYGbkpquhLuEtDK7N/sxJ4QCtFQsqklayFRNg6ZcRxdZUT24fw4AAABQeyJvcmlnaW4iOiJodHRwczovL3JhZmFhdWRpYmVydC5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTc5NDg3MzYwMH0="
+/>
 <title>{title}</title>
 
 <!-- Primary Meta Tags -->
