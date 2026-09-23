@@ -114,7 +114,35 @@ We used arrays varying from $$2^1$$ until $$2^{18}$$ to generate the data below.
 
 The code used for it can be seen below, followed by the charts showing the data.
 
-![BubbleSortCode](./assets/bubblesort.png)
+```c title="sort1.c"
+long long int bubbleSort(int *C, int n)
+{
+    long long int changes = 0;
+    int m = n-1, k = 1, changed, i, temp;
+
+    do
+    {
+        changed = 0;
+        for(i=0; i<m; i++)
+        {
+            if(C[i] > C[i+1])
+            {
+                temp = C[i];
+                C[i] = C[i+1];
+                C[i+1] = temp;
+
+                k = i;
+                changed = 1;
+                changes++;
+            }
+        }
+        m = k;
+    }
+    while(changed);
+
+    return changes;
+}
+```
 <BubbleSortCharts client:only="react" />
 
 Some information we can retrieve from these charts is that BubbleSort has best case complexity of $$\Theta(n)$$ as it will only run through the array once, and stop, this is why it only makes $$0$$ changes and has such a small running time (0?).
@@ -128,7 +156,28 @@ For these charts, we also used arrays varying from $$2^1$$ until $$2^{18}$$ to g
 
 The code used for it can be seen below, followed by the charts showing the data.
 
-![InsertionSortCode](./assets/insertionsort.png)
+```c title="sort1.c"
+long long int insertionSort(int* C, int n)
+{
+    long long int changes = 0;
+    int i, j, key;
+
+    for(j=1; j<n; j++)
+    {
+        key = C[j];
+        i = j-1;
+        while(i>=0 && C[i] > key)
+        {
+            C[i+1] = C[i];
+            i--;
+            changes++;
+        }
+        C[i+1] = key;
+    }
+
+    return changes;
+}
+```
 <InsertionSortCharts client:only="react" />
 
 I really like the Insertion Sort idea, it's really a pity that it's $$\Theta(n^2)$$ worst-case complexity 😞. The reversed chart shows us that it makes exactly the same changes as BubbleSort in reverse order, although it took less time, so point to Insertion ✨. In random data, it also runs A LOT faster than Bubble sort (in this sample case, almost 3X faster). So, although both have an average-case time complexity of $$\Theta(n^2)$$, it will only be the same asymptotically, as in "small" samples Insertion can be really faster.
@@ -141,7 +190,40 @@ Again, arrays size varying from $$2^1$$ until $$2^{18}$$ to generate the data be
 
 The code used for it, as well as the code used in the binary search, can be seen below, followed by the charts showing the data.
 
-![BinaryInsertionSortCode](./assets/binaryinsertionsort.png)
+```c title="sort1.c"
+int binarySearch(int* data, int inf, int sup, int key)
+{
+    int half = inf + ((sup-inf)/2);
+
+    if (inf == sup) return inf;
+    else if (key > data[half]) return binarySearch(data, half+1, sup, key);
+    else if (key < data[half]) return binarySearch(data, inf, half, key);
+    else return half;
+}
+
+long long int binaryInsertionSort(int *C, int n)
+{
+    long long int changes = 0;
+    int i, j, key, posicao;
+
+    for(int j=1; j<n; j++)
+    {
+        key = C[j];
+        i = j-1;
+        posicao = binarySearch(C, 0, j, key);
+        while(i>=posicao)
+        {
+            C[i+1] = C[i];
+            i--;
+            changes++;
+        }
+
+        C[posicao] = key;
+    }
+
+    return changes;
+}
+```
 <BinaryInsertionSortCharts client:only="react" />
 
 As you can see, the changes occur exactly the same number of times both in Normal and Binary Insertion. The great advantage comes when we don't need to compare as many times as we would compare in a normal Insertion Sort, because we can find the place we must insert ourselves in $$\log n$$ time, saving us something around 30% of time, although having an average-case time complexity of $$\Theta(n^2)$$, exactly the same as Bubble and Insertion Sort.
@@ -162,7 +244,50 @@ This time, arrays size will vary from $$2^1$$ until $$2^{28}$$ to generate the d
 
 The code used for it can be seen below, followed by the charts for each sequence and input order. The gap sequence generation will be omitted for sake of brevity.
 
-![ShellSortCode](./assets/shellsort.png)
+```c title="sort1.c"
+long long int insertionShellSort(int *C, int n, int h, int f)
+{
+    long long int changes = 0;
+    int i, j, key;
+
+    for(int j=f+h; j<n; j+=h)
+    {
+        key = C[j];
+        i = j-h;
+        while(i>=0 && C[i] > key)
+        {
+            C[i+h] = C[i];
+            i-=h;
+            changes++;
+        }
+        C[i+h] = key;
+    }
+
+    return changes;
+}
+
+long long int shellSort(int *C, int n, int typeSequence)
+{
+    int numElems;
+    int* sequence = generateGapSequence(n,typeSequence,&numElems);
+
+    long long int changes = 0;
+    int i, h, f;
+
+    for(i=numElems-1; i>=0; i--)
+    {
+        h = sequence[i];
+        for(f=0; f<h; f++)
+        {
+            changes += insertionShellSort(C,n,h,f);
+        }
+    }
+
+    free(sequence);
+
+    return changes;
+}
+```
 <ShellSortCharts client:only="react" />
   
 

@@ -39,7 +39,9 @@ On **part one**, we have as our input a list of rocket module masses, and we nee
 
 This program can be solved with the following one-liner:
 
-![day1-1](./assets/dart-1-day1-1.png)
+```dart title="day_1.dart"
+input.fold(0, (acc, mass) => acc + (mass ~/ 3 - 2));
+```
 
 The `fold` function has the following signature: `T fold<T>(T initialValue, T Function(T previousValue, E element) combine)`. For those who know how `reduce` works, it is similar, but we need to pass an obligatory `initialValue`. It works combining the list on which it is iterating, accumulating the value for the next iteration. This is:
 
@@ -57,7 +59,14 @@ Because in Dart `Iterable.reduce<T>` only receives a `combine` function as a par
 
 For **part two**, we need to build up on top of Part 1 problem. Every fuel we add to the rocket, is also counting as mass. So we need to compute the required fuel to be able to lift up the rocket with the already added fuel. We also need to take this fuel into consideration, and so on. The [recursion](https://en.wikipedia.org/wiki/Recursion_(computer_science)) ends when we would need less than 0 fuel, and we say that _"it is handled by wishing really hard"_ according to AOC. A recursive implementation can be seen below, also using `fold`.
 
-![day1-2](./assets/dart-1-day1-2.png)
+```dart title="day_1.dart"
+int addFuel(int mass) {
+  int fuel = mass ~/ 3 - 2;
+  return fuel > 0 ? fuel + addFuel(fuel) : 0;
+}
+
+input.fold(0, (acc, mass) => acc + addFuel(mass));
+```
 
 ### Day Two
 
@@ -75,7 +84,13 @@ After this, we only need to take the minimum value on this list of `int`. In Dar
 
 Earlier, we created an anonymous function inside the `fold` function parameters. Now, we have something better. `reduce` will be waiting for a function which receives two integers and return an integer (so we can compute our minimum value). Instead of creating an anonymous function such as `(acc, val) => min(acc, val)`, we can pass the raw `min` function, as it already receives two parameters and return the minimum of them. So our one-liner (assuming we already have the points) is the following:
 
-![day3-1](./assets/dart-1-day3-1.png)
+```dart title="day_3.dart"
+Point origin = Point(0, 0);
+set1
+  .intersection(set2)
+  .map((Point p) => p.manhattanDistance(origin))
+  .reduce(min);
+```
 
 ### Day Four
 
@@ -96,7 +111,10 @@ We will assume our DAG is represented by a Dart `Map<String, List<String>> graph
 
 So, we only need to make a graph walking from the root to the leaves, summing every depth for every level. This can be made with a recursive function which receives the `node` we are visiting now, and the current `depth`. Every time we go through the list of neighbours, this is, the nodes which point to the current node we make a `fold` through all the neighbours, summing their depth which is returned recursively. You can see the one-liner (assuming we have the graph on a global `graph` variable) on the following image. To start computing it, we just need to call `exploreGraph(root, 0);`.
 
-![day6-1](./assets/dart-1-day6-1.png)
+```dart title="day_6.dart"
+int exploreGraph(String planet, int depth) => graph[planet].fold(
+    depth, (acc, next_planet) => acc + exploreGraph(next_planet, depth + 1));
+```
 
 For **part two**, we have a simple BFS, which can be seen on the [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart).
 
@@ -106,11 +124,17 @@ On Day Eight, **[Space Image Format](https://adventofcode.com/2019/day/8)**, **p
 
 This is actually pretty easy, assuming we already have the string. We can `split` it to have a `List<String>` where every string is actually a character of the original string with `originalString.split('')`. After this, we can find the number of `1`'s and `2`'s in the same way using the commonly called `filter` function which is called `where` in Dart. Check it below:
 
-![day8-1](./assets/dart-1-day8-1.png)
+```dart title="day_8.dart"
+layer.where((digit) => digit == '1').length *
+    layer.where((digit) => digit == '2').length;
+```
 
 In Dart, we also have the `collection-for` syntax, which is clearly non functional, but it is interesting to check it out, as it is pretty similar to Python list comprehension:
 
-![day8-2](./assets/dart-1-day8-2.png)
+```dart title="day_8.dart"
+[for (var digit in layer) if (digit == '1') digit].length *
+    [for (var digit in layer) if (digit == '2') digit].length;
+```
 
 **Part two** has a kinda different focus than part one, and I didn't use anything worth noting (again, if you are here to find the answers, check the repository linked above). Let's move on!
 
@@ -128,7 +152,9 @@ On day 12, [**The N-Body Problem**](https://adventofcode.com/2019/day/12), we ar
 
 **Part two** also brings some interesting math theory to the board. On this day we are basically making a really rough gravitational simulation, and we are asked when will all the planets return to their start position for the first time. We can't simulate it, because, for my input, it occurs after $$572087463375796$$ steps, which would take **LITERALLY ALMOST 4 YEARS** on my computer (it takes 2,1s for 10 million iterations). To make it faster we only need to see how many iterations it take to repeat on the $$x$$-axis, $$y$$-axis and $$z$$-axis and compute their LCM. This way we only iterate something like 200k iterations until they repeat on each of the axis. Below we have the `LCM` function implementation in Dart:
 
-![day12-1](./assets/dart-1-day12-1.png)
+```dart title="day_12.dart"
+int lcm(int a, int b) => a * b ~/ a.gcd(b);
+```
 
 ### Day Fourteen
 
@@ -142,13 +168,29 @@ Day 14, [**Space Stoichiometry**](https://adventofcode.com/2019/day/14), wasn't 
 
 The full code can be seen on the [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart), but we will focus on this little snippet:
 
-![day16-1](./assets/dart-1-day16-1.png)
+```dart title="day_16.dart" mark={3}
+for (var idx in range(1, data.length + 1)) {
+  int acc = 0;
+  for (var n = 0; n < data.length; n++) {
+    var pattern_multiplier =
+        PATTERN[((n + 1) ~/ idx) % PATTERN.length];
+    acc += data[n] * pattern_multiplier;
+};
+```
 
 If we run  **part one** code with this code, it takes around `500ms` to give us the answer.
 
 The interesting part comes now. I created a small helper `Iterable<int> range(int initialValue, int endValue)` which works similar to Python `range` function, so that I could substitute a `for (var i = 0; i < n; i++)` with a `for (var i in range(0, n))`. If I do so, we have this snippet:
 
-![day16-2](./assets/dart-1-day16-2.png)
+```dart title="day_16.dart" mark={3}
+for (var idx in range(1, data.length + 1)) {
+  int acc = 0;
+  for (var n in range(0, data.length)) {
+    var pattern_multiplier =
+        PATTERN[((n + 1) ~/ idx) % PATTERN.length];
+    acc += data[n] * pattern_multiplier;
+};
+```
 
 Guess the execution time now? `1100ms`! It more than doubled! Why? I really don't know how the Dart VM is implemented, but I assume it has to be with loop unrolling and data independency. You can note that one iteration of my loop doesn't depend on the other iteration of it, as I'm just accumulating the values in a variable, and the computed values doesn't need the values computed in the other iteration. So, the Dart VM can make use of parallelism or AVX-like instructions to compute more than one loop iteration at the same time. It also can easily predict what will be the next $$n$$ value, so it can easily add it to the chosen way of parallelism.
 
@@ -156,13 +198,26 @@ Why doesn't this happen with the `range`-based loop? Because the Dart VM can't d
 
 What if we try to do it the functional way, iterating over the data list? To do so we would need the indices as well, which we can get transforming the `List<int>` into a `Map<int, int>` and apply a `fold` function on it, which can be seen here:
 
-![day16-3](./assets/dart-1-day16-3.png)
+```dart title="day_16.dart" mark={1,3-7}
+var data_entries = data.asMap().entries;
+for (var idx in range(1, data.length + 1)) {
+  int acc = data_entries.fold<int>(0, (acc, entry) {
+    var pattern_multiplier =
+        PATTERN[((entry.key + 1) ~/ idx) % PATTERN.length];
+    return acc + entry.value * pattern_multiplier;
+  });
+}
+```
 
 And it takes **2 SECONDS**? That's a huge performance loss. I thought the problem might be the conversion from `List` to `Map` but the list is only $$650$$ elements in size and even if I compute the map only once (before the loop) we don't see any time improvements. I really don't know what could be the reason, but maybe, just maybe, it is the same thing, and a lot of VM optimizations can't be applied when we are mapping over it this way.
 
 On **part 2**, we needed to do the same thing but with **10 THOUSAND TIMES MORE DIGITS**. This was a really huge problem, but people figured it out how to do it. Based on some matrix multiplication properties and the problem properties, people discovered we could use just partial sums. The interesting  part on it, is how we generate the list with that much times more (we don't really need to generate $$10000$$ more (again, because of some properties) but we will assume we need for the snippet below) digits. In python we would have something like `list * 10000`, but we are not on this high level yet. We can make it like so on Dart:
 
-![day16-4](./assets/dart-1-day16-4.png)
+```dart title="day_16.dart"
+List.generate(num_copies, (_) => data.clone())
+  .expand((_) => _)
+  .toList();
+```
 
 The named constructor `List.generate` receives the number of elements we want to generate on the `List` and we pass a function that receives the index, and generate an element for that position. After this step we would have a `List<List<int>>` but we need just a `List<int>` so we can use the `Iterable.expand<T>` function, to expand a `List<List<E>>` in a `List<T>` using a function which maps over the values, which, in our case, is just the identity function (`(_) => _`).
 
@@ -186,7 +241,31 @@ Day 22, [**Slam Suffle**](https://adventofcode.com/2019/day/22), is actually rea
 
 You can see the code for shuffling the deck on this snippet:
 
-![day22-1](./assets/dart-1-day22-1.png)
+```dart title="day_22.dart"
+// Assume we have a List<Shuffle>, where Shuffle contains a
+// shuffleType and a number k called quantity
+var shuffles = getShuffles();
+var stack = List.generate(DECK_SIZE, (i) => i);
+
+for (var shuffle in shuffles) {
+  switch (shuffle.shuffleType) {
+    case ShuffleType.DealIncrement:
+      final new_stack = stack.clone();
+      for (final i in range(0, DECK_SIZE)) {
+        new_stack[(i * shuffle.quantity) % stack.length] = stack[i];
+      }
+      stack = new_stack;
+      break;
+    case ShuffleType.Cut:
+      final cut_size = (stack.length + shuffle.quantity) % stack.length;
+      stack = stack.skip(cut_size).toList() + stack.take(cut_size).toList();
+      break;
+    case ShuffleType.DealStack:
+      stack = stack.reversed.toList();
+      break;
+  }
+}
+```
 
 For **part two**, we are presented with a similar problem but with a HUGE amount of cards. We need to note that we can use [modular arithmetic](https://en.wikipedia.org/wiki/Modular_arithmetic) for everything, finding a way to represent modular division, which can be computed with [modular multiplicative inverse](https://en.wikipedia.org/wiki/Modular_multiplicative_inverse). We also need to compute a huge polynomial exponential. I won't explain the math behind this (I really don't know everything of it exactly, actually) but the code can be found on my [repository](https://github.com/rafaeelaudibert/AdventOfCode.dart). Something interesting is that we need to use the Dart builtin `BigInt` type which has some pretty interesting methods (such as `BigInt.modInverse` already builtin).
 
@@ -200,7 +279,16 @@ For **part two**, we are presented with a similar problem but with a HUGE amount
 
 - **count_bugs**: Given a `List<String>` we want to know how many $$#$$ characters there are in all the strings altogether. This is a job for `fold` (again, again)!
 
-![day24-1](./assets/dart-1-day24-1.png)
+```dart title="day_24.dart"
+String stringify(List<List<String>> layout) =>
+    layout.map((line) => line.join('')).join('');
+
+int biodiversity_rating(String layout) => range(0, layout.length)
+    .fold<int>(0, (acc, i) => acc + (layout[i] == '#' ? pow(2, i) : 0));
+
+int count_bugs(List<String> layouts) =>
+    layouts.fold<int>(0, (acc, layout) => acc + '#'.allMatches(layout).length);
+```
 
 ## Additional methods
 

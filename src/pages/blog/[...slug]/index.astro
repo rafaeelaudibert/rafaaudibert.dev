@@ -518,23 +518,9 @@ const showContents = sections.length >= 3
     overflow-wrap: break-word;
   }
 
-  .prose pre {
-    padding: 1rem 1.25rem;
-    border: 1px solid var(--gray-800);
-    border-radius: 0.625rem;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    line-height: 1.65;
-    font-variant-numeric: normal;
-    overflow-x: auto;
-  }
-
-  .prose pre code {
-    font-family: inherit;
-  }
-
-  :root:not(.theme-dark) .prose pre.astro-code {
-    background-color: var(--gray-900) !important;
+  /* Fenced code blocks are rendered by Expressive Code (astro.config.mjs) */
+  .prose > .expressive-code {
+    margin-block: 1.75rem;
   }
 
   /* Asides and quotes: set in the sans so they read as notes beside the text */

@@ -21,8 +21,25 @@ Hash is an incredible tool to access information through an alphanumeric key (ca
 
 In the texts/codes below, when we talk about hashing functions we are talking about the function which we pass a string and it returns us a key which will be used to access the hash table. For this code, we used 2 different hashing functions, as can be seen in the code below. The first one is the primary one, while the second one is used with the rehashing algorithm, which will be explained below.
 
-![Hash1Code](./assets/hash1.png)
-![Hash2Code](./assets/hash2.png)
+```js title="hash.js"
+computeHash(key) {
+  let encrypted = 0;
+  for (let i = 0; i < key.length; i++)
+    encrypted = (encrypted >> 1) + ((encrypted & 1) << 15) + key.charCodeAt(i);
+
+  return encrypted % this.tableSize;
+}
+```
+
+```js title="hash.js"
+computeHashExtra(key) {
+  let encrypted = 0;
+  for (let i = 0; i < key.length; i++)
+    encrypted += key.charCodeAt(i);
+
+  return (encrypted % 53) + 1;
+}
+```
 
 ### Comparing the hash functions
 

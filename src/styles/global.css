@@ -253,14 +253,6 @@ dd {
   margin: 0;
 }
 
-/* Code blocks: Shiki emits the light palette inline and the dark one as
-   --shiki-dark variables (see astro.config.mjs). */
-:root.theme-dark .astro-code,
-:root.theme-dark .astro-code span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
 /* Utilities */
 
 .mb-4 {

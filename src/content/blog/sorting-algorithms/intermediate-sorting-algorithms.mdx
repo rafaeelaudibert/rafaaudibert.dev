@@ -31,7 +31,48 @@ It was used arrays varying from $$2^1$$ until $$2^{19}$$ (random generated numbe
 
 The code used for it can be seen below, followed by the chart showing the data (in the test with the 200 files, as said before).
 
-![QuickSortCode](./assets/quicksort.png)
+```c title="sort2.c"
+int partition(int* C, int pi, int pf)
+{
+    int random = (rand() % (pf - pi)) + pi, p=pf, i=pi-1, j, temp;
+
+    // Random pivot to make it better sorting already sorted stuff
+    temp = C[random];
+    C[random] = C[pf];
+    C[pf] = temp;
+
+    for(j=pi; j<=pf-1; j++)
+    {
+        if(C[j]<=C[p])
+        {
+            i++;
+            temp=C[i];
+            C[i]=C[j];
+            C[j]=temp;
+        }
+    }
+    i++;
+    temp = C[i];
+    C[i] = C[p];
+    C[p] = temp;
+
+    return i;
+}
+
+void quickSort(int* C, long long int i, long long int f)
+{
+    int p;
+
+    if (f>i)
+    {
+        p = partition(C, i, f);
+        quickSort(C, i, p-1);
+        quickSort(C, p+1, f);
+    }
+
+    return;
+}
+```
 <QuickSortCharts client:only="react" />
 
 We also have more data about it, which you can find in the CSV files, linked above. Quicksort has a standard deviation of 0.01s when talking about the time taken to make it, as well as a standard deviation of roughly 300 recursive calls, which is not that much, actually. If we compare Quick Sort, with the algorithms seen in the other article, we can see a HUGE difference (you can see that difference in the Playground below).
@@ -42,7 +83,47 @@ Let's move on to another sorting algorithm which almost everybody knows. It also
 
 The code used for it can be seen below, followed by the charts showing the data.
 
-![MergeSortCode](./assets/mergesort.png)
+```c title="sort2.c"
+void merge(int *C, int* Aux, int i, int m, int f)
+{
+    int k, j;
+
+    for(k=i; k<=f; k++)
+        Aux[k] = C[k];
+
+    j = m+1;
+    for(k=i; k<=f; k++)
+    {
+        if (i>m)
+            C[k] = Aux[j++];
+        else if (j>f)
+            C[k] = Aux[i++];
+        else if (Aux[i] <= Aux[j])
+            C[k] = Aux[i++];
+        else
+            C[k] = Aux[j++];
+    }
+
+    return;
+}
+
+void mergeSort(int *C, int* Aux, int i, int f)
+{
+    int m;
+
+    if(f>i)
+    {
+        // Metade entre o inicio e o fim
+        m = (i+f) / 2;
+
+        mergeSort(C, Aux, i, m);
+        mergeSort(C, Aux, m+1, f);
+        merge(C, Aux, i, m, f);
+    }
+
+    return;
+}
+```
 <MergeSortCharts client:only="react" />
 
 What is really nice about MergeSort is that it makes the exact same amount of recursive calls every time, doesn't matter how the array is ordered, so we have 0 as its standard deviation for recursive calls, and an average
@@ -54,7 +135,53 @@ RadixSort should be, in theory, an incredibly fast algorithm to sort numbers. It
 
 Its basic idea is that it uses $$10$$ stacks, to put each number in a different one according to a specific digit of it (that's why it only works for specific kinds of data, like integers and strings). If you order the numbers going from the least significant digit to the most significant one, using a stack to maintain its stability, you have a really fast algorithm, which can be seen below, as well as a chart to see some information about it:
 
-![RadixSortCode](./assets/radixsort.png)
+```c title="sort2.c"
+int digito(int valor, int posicao){
+  int r;
+
+  r = valor % pow(10, posicao+1);
+  r = r / pow(10, posicao);
+
+  return r;
+}
+
+int* radixSort(int* A, int size)
+{
+    int d, i, dj;
+    int *C = (int*) malloc(10*sizeof(int)),
+        *B = (int*) malloc(size*sizeof(int));
+
+    for(d=0; d<MAX_DIGITS; d++){
+
+      //Zera matriz contadora
+      for(i=0; i<10; i++)
+        C[i] = 0;
+
+      // Conta numeros
+      for(i=0; i<size; i++)
+        C[digito(A[i], d)]++;
+
+      //Usado para manter estabilidade
+      for(i=1; i<10; i++)
+        C[i] += C[i-1];
+
+      // Ordena array
+      for(i=size-1; i>=0; i--){
+        dj = digito(A[i], d);
+        B[C[dj] - 1] = A[i];
+        C[dj]--;
+      }
+
+      // Transfere da array auxiliar
+      for(i=0; i<size; i++)
+        A[i] = B[i];
+    }
+
+    free(C);
+
+    return B;
+}
+```
 <RadixSortCharts client:only="react" />
 
 It's kinda interesting because RadixSort doesn't look THAT fast if we compare with the others which we tried before (we have a chart below). It is really nice, because it actually has no recursion, being purely iterative, and doesn't make a single comparison, just a huge numerical manipulation, which is really impressive. That algorithm is called LSD Radix Sort (LSD stands for least-significant-digit) because we order according to the least significant digit before. If we would sort it with an MSD RadixSort, we would need to change our code, and add some comparisons, because just ordering from the most to the least significant digit, wouldn't sort the numbers accordingly. RadixSort has a 0.02 seconds standard deviation, which is pretty low, similar to the others. The standard deviation of recursive calls is 0, as it doesn't make any recursion or comparison at all.
@@ -83,8 +210,78 @@ The third implementation, called "Selection Tree", uses a _Minimum Heap_ to sort
 
 All the implementations can be seen in the codes below (QuickSort will be omitted, as it has already been shown before), as well as a chart comparing the three different structures.
 
-![MergeSortedArraysCode](./assets/mergesortedarrays.png)
-![SelectionTreeCode](./assets/selectiontree.png)
+```c title="sort2.c"
+void mergeSortedArrays(int** input, int* output, int p, int N)
+{
+    int i, k, menor, index=-1;
+    for(i=0; i<N; i++){
+      menor = topFromArray(input, 0);
+      index = 0;
+      for(k=1; k<p; k++){
+        if (topFromArray(input, k) < menor){
+          menor = topFromArray(input, k);
+          index = k;
+        }
+      }
+      output[i] = popFromArray(input, index);
+    }
+
+    return;
+}
+```
+
+```c title="sort2.c"
+void heapify(int* heap, int** input, int p, int i){
+  int e, d, menor;
+
+  while(i < p-1){
+    e = 2*i + 1;
+    d = 2*i + 2;
+    menor = heap[e] <= heap[d] ? e : d;
+    heap[i] = heap[menor];
+    i = menor;
+  }
+
+  heap[i] = popFromArray(input, i-p+1);
+
+  return;
+}
+
+int* buildHeap(int* heap, int** input, int p, int heapSize){
+
+  //Heapify it, pulling stuff from the files
+  for(int i=heapSize-1; i>=0; i--)
+    heapify(heap, input, p, i);
+
+  return heap;
+}
+
+int popFromSelectionTree(int* tree, int size, int** input, int p)
+{
+    int r = tree[0], i = 0, menor;
+
+    while(i < p-1){
+      menor = tree[2*i + 1] <= tree[2*i + 2] ? 2*i + 1 : 2*i + 2;
+      tree[i] = tree[menor];
+      i = menor;
+    }
+
+    tree[i] = popFromArray(input, i-p+1);
+
+    return r;
+}
+
+void mergeWithSelectionTree(int** input, int* output, int p, int n)
+{
+    int size=2*p-1, i;
+    int* tree = buildHeap((int*) malloc(size*sizeof(int)), input, p, size);
+
+    for(i=0; i<n; i++)
+      output[i] = popFromSelectionTree(tree, size, input, p);
+
+    return;
+}
+```
 
 <FileSortingCharts client:only="react" />
 

@@ -11,6 +11,7 @@ import rehypeKatex from 'rehype-katex'
 import dsv from '@rollup/plugin-dsv'
 
 import react from '@astrojs/react';
+import expressiveCode from 'astro-expressive-code';
 
 import { site } from './src/data/site.ts';
 
@@ -39,10 +40,6 @@ export default defineConfig({
       remarkPlugins: [remarkMath], // Detect math equations in markdown
       rehypePlugins: [rehypeKatex], // Render latex equations in markdown
     }),
-    // Emit both palettes so code blocks follow the site theme (see global.css)
-    shikiConfig: {
-      themes: { light: "github-light", dark: "github-dark" },
-    },
   },
 
   // Image optimization settings
@@ -65,6 +62,29 @@ export default defineConfig({
 
   // Integrations are astro plugins
   integrations: [
+    // Code blocks: syntax highlighting, frames, titles and copy buttons.
+    // Must come before mdx() so it also handles code blocks inside MDX.
+    expressiveCode({
+      themes: ["catppuccin-latte", "catppuccin-mocha"],
+      // The site toggles dark mode with a class on <html>, not the media query
+      themeCssSelector: (theme) =>
+        theme.type === "dark" ? ".theme-dark" : ":root:not(.theme-dark)",
+      useDarkModeMediaQuery: false,
+      styleOverrides: {
+        borderRadius: "0.625rem",
+        borderColor: "var(--gray-800)",
+        codeFontFamily: "var(--font-mono)",
+        codeFontSize: "0.8125rem",
+        codeLineHeight: "1.65",
+        uiFontFamily: "var(--font-body)",
+        uiFontSize: "0.8125rem",
+        frames: {
+          shadowColor: "transparent",
+          editorActiveTabIndicatorTopColor: "var(--accent-regular)",
+        },
+      },
+    }),
+
     // React and MDX for content
     react(),
     mdx(),
