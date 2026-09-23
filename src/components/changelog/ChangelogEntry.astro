@@ -75,6 +75,7 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
   .section-year {
     grid-column-start: 1;
     font-size: var(--text-xl);
+    font-variant-numeric: lining-nums;
     color: var(--gray-0);
   }
 
@@ -85,10 +86,15 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
     gap: 0.35rem;
   }
 
+  /* Months are the timeline's dates, so they read as metadata */
   .section-month {
-    font-size: var(--text-lg);
-    color: var(--gray-0);
-    line-height: 1.2;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+    color: var(--gray-300);
   }
 
   .entry-photos {
@@ -130,6 +136,9 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
 
   .content {
     grid-column: 3 / 5;
+    font-family: var(--font-reading);
+    line-height: 1.7;
+    text-wrap: pretty;
 
     p:not(:last-child) {
       margin-bottom: 1rem;
@@ -187,7 +196,7 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
   @media (min-width: 50em) {
     section {
       display: contents;
-      font-size: var(--text-lg);
+      font-size: 1.125rem;
 
       &:has(.section-year) {
         margin-top: 0;

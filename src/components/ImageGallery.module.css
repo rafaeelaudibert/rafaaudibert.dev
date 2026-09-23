@@ -203,7 +203,9 @@
 }
 
 .counter {
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
   color: rgba(255, 255, 255, 0.7);
   text-align: center;
 }
@@ -212,8 +214,9 @@
   max-width: min(100%, 40rem);
   margin: 0;
   padding: 0 1rem;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.85);
   text-align: center;
   text-wrap: balance;

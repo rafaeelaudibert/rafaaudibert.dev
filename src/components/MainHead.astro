@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css"
+import "katex/dist/katex.min.css"
+import { Font } from "astro:assets"
 import PostHog from "./PostHog.astro"
 import { site } from "../data/site"
 
@@ -63,18 +65,12 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 <link rel="icon" type="image/png" href="/favicon.png" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Rubik:wght@500;600&display=swap"
-  rel="stylesheet"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css"
-  integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV"
-  crossorigin="anonymous"
-/>
+<!-- Self-hosted fonts (astro.config.mjs). Preload only what the first paint
+     needs: body and heading text. -->
+<Font cssVariable="--font-public-sans" preload={[{ style: "normal", subset: "latin" }]} />
+<Font cssVariable="--font-rubik" preload={[{ subset: "latin" }]} />
+<Font cssVariable="--font-literata" preload={[{ style: "normal", subset: "latin" }]} />
+<Font cssVariable="--font-ibm-plex-mono" />
 
 <script is:inline>
   // This code is inlined in the head to make dark mode instant & blocking.

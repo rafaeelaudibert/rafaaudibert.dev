@@ -34,7 +34,7 @@ import {
         {
           /* This is written during build time which means it'll be updated on deploy only */
         }
-        <div class="last-updated-note">
+        <div class="last-updated-note text-meta">
           Last updated: {
             new Date().toLocaleDateString("en-US", {
               month: "long",
@@ -406,10 +406,7 @@ import {
 
   .last-updated-note {
     text-align: right;
-    font-size: var(--text-sm);
-    color: var(--gray-400);
     margin-bottom: 2rem;
-    font-style: italic;
   }
 
   @media (min-width: 50em) {

@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro"
 import Hero from "../components/Hero.astro"
 import ContactCTA from "../components/ContactCTA.astro"
 import Link from "../components/Link.astro"
+import { Code } from "astro-expressive-code/components"
 
 import { site } from "../data/site"
 // The same definitions the Worker registers, so this list cannot drift from
@@ -16,7 +17,9 @@ type Snippet = {
   id: string
   label: string
   note?: string
+  /** Shown as the code block's file tab */
   file?: string
+  lang: string
   code: string
 }
 
@@ -25,30 +28,35 @@ const snippets: Snippet[] = [
     id: "claude-code",
     label: "Claude Code",
     note: "One command in your terminal, then ask away in any session.",
+    lang: "sh",
     code: `claude mcp add --transport http ${serverName} ${endpoint}`,
   },
   {
     id: "claude",
     label: "Claude.ai & Claude Desktop",
     note: "Settings → Connectors → Add custom connector. Paste the URL, leave authentication empty.",
+    lang: "txt",
     code: endpoint,
   },
   {
     id: "cursor",
     label: "Cursor",
     file: ".cursor/mcp.json",
+    lang: "json",
     code: JSON.stringify({ mcpServers: { [serverName]: { url: endpoint } } }, null, 2),
   },
   {
     id: "vscode",
     label: "VS Code",
     file: ".vscode/mcp.json",
+    lang: "json",
     code: JSON.stringify({ servers: { [serverName]: { type: "http", url: endpoint } } }, null, 2),
   },
   {
     id: "curl",
     label: "No client at all",
     note: "It is plain JSON-RPC over HTTP, so curl works too.",
+    lang: "sh",
     code: [
       `curl -X POST ${endpoint} \\`,
       `  -H 'content-type: application/json' \\`,
@@ -98,22 +106,8 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
               <article class="stack gap-2" aria-labelledby={`snippet-${snippet.id}`}>
                 <h3 id={`snippet-${snippet.id}`}>{snippet.label}</h3>
                 {snippet.note && <p>{snippet.note}</p>}
-                {snippet.file && (
-                  <p class="file">
-                    Add to <code>{snippet.file}</code>:
-                  </p>
-                )}
-                <div class="snippet">
-                  <pre tabindex="0"><code>{snippet.code}</code></pre>
-                  <button
-                    type="button"
-                    class="copy"
-                    data-copy={snippet.code}
-                    aria-label={`Copy ${snippet.label} snippet`}
-                  >
-                    Copy
-                  </button>
-                </div>
+                {snippet.file && <p>Add this to your project:</p>}
+                <Code code={snippet.code} lang={snippet.lang} title={snippet.file} />
               </article>
             ))
           }
@@ -191,31 +185,27 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
 
 <style>
   .mcp {
-    color: var(--gray-300);
-    font-size: var(--text-md);
+    color: var(--gray-200);
   }
 
   h2 {
-    font-size: var(--text-xl);
     color: var(--gray-0);
   }
 
-  h3 {
-    font-size: var(--text-lg);
-    color: var(--gray-100);
-  }
-
-  p {
+  p,
+  .tool dd {
     max-width: 65ch;
+    font-family: var(--font-reading);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    text-wrap: pretty;
   }
 
   code {
-    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
     font-size: 0.9em;
   }
 
-  .endpoint,
-  .snippet {
+  .endpoint {
     position: relative;
     display: flex;
     align-items: center;
@@ -237,33 +227,6 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
     word-break: break-all;
   }
 
-  .snippet {
-    align-items: flex-start;
-  }
-
-  pre {
-    flex: 1;
-    margin: 0;
-    padding: 1rem 1.25rem;
-    overflow-x: auto;
-    color: var(--gray-100);
-    line-height: 1.5;
-    /* Room for the absolutely positioned button on narrow screens */
-    padding-right: 5.5rem;
-  }
-
-  pre:focus-visible {
-    outline: 2px solid var(--accent-regular);
-    outline-offset: 2px;
-    border-radius: 0.75rem;
-  }
-
-  .snippet .copy {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-  }
-
   .copy {
     flex-shrink: 0;
     padding: 0.35rem 0.85rem;
@@ -272,7 +235,7 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
     background-color: var(--gray-999);
     color: var(--gray-200);
     font-size: var(--text-sm);
-    font-family: inherit;
+    font-family: var(--font-body);
     cursor: pointer;
     transition:
       color var(--theme-transition),
@@ -289,10 +252,6 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
   .copy:focus-visible {
     outline: 2px solid var(--accent-regular);
     outline-offset: 2px;
-  }
-
-  .file {
-    margin: 0;
   }
 
   .tools {
@@ -329,25 +288,6 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
     margin: 0;
   }
 
-  /* Narrow screens: long code lines scroll under an overlaid button, so the
-     button sits below the code instead. */
-  @media (max-width: 50em) {
-    .snippet {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .snippet pre {
-      padding-right: 1.25rem;
-    }
-
-    .snippet .copy {
-      position: static;
-      align-self: flex-end;
-      margin: 0 0.75rem 0.75rem;
-    }
-  }
-
   @media (min-width: 50em) {
     .tools {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -363,8 +303,7 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
   @media (forced-colors: active) {
     .copy,
     .tool,
-    .endpoint,
-    .snippet {
+    .endpoint {
       border-color: CanvasText;
     }
   }

@@ -251,7 +251,6 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   .travel-stats-section h2 {
-    font-size: var(--text-2xl);
     color: var(--gray-0);
     margin-bottom: 2rem;
     text-align: center;
@@ -278,15 +277,21 @@ const arcs = FLIGHTS.map((f) => ({
     box-shadow: var(--shadow-md);
   }
 
+  /* Counts are data: mono numerals */
   .stat-number {
+    font-family: var(--font-mono);
     font-size: var(--text-3xl);
-    font-weight: bold;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
     color: var(--accent-regular);
     margin-bottom: 0.5rem;
   }
 
   .stat-label {
-    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--gray-400);
   }
 
@@ -301,7 +306,6 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   .countries-list h2 {
-    font-size: var(--text-2xl);
     color: var(--gray-0);
     margin-bottom: 2rem;
     text-align: center;
@@ -352,7 +356,8 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   .year {
-    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     color: var(--gray-400);
   }
 
@@ -415,6 +420,7 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   .tooltip-years {
+    font-family: var(--font-mono);
     color: var(--gray-0);
     word-wrap: break-word;
     hyphens: auto;
@@ -425,16 +431,19 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   .bucket-list-section h2 {
-    font-size: var(--text-2xl);
     color: var(--gray-0);
     margin-bottom: 2rem;
     text-align: center;
   }
 
   .bucket-list-subtitle {
+    max-width: 40em;
+    margin-inline: auto;
     text-align: center;
-    color: var(--gray-400);
-    font-size: var(--text-sm);
+    font-family: var(--font-reading);
+    line-height: 1.6;
+    text-wrap: balance;
+    color: var(--gray-300);
     margin-bottom: 1.5rem;
   }
 

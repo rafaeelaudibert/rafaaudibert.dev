@@ -55,9 +55,10 @@
 }
 
 .flightTag {
+  font-family: var(--font-mono);
   display: inline-block;
   font-size: 0.55rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.03em;
   padding: 2px 5px;
   border-radius: 3px;
@@ -149,8 +150,9 @@
 }
 
 .label {
+  font-family: var(--font-mono);
   font-size: 0.6rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.03em;
   white-space: nowrap;
   cursor: default;
@@ -208,8 +210,9 @@
 }
 
 .tooltipCode {
+  font-family: var(--font-mono);
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.05em;
 }
 
@@ -226,6 +229,7 @@
 }
 
 .tooltipYears {
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.5);
 }

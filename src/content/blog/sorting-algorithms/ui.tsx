@@ -76,7 +76,8 @@ export const ChartFigure = ({
           divider: palette.divider,
           background: { paper: palette.paper, default: palette.paper },
         },
-        typography: { fontFamily: '"Public Sans", system-ui, sans-serif' },
+        // The Fonts API renames families, so go through the CSS variable
+        typography: { fontFamily: "var(--font-body)" },
       }),
     [mode, palette]
   )

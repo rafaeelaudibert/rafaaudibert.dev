@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, envField } from 'astro/config'
+import { defineConfig, envField, fontProviders } from 'astro/config'
 
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
@@ -41,6 +41,51 @@ export default defineConfig({
       rehypePlugins: [rehypeKatex], // Render latex equations in markdown
     }),
   },
+
+  // Fonts are downloaded at build time and served from this domain, with
+  // metric-matched fallbacks to avoid layout shift while they load.
+  // Roles: Rubik for headings, Literata for prose, Public Sans for interface
+  // text, IBM Plex Mono for metadata and code. See AGENTS.md.
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Rubik",
+      cssVariable: "--font-rubik",
+      weights: ["500 600"],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: ["sans-serif"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Literata",
+      cssVariable: "--font-literata",
+      weights: ["400 600"],
+      styles: ["normal", "italic"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: ["serif"],
+      // Optical sizing: sturdier letterforms for body text, finer at display sizes
+      options: { experimental: { variableAxis: { opsz: [["7", "72"]] } } },
+    },
+    {
+      provider: fontProviders.google(),
+      name: "Public Sans",
+      cssVariable: "--font-public-sans",
+      weights: ["400 700"],
+      styles: ["normal", "italic"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: ["sans-serif"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "IBM Plex Mono",
+      cssVariable: "--font-ibm-plex-mono",
+      weights: [400, 500],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: ["monospace"],
+    },
+  ],
 
   // Image optimization settings
   image: {

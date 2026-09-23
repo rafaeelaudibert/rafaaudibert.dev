@@ -266,7 +266,7 @@ export const JobSearchSankey = () => {
     // Draw node labels - position based on whether node is in left or right half
     svg
       .append("g")
-      .style("font-family", "system-ui, sans-serif")
+      .style("font-family", "var(--font-body)")
       .style("font-size", "12px")
       .selectAll("text")
       .data(nodes)
@@ -308,7 +308,7 @@ export const JobSearchSankey = () => {
             padding: "8px 12px",
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             zIndex: 1000,
-            fontFamily: "system-ui",
+            fontFamily: "var(--font-body)",
             fontSize: 13,
             pointerEvents: "none",
             whiteSpace: "nowrap",
