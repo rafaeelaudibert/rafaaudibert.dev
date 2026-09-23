@@ -320,7 +320,7 @@ pre {
   color: var(--gray-200);
 }
 
-.labelled-section > .section-title {
+.labelled-section .section-title {
   font-size: var(--text-lg);
   color: var(--gray-0);
 }
