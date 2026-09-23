@@ -137,7 +137,7 @@ async function renderImagePreview(file: string): Promise<void> {
     }
   }
 
-  console.log("Preview (ANSI fallback — install `chafa` for a nicer preview):")
+  console.log("Preview (ANSI fallback; install `chafa` for a nicer preview):")
   console.log(await renderAnsiPreview(file))
 }
 
@@ -212,7 +212,7 @@ async function main() {
       const reason = exif?.description
         ? `invalid description: "${exif.description}"`
         : "missing description"
-      console.log(`  FAIL  ${rel} — ${reason}`)
+      console.log(`  FAIL  ${rel}: ${reason}`)
     }
 
     if (invalid > 0) {

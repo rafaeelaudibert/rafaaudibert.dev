@@ -24,7 +24,7 @@ export const PAST_EXPERIENCES = [
     bulletPoints: [
       "While working on the <strong>Web Analytics</strong> team ($5M+ ARR), implemented the <strong>Core Web Vitals + Performance</strong> tracking feature.",
       "Solo-built the <strong>Revenue Analytics</strong> product to help companies understand their revenue metrics and improve their products.",
-      "After transferring Revenue Analytics to a new team — didn't find traction — I moved on to lead the <strong>Growth</strong> team, with focus on the company's growth and expansion.",
+      "After transferring Revenue Analytics to a new team, since it didn't find traction, I moved on to lead the <strong>Growth</strong> team, with focus on the company's growth and expansion.",
     ],
   },
   {

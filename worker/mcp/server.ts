@@ -80,7 +80,7 @@ function isPrivileged(request: Request, env: McpEnv): boolean {
 
 export function createMcpServer(ctx: ToolContext): McpServer {
   const server = new McpServer(
-    { name: site.domain, title: `${site.name} — personal MCP server`, version: "1.0.0" },
+    { name: site.domain, title: `${site.name}'s personal MCP server`, version: "1.0.0" },
     {
       // Ajv, the SDK default, compiles schemas with `new Function`, which the
       // Workers runtime forbids. This validator interprets schemas instead.

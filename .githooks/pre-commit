@@ -2,8 +2,8 @@
 # Pre-commit hook: validates all travel images before each commit.
 #
 # Checks:
-#   1. EXIF metadata — only date (+ optional description) allowed
-#   2. ImageDescription — every image needs a valid caption
+#   1. EXIF metadata: only date (+ optional description) allowed
+#   2. ImageDescription: every image needs a valid caption
 #
 # Activated via `bun install` → postinstall sets core.hooksPath to .githooks
 #

@@ -3,8 +3,8 @@
  * Renames files to their date (YYYYMMDD_HHMMSS.ext) if not already named that way.
  *
  * Usage:
- *   bun scripts/strip-image-metadata.ts            Interactive mode — shows metadata, asks what to do
- *   bun scripts/strip-image-metadata.ts --auto     Non-interactive — strips all, keeps date, renames
+ *   bun scripts/strip-image-metadata.ts            Interactive mode: shows metadata, asks what to do
+ *   bun scripts/strip-image-metadata.ts --auto     Non-interactive: strips all, keeps date, renames
  *   bun scripts/strip-image-metadata.ts --check    Just report files with metadata (for CI/hooks, exit 1 if any)
  */
 
@@ -184,10 +184,10 @@ async function main() {
 
     if (CHECK_MODE) {
       if (!isWebp) {
-        console.log(`  FAIL  ${rel} — not webp (run strip-metadata --auto to convert)`)
+        console.log(`  FAIL  ${rel}: not webp (run strip-metadata --auto to convert)`)
         needsStripping++
       } else if (info && !info.isClean) {
-        console.log(`  FAIL  ${rel} — ${info.exifSize} bytes of EXIF (date: ${info.date ?? "none"})`)
+        console.log(`  FAIL  ${rel}: ${info.exifSize} bytes of EXIF (date: ${info.date ?? "none"})`)
         needsStripping++
       }
       continue
@@ -195,7 +195,7 @@ async function main() {
 
     if (alreadyClean) {
       skipped++
-      if (!AUTO_MODE) console.log(`  SKIP  ${rel} — already clean`)
+      if (!AUTO_MODE) console.log(`  SKIP  ${rel}: already clean`)
       continue
     }
 

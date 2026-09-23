@@ -89,7 +89,7 @@ shell-sort (Knuth)    changes = 124750
 shell-sort (Tokuda)   changes = 124750
 ```
 
-All identical. And `124750` is exactly `n(n-1)/2` — textbook insertion sort. Three
+All identical. And `124750` is exactly `n(n-1)/2`, textbook insertion sort. Three
 different [gap sequences](https://en.wikipedia.org/wiki/Shellsort#Gap_sequences), all reporting the same number, on an article whose entire
 argument is that gap sequences matter. Every reader who played with that widget since
 2018 got insertion sort three times over.
@@ -123,7 +123,7 @@ CPU:
 }
 ```
 
-Zero. Not approximately zero — exactly zero, on every clock available, including with an
+Zero. Not approximately zero. Exactly zero, on every clock available, including with an
 `await` in the middle to try to break the freeze.
 
 This is documented, it turns out, and I'd simply never read that page. Cloudflare's
@@ -192,8 +192,8 @@ Deleting those workflow files felt disproportionately good.
 
 ## Was the AI actually useful?
 
-Yes, though not in the way I expected. The mechanical parts — rewriting deploy pipelines,
-porting seven sorting algorithms, swapping DNS records — were fine but not the interesting
+Yes, though not in the way I expected. The mechanical parts (rewriting deploy pipelines,
+porting seven sorting algorithms, swapping DNS records) were fine but not the interesting
 bit. I could have done those, slowly.
 
 What I couldn't have done is the noticing. The Shell sort bug was found by reading code

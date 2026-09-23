@@ -227,7 +227,7 @@ export const FLIGHTS: Flight[] = [
   { from: "GRU", to: "POA", year: 2026 },
 ]
 
-// Home country — generates a visit entry for every year since birth
+// Home country: generates a visit entry for every year since birth
 const HOME_COUNTRY: CountryCode = "BR"
 const HOME_SINCE = 2000
 

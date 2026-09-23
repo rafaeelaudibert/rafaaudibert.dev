@@ -72,7 +72,7 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Fixed-size viewport — image fits inside without causing layout shifts */
+/* Fixed-size viewport: image fits inside without causing layout shifts */
 .imageContainer {
   position: relative;
   display: flex;
