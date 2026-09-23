@@ -95,6 +95,16 @@
   --font-reading: var(--font-flags), var(--font-literata);
   --font-mono: var(--font-flags), var(--font-ibm-plex-mono);
 
+  /* Corner radii. Deliberately tight: the design should read as squared-off.
+     xs: focus rings, inline code, hairline bars
+     sm: buttons, pills, chips, keys, tooltips
+     md: cards, panels, inputs, images
+     lg: dialogs, the hero portrait, the globe */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
   /* Transitions */
   --theme-transition: 0.2s ease-in-out;
 }
@@ -205,7 +215,7 @@ textarea:focus-visible,
 [tabindex]:focus-visible {
   outline: 2px solid var(--accent-regular);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
 }
 
 /* Headings: Rubik, on the same scale everywhere (set by the blog article) */

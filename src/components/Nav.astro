@@ -220,7 +220,7 @@ const isCurrentPage = (href: string) => {
     position: relative;
     display: flex;
     border: 0;
-    border-radius: 999rem;
+    border-radius: var(--radius-sm);
     padding: 0.5rem;
     font-size: 1.5rem;
     color: var(--gray-300);
@@ -244,7 +244,7 @@ const isCurrentPage = (href: string) => {
     inset: -1px;
     content: "";
     background: var(--gradient-stroke);
-    border-radius: 999rem;
+    border-radius: var(--radius-sm);
     z-index: -1;
   }
 
@@ -288,7 +288,7 @@ const isCurrentPage = (href: string) => {
     gap: 0.75rem;
     padding: 1.5rem 2rem 1.5rem 1.5rem;
     background-color: var(--gray-999);
-    border-radius: 0 0 0.75rem 0.75rem;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
     box-shadow: var(--shadow-lg);
   }
 
@@ -343,7 +343,7 @@ const isCurrentPage = (href: string) => {
       position: relative;
       flex-direction: row;
       font-size: var(--text-sm);
-      border-radius: 999rem;
+      border-radius: var(--radius-md);
       border: 0;
       padding: 0.5rem 0.5625rem;
       background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
@@ -355,13 +355,13 @@ const isCurrentPage = (href: string) => {
       inset: -1px;
       content: "";
       background: var(--gradient-stroke);
-      border-radius: 999rem;
+      border-radius: var(--radius-md);
       z-index: -1;
     }
 
     .link {
       padding: 0.5rem 1rem;
-      border-radius: 999rem;
+      border-radius: var(--radius-sm);
       transition:
         color var(--theme-transition),
         background-color var(--theme-transition);
@@ -423,7 +423,7 @@ const isCurrentPage = (href: string) => {
     line-height: 1;
     color: var(--accent-text-over);
     background: var(--accent-regular);
-    border-radius: 3px;
+    border-radius: var(--radius-xs);
     box-shadow:
       0 1px 2px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);

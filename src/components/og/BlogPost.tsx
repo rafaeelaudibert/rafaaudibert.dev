@@ -53,7 +53,7 @@ export default function BlogPost({ post, assets }: Props) {
         )}
 
         <div style={{ display: "flex", alignItems: "center", gap: 18, marginTop: 12 }}>
-          <img src={assets.portrait} width={56} height={56} style={{ borderRadius: 28 }} />
+          <img src={assets.portrait} width={56} height={56} style={{ borderRadius: 8 }} />
           <div
             style={{
               display: "flex",

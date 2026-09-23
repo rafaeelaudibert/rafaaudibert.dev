@@ -46,7 +46,7 @@ export default function Default({ assets }: { assets: OGAssets }) {
           width={280}
           height={280}
           style={{
-            borderRadius: 140,
+            borderRadius: 16,
             border: `6px solid ${og.accent}`,
             flexShrink: 0,
           }}

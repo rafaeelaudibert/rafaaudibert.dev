@@ -12,7 +12,7 @@ export default defineEcConfig({
     theme.type === "dark" ? ".theme-dark" : ":root:not(.theme-dark)",
   useDarkModeMediaQuery: false,
   styleOverrides: {
-    borderRadius: "0.625rem",
+    borderRadius: "var(--radius-md)",
     borderColor: "var(--gray-800)",
     codeFontFamily: "var(--font-mono)",
     codeFontSize: "0.8125rem",

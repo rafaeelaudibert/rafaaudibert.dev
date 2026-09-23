@@ -109,7 +109,7 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
     display: block;
     padding: 0;
     border: 1px solid var(--gray-500);
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm);
     background: var(--gray-600);
     cursor: pointer;
     overflow: hidden;
@@ -159,7 +159,7 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
   .wip-content {
     position: relative;
     border: 2px dashed #fbbf24;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     padding: 1rem;
     background: rgba(251, 191, 36, 0.05);
   }
@@ -171,7 +171,7 @@ const entryId = Astro.props.entryId ?? resolvedEntryId
     background: #fbbf24;
     color: #92400e;
     padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
     font-weight: bold;
     animation: bounce 2s infinite;

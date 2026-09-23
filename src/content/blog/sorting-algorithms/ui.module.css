@@ -5,7 +5,7 @@
   margin: 2rem 0;
   padding: 1rem 1rem 0.5rem;
   border: 1px solid var(--gray-800);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   background: var(--gray-999);
   font-family: var(--font-body);
 }
@@ -57,14 +57,14 @@
   display: inline-flex;
   padding: 2px;
   border: 1px solid var(--gray-800);
-  border-radius: 999rem;
+  border-radius: var(--radius-sm);
   background: var(--gray-900);
 }
 
 .segments button {
   padding: 0.25rem 0.75rem;
   border: 0;
-  border-radius: 999rem;
+  border-radius: var(--radius-sm);
   background: transparent;
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -102,7 +102,7 @@
 .panel {
   margin: 2rem 0;
   border: 1px solid var(--gray-800);
-  border-radius: 0.75rem;
+  border-radius: var(--radius-md);
   background: var(--gray-999);
   font-family: var(--font-body);
   font-size: 0.9375rem;
@@ -167,7 +167,7 @@
   height: 2.25rem;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   background: transparent;
   font-size: 1.25rem;
   line-height: 1;
@@ -200,7 +200,7 @@
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--gray-700);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   background: var(--gray-999);
   font: inherit;
   color: var(--gray-0);
@@ -251,7 +251,7 @@ select.input {
 .primary,
 .secondary {
   padding: 0.5625rem 1.125rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -302,7 +302,7 @@ select.input {
 .ghost:focus-visible {
   outline: 2px solid var(--accent-regular);
   outline-offset: 2px;
-  border-radius: 0.25rem;
+  border-radius: var(--radius-sm);
 }
 
 .primary:disabled,

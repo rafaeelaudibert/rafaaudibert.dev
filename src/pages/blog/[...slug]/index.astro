@@ -251,7 +251,7 @@ const showContents = sections.length >= 3
   .tags li {
     padding: 0.1875rem 0.625rem;
     border: 1px solid var(--gray-700);
-    border-radius: 999rem;
+    border-radius: var(--radius-sm);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     color: var(--gray-200);
@@ -260,7 +260,7 @@ const showContents = sections.length >= 3
   .cover {
     width: 100%;
     margin-top: 3rem;
-    border-radius: 0.75rem;
+    border-radius: var(--radius-md);
     border: 1px solid var(--gray-800);
   }
 
@@ -319,7 +319,7 @@ const showContents = sections.length >= 3
     display: block;
     width: calc(var(--length, 1) * 100%);
     height: 3px;
-    border-radius: 3px;
+    border-radius: var(--radius-xs);
     background: var(--gray-800);
     overflow: hidden;
   }
@@ -490,7 +490,7 @@ const showContents = sections.length >= 3
 
   .prose :not(pre) > code {
     padding: 0.125em 0.3em;
-    border-radius: 0.25em;
+    border-radius: var(--radius-xs);
     background: var(--gray-900);
     font-family: var(--font-mono);
     font-size: 0.84em;
@@ -528,7 +528,7 @@ const showContents = sections.length >= 3
   .prose img {
     display: block;
     margin-inline: auto;
-    border-radius: 0.5rem;
+    border-radius: var(--radius-md);
     border: 1px solid var(--gray-800);
   }
 

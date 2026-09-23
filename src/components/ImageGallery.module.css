@@ -7,7 +7,7 @@
   margin: auto;
   padding: 0;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: transparent;
   overflow: visible;
 }
@@ -60,7 +60,7 @@
   height: 36px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.15);
   color: white;
   cursor: pointer;
@@ -107,7 +107,7 @@
   max-width: none;
   max-height: none;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   filter: blur(24px);
   transform: scale(1.04);
   user-select: none;
@@ -123,7 +123,7 @@
   max-width: none;
   max-height: none;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
   user-select: none;
   -webkit-user-drag: none;
@@ -171,7 +171,7 @@
   height: 44px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.15);
   color: white;
   cursor: pointer;
