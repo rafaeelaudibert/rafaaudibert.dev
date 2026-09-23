@@ -155,6 +155,6 @@ Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`
 
 - `Nav.astro` - Mobile menu with keyboard support
 - `ThemeToggle.astro` - Toggle button with aria-pressed
-- `CallToAction.astro` - Accessible CTA button
+- `SplitHeader.astro` / `PageHeader.astro` - Page headers with a photo or a frosted card
 - `Link.astro` - External link handling
 - `PostPreview.astro` - Card component with focus styles
