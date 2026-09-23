@@ -90,7 +90,7 @@ export const EDUCATION_AND_ACHIEVEMENTS = [
 export const LANGUAGES = [
   { language: "Portuguese", level: "Native", cefr: "C2", flag: "🇧🇷" },
   { language: "English", level: "Professional Working Proficiency", cefr: "C1", flag: "🇺🇸" },
-  { language: "Spanish", level: "Limited Working Proficiency", cefr: "B1", flag: "🇪🇸" },
+  { language: "Spanish", level: "Limited Working Proficiency", cefr: "B2", flag: "🇪🇸" },
   { language: "German", level: "Elementary Proficiency", cefr: "A2", flag: "🇩🇪" },
   { language: "French", level: "Elementary Proficiency", cefr: "A2", flag: "🇫🇷" },
   { language: "Italian", level: "Elementary Proficiency", cefr: "A2", flag: "🇮🇹" },
