@@ -46,6 +46,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         <div class="actions">
           <button type="button" class="action action-primary" data-print>
             Save as PDF
+            <KeyboardShortcut keys={["Ctrl/Cmd", "P"]} class="action-shortcut" />
           </button>
           {
             profiles.map(({ label, href }) => (
@@ -292,6 +293,23 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     background-color: var(--accent-dark);
     border-color: var(--accent-dark);
     color: var(--accent-text-over);
+  }
+
+  /* The key caps take the button's colour rather than the grey default */
+  .action-shortcut {
+    margin-left: 0.125rem;
+  }
+
+  .action-primary :global(.key) {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    color: inherit;
+    box-shadow: none;
+  }
+
+  .action-primary :global(.key-separator) {
+    color: rgba(255, 255, 255, 0.7);
   }
 
   /* Sections: label above content, then side by side on wide screens */
