@@ -9,6 +9,7 @@ import portrait from "../assets/portrait.jpg"
 import { site } from "../data/site"
 import { PAST_EXPERIENCES, yearsOfExperience } from "../data/resume"
 import { FLIGHTS, getVisitedCountries } from "../data/travel"
+import { MERGED_PRS, POSTHOG_REPO, WORK, prUrl } from "../data/work"
 
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
@@ -17,37 +18,6 @@ const posts = (await getCollection("blog"))
 const current = PAST_EXPERIENCES[0]
 const countries = getVisitedCountries().size
 
-const WORK = [
-  {
-    eyebrow: "Built from scratch",
-    title: "Revenue Analytics",
-    text: "Started as a one-person product at PostHog: revenue metrics for companies that already send their product data there. Designed, built and shipped it solo before handing it to a team.",
-    href: "https://posthog.com/teams/revenue-analytics",
-    label: "PostHog",
-  },
-  {
-    eyebrow: "Shipped",
-    title: "Core Web Vitals in Web Analytics",
-    text: "Performance tracking for PostHog's Web Analytics, a product past $5M in annual revenue. Real-user vitals next to the traffic they belong to.",
-    href: "https://posthog.com/web-analytics",
-    label: "PostHog",
-  },
-  {
-    eyebrow: "Now",
-    title: "Leading Growth at PostHog",
-    text: "Onboarding, activation and the paths that turn a signup into a paying team. Equal parts product, data and engineering.",
-    href: current.href,
-    label: "PostHog",
-  },
-  {
-    eyebrow: "Side project",
-    title: "This site has an MCP server",
-    text: "Point Claude, Cursor or any Model Context Protocol client at it and ask about my resume, travels or posts. Runs on a Cloudflare Worker next to the site.",
-    href: "/mcp/",
-    label: "Read how",
-    internal: true,
-  },
-]
 
 const FACTS = [
   { label: "Countries", value: `${countries}` },
@@ -89,28 +59,47 @@ const FACTS = [
       </header>
 
       <section class="labelled-section" aria-labelledby="work">
-        <h2 class="section-title" id="work">Work</h2>
-        <ul class="work-grid">
-          {
-            WORK.map((item) => (
-              <li class="work-card">
-                <p class="eyebrow">{item.eyebrow}</p>
-                <h3 class="work-title">{item.title}</h3>
-                <p class="work-text text-reading">{item.text}</p>
-                <a
-                  class="work-link"
-                  href={item.href}
-                  target={item.internal ? undefined : "_blank"}
-                  rel={item.internal ? undefined : "noopener noreferrer"}
-                >
-                  {item.label}
-                  <Icon icon={item.internal ? "arrow-right" : "arrow-square-out"} size="0.9em" />
-                  {!item.internal && <span class="sr-only">(opens in new tab)</span>}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+        <div class="section-label">
+          <h2 class="section-title" id="work">Work</h2>
+          <a
+            class="section-more"
+            href={`${POSTHOG_REPO}/pulls?q=is%3Apr+is%3Amerged+author%3Arafaeelaudibert`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            All {MERGED_PRS.count} PRs <Icon icon="arrow-square-out" size="0.9em" />
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+        </div>
+        <div class="stack gap-4 work">
+          <p class="text-reading work-intro">
+            Everything below is in the open on <a href={POSTHOG_REPO}>posthog/posthog</a>: {MERGED_PRS.count} merged
+            pull requests between {MERGED_PRS.since} and {MERGED_PRS.asOf}, grouped by what they built. Newest first.
+          </p>
+          <ol class="work-list">
+            {
+              WORK.map((item) => (
+                <li class="work-item">
+                  <span class="work-period text-meta">{item.period}</span>
+                  <div class="work-body">
+                    <h3 class="work-title">{item.title}</h3>
+                    <p class="work-text text-reading">{item.summary}</p>
+                    <ul class="pr-list">
+                      {item.prs.map((pr) => (
+                        <li>
+                          <a class="pr" href={prUrl(pr.number)} target="_blank" rel="noopener noreferrer">
+                            <span class="pr-number">#{pr.number}</span> {pr.label}
+                            <span class="sr-only">(opens in new tab)</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
       </section>
 
       <section class="labelled-section" aria-labelledby="writing">
@@ -257,22 +246,35 @@ const FACTS = [
     user-select: none;
   }
 
-  /* Work */
-  .work-grid {
-    display: grid;
-    gap: 1rem;
+  /* Work: a timeline of what the PRs added up to */
+  .work-intro {
+    max-width: 60ch;
+    color: var(--gray-300);
+  }
+
+  .work-intro a {
+    color: var(--link-color);
+  }
+
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     padding: 0;
     list-style: none;
   }
 
-  .work-card {
+  .work-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .work-body {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 1.25rem;
-    border: 1px solid var(--gray-800);
-    border-radius: var(--radius-md);
-    background-color: var(--gray-999_40);
+    min-width: 0;
   }
 
   .work-title {
@@ -283,12 +285,47 @@ const FACTS = [
   }
 
   .work-text {
-    flex: 1;
+    max-width: 66ch;
     color: var(--gray-300);
     line-height: 1.6;
   }
 
-  .work-link,
+  .pr-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pr {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-sm);
+    background-color: var(--gray-999_40);
+    font-size: 0.8125rem;
+    color: var(--gray-100);
+    text-decoration: none;
+    transition:
+      border-color var(--theme-transition),
+      color var(--theme-transition);
+  }
+
+  .pr:hover,
+  .pr:focus-visible {
+    border-color: var(--accent-regular);
+    color: var(--gray-0);
+  }
+
+  .pr-number {
+    font-family: var(--font-mono);
+    color: var(--gray-400);
+  }
+
   .section-more {
     display: inline-flex;
     align-items: center;
@@ -304,8 +341,6 @@ const FACTS = [
       text-decoration-color var(--theme-transition);
   }
 
-  .work-link:hover,
-  .work-link:focus-visible,
   .section-more:hover,
   .section-more:focus-visible {
     color: var(--gray-0);
@@ -409,8 +444,14 @@ const FACTS = [
       top: 1.5rem;
     }
 
-    .work-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .work-item {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+
+    .work-period {
+      padding-top: 0.3em;
     }
 
     .posts {
@@ -427,7 +468,7 @@ const FACTS = [
 
   @media (prefers-reduced-motion: reduce) {
     .action,
-    .work-link,
+    .pr,
     .section-more,
     .beyond-text a {
       transition: none;
