@@ -1,5 +1,6 @@
 import React from "react"
 import { LineChart } from "@mui/x-charts/LineChart"
+import { BarChart } from "@mui/x-charts/BarChart"
 import {
   BarPlot,
   ChartsGrid,
@@ -42,6 +43,7 @@ import {
   quickSortFilesData,
   mergeArraysFilesData,
   selectionTreeFilesData,
+  hashData,
 } from "./csv"
 import { ChartFigure, Segmented, usePalette } from "./ui"
 
@@ -577,6 +579,50 @@ export const ArrayTimesCharts = () => {
           label: ARRAY_TIMES_LABELS[i],
           data: data.map((d) => d.time),
         }))}
+      />
+    </ChartFigure>
+  )
+}
+
+// --- Hash table collisions ---
+
+const HASH_METHODS = [
+  ["Open Linear", "Linear search"],
+  ["Open Rehashing", "Rehashing"],
+  ["Closed List", "List"],
+] as const
+
+const HASH_TABLE_SIZES = [...new Set(hashData.map((d) => d.tableSize))]
+
+const collisionsFor = (method: string) =>
+  HASH_TABLE_SIZES.map(
+    (size) => hashData.find((d) => d.tableSize === size && d.method === method)?.collisions ?? 0
+  )
+
+/** One bar per method and table size: insertion collisions, with search stacked on top. */
+export const HashCollisionsChart = () => {
+  const palette = usePalette()
+  return (
+    <ChartFigure title="Collisions by table size">
+      <BarChart
+        height={DATA_CHART_HEIGHT}
+        xAxis={[{ data: HASH_TABLE_SIZES, scaleType: "band", label: "Table size" }]}
+        yAxis={[{ label: "Collisions", width: 56 }]}
+        series={HASH_METHODS.flatMap(([method, name], i) => [
+          {
+            label: `${name}, insertion`,
+            data: collisionsFor(`${method} Insertion`),
+            stack: method,
+            color: palette.series[i],
+          },
+          {
+            label: `${name}, search`,
+            data: collisionsFor(`${method} Search`),
+            stack: method,
+            color: palette.tints[i],
+          },
+        ])}
+        grid={{ horizontal: true }}
       />
     </ChartFigure>
   )

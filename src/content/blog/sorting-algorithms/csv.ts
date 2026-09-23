@@ -173,3 +173,22 @@ const parseFileSortingAlgorithmData = (data: FileSortingAlgorithmData[]) => {
 export const quickSortFilesData = parseFileSortingAlgorithmData(quickSortFilesRaw)
 export const mergeArraysFilesData = parseFileSortingAlgorithmData(mergeArraysFilesRaw)
 export const selectionTreeFilesData = parseFileSortingAlgorithmData(selectionTreeFilesRaw)
+// Hash table collisions: Table Size, Method, Collisions. Method is
+// "<Open Linear|Open Rehashing|Closed List> <Insertion|Search>".
+type HashData = {
+    "Table Size": string
+    "Method": string
+    "Collisions": string
+}
+
+export type ParsedHashData = {
+    tableSize: number
+    method: string
+    collisions: number
+}
+
+export const hashData: ParsedHashData[] = (hashRaw as HashData[]).map((row) => ({
+    tableSize: parseInt(row["Table Size"]),
+    method: row["Method"],
+    collisions: parseInt(row["Collisions"]),
+}))

@@ -1,0 +1,150 @@
+Cartola;Angenor de Oliveira
+Joan Jett;Joan Marie Larkin
+Tina Turner;Annie Mae Bullock
+Jimmy Page;James Patrick Page
+Roger Daltrey;Roger Harry Daltrey
+Moraes Moreira;Antônio Carlos Moraes Pires
+Will.i.am;William James Adams Jr.
+Toquinho;Antonio Pecci Filho
+Jorge Ben Jor;Jorge Duílio Lima Meneses
+Slash;Saul Hudson
+Kenny G;Kenneth Gorelick
+Steven Tyler;Steven Victor Tallarico
+Stevie Wonder;Stevland Hardaway Morris
+Bono;Paul David Hewson
+Paul Stanley (KISS);Stanley Harvey Eisen
+Bruno (da dupla com Marrone);Vinícius Félix de Miranda
+Jeff Beck;Geoffery Arnold Beck
+Ricky Martin;Enrique Jose Martin Morales
+Luiz Marenco;Luis Rogério Marenco Ferran
+Bon Scott (AC/DC);Ronald Belford Scott
+Cee Lo Green;Thomas DeCarlo Callaway
+Teixeirinha;Vítor Mateus Teixeira
+Ritchie Valens;Richard Steven Valenzuela
+Billy Joel;William Joseph Martin Joel
+Renato Russo;Renato Manfredini, Jr.
+Tony Bennett;Anthony Dominick Benedetto
+MC Hammer;Stanley Kirk Burrel
+Jim Morrison;James Douglas Morrison
+Neil Young;Neil Percival Young
+Leandro (da dupla com Leonardo);Luis José da Costa
+Peter Tosh;Winston Hubert Macintosh
+Billie Holliday;Eleanora Fagan Gough
+Katy Perry;Katheryn Elizabeth Hudson
+Freddie Mercury;Farrokh Bulsara
+Enya;Eithne Ni Braona
+Amado Batista;Amado Rodrigues Batista
+Maria Bethânia;Maria Bethânia Viana Telles Velloso
+Fafá de Belém;Maria de Fátima Palha de Figueiredo
+Reginaldo Rossi;Reginaldo Rodrigues dos Santos
+Johnny Rivers;John Henry Ramistella
+Demi Lovato;Demetria Devonne Lovato
+Gregg Allman;Gregory Lenoir Allman
+Cyndi Lauper;Cynthia Ann Stephanie Lauper
+Alicia Keys;Alicia Augello Cook
+Alice Cooper;Vincent Damon Furnier
+Jerry Adriani;Jair Alves de Sousa
+Zezé Di Camargo;Mirosmar José de Camargo
+50 Cent;Curtis Jackson
+Axl Rose;William Bruce Bailey
+Wando;Wanderley Alves dos Reis
+Nat King Cole;Nathaniel Adams Coles
+Ray Charles;Ray Charles Robinson
+Ace Frehley (KISS);Paul Daniel Frehley
+Xororó;Durval de Lima
+Ice Cube;Oshea Jackson
+Billy Idol;William Michael Albert Broad
+Jimi Hendrix;James Marshall Hendrix
+Tom Petty;Thomas Earl Petty
+Elvis Presley;Elvis Aaron Presley
+Leonardo;Emival Eterno Costa
+Buddy Holly;Charles Hardin Holley
+Syd Barrett;Roger Keith Barrett
+John Denver;John Henry Deutschendorf
+George Michael;Yorgos Panayiotou
+Fagner;Raimundo Fagner Cândido Lopes
+Zé Ramalho;José Ramalho Neto
+Gene Simmons (KISS);Chaim Klein Witz
+Benito di Paula;Uday Vellozzo
+Lobão;João Luiz Woerdenbag Filho
+Waldick Soriano;Eurípedes Waldick Soriano
+Bo Diddley;Ellas Otha Bates
+Ney Matogrosso;Ney de Souza Pereira
+Luciano (da dupla com Zezé Di Camargo);Welson David Camargo
+Beyonce;Beyonce Giselle Knowles
+Sérgio Reis;Sérgio Bavini
+Raul Seixas;Raul Santos Seixas
+Johnny Ramone;John Cummings
+Rihanna;Robyn Rihanna Fenty
+Rod Stewart;Roderick David Stewart
+Bob Dylan;Robert Allen Zimmerman
+Eddie Vedder;Edward Louis Severson III
+Michael Stipe (R.E.M.);John Michael Stipe
+Vanilla Ice;Robert Van Winkle
+Chico Buarque;Francisco Buarque de Hollanda
+Donna Summer;LaDonna Adrian Gaines
+Eminem;Marshal Bruce Mathers III
+Marrone (da dupla com Bruno);José Roberto Ferreira
+Kurt Cobain;Kurt Donald Cobain
+Wynonna Judd;Christina Claire Ciminella
+Roy Orbison;Roy Kelton Orbison
+Robert Palmer;Alan Robert Palmer
+Cat Stevens;Steven Demetre Georgiou
+Joss Stone;Joscelyn Eve Stocker
+Jack White;John Anthony Gillis
+Caetano Veloso;Caetano Emanuel Viana Teles Veloso
+Martinho da Vila;Martinho José Ferreira
+Elvis Costello;Declan Patrick McManus
+Patti LaBelle;Patricia Louise Holt
+Stevie Nicks;Stephanie Lynn Nicks
+Elton John;Reginald Kenneth Dwight
+Morrissey;Steven Patrick Morrissey
+Zeca Pagodinho;Jessé Gomes da Silva Filho
+Sid Vicious;John Simon Ritchie
+Snoop Dogg;Cordazer Calvin Broadus Jr.
+Macy Gray;Natalie Renee McIntyre
+Mama Cass Elliot;Ellen Naomi Cohen
+Jon Bon Jovi;John Francis Bongiovi Jr.
+Neil Diamond;Neil Leslie Diamond
+Ronnie Von;Ronaldo Nogueira
+Ozzy Osbourne;John Michael Osbourne
+Madonna;Madonna Louise Veronica Ciccone
+Prince;Prince Rogers Nelson
+Iggy Pop;James Newell Osterberg, Jr.
+Frankie Valli;Frank Castelluccio
+Paul McCartney;James Paul McCartney
+Fergie;Stacy Ann Ferguson
+Marilyn Manson;Brian Hugh Warner
+Lou Reed;Louis Firbank
+Eric Clapton;Eric Patrick Clapton
+Shakira;Shakira Isabel Mebarak Ripoll
+Cher;Cherilyn Sarkisian La Piere
+Tim Maia;Sebastião Rodrigues Maia
+Patti Smith;Patricia Lee Smith
+Chubby Checker;Ernest Evans
+Harry Belafonte;Harold George Belafonte
+Erasmo Carlos;Erasmo Esteves
+Little Richard;Richard Wayne Penniman
+Shania Twain;Eileen Regina Edwards
+Gal Costa;Maria da Graça Costa Penna Burgos
+Rui Biriva;Rui da Silva Leonhardt
+Lulu Santos;Luis Maurício Progana dos Santos
+Ludacris;Christopher Brian Bridges
+Tom Jones;Thomas Jones Woodward
+Cazuza;Agenor de Miranda Araújo Neto
+Joey Ramone;Jeffery Hyman
+Frank Zappa;Frank Vincent Zappa
+Bruce Springsteen;Bruce Frederick Joseph Springsteen
+Roger McGuinn (Byrds);James Joseph McGuinn III
+Mick Jagger;Michael Phillip Jagger
+Rita Lee;Rita Lee Jones
+Arnaldo Antunes;Arnaldo Augusto Nora Antunes Filho
+B.B. King;Riley B. King
+Chitãozinho;José Lima Sobrinho
+Lady Gaga;Stefani Joanne Angelina Germanotta
+The Edge (U2);David Howell Evans
+Bjork;Bjork Gudmundsdottir
+David Bowie;David Robert Hayward Stenton Jones
+Joan Baez;Joan Chandos Baez
+Sting;Gordon Matthew Thomas Sumner
+Ringo Starr;Richard Starkey

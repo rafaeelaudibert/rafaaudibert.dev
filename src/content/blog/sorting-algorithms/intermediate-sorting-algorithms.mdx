@@ -32,16 +32,16 @@ It was used arrays varying from $$2^1$$ until $$2^{19}$$ (random generated numbe
 The code used for it can be seen below, followed by the chart showing the data (in the test with the 200 files, as said before).
 
 ```c title="sort2.c"
-int partition(int* C, int pi, int pf)
+int partition(int* C, int low, int high)
 {
-    int random = (rand() % (pf - pi)) + pi, p=pf, i=pi-1, j, temp;
+    int random = (rand() % (high - low)) + low, p=high, i=low-1, j, temp;
 
     // Random pivot to make it better sorting already sorted stuff
     temp = C[random];
-    C[random] = C[pf];
-    C[pf] = temp;
+    C[random] = C[high];
+    C[high] = temp;
 
-    for(j=pi; j<=pf-1; j++)
+    for(j=low; j<=high-1; j++)
     {
         if(C[j]<=C[p])
         {
@@ -59,15 +59,15 @@ int partition(int* C, int pi, int pf)
     return i;
 }
 
-void quickSort(int* C, long long int i, long long int f)
+void quickSort(int* C, long long int low, long long int high)
 {
     int p;
 
-    if (f>i)
+    if (high>low)
     {
-        p = partition(C, i, f);
-        quickSort(C, i, p-1);
-        quickSort(C, p+1, f);
+        p = partition(C, low, high);
+        quickSort(C, low, p-1);
+        quickSort(C, p+1, high);
     }
 
     return;
@@ -84,19 +84,18 @@ Let's move on to another sorting algorithm which almost everybody knows. It also
 The code used for it can be seen below, followed by the charts showing the data.
 
 ```c title="sort2.c"
-void merge(int *C, int* Aux, int i, int m, int f)
+void merge(int *C, int* Aux, int start, int mid, int end)
 {
-    int k, j;
+    int k, i = start, j = mid+1;
 
-    for(k=i; k<=f; k++)
+    for(k=start; k<=end; k++)
         Aux[k] = C[k];
 
-    j = m+1;
-    for(k=i; k<=f; k++)
+    for(k=start; k<=end; k++)
     {
-        if (i>m)
+        if (i>mid)
             C[k] = Aux[j++];
-        else if (j>f)
+        else if (j>end)
             C[k] = Aux[i++];
         else if (Aux[i] <= Aux[j])
             C[k] = Aux[i++];
@@ -107,18 +106,18 @@ void merge(int *C, int* Aux, int i, int m, int f)
     return;
 }
 
-void mergeSort(int *C, int* Aux, int i, int f)
+void mergeSort(int *C, int* Aux, int start, int end)
 {
-    int m;
+    int mid;
 
-    if(f>i)
+    if(end>start)
     {
-        // Metade entre o inicio e o fim
-        m = (i+f) / 2;
+        // Midpoint between the start and the end
+        mid = (start+end) / 2;
 
-        mergeSort(C, Aux, i, m);
-        mergeSort(C, Aux, m+1, f);
-        merge(C, Aux, i, m, f);
+        mergeSort(C, Aux, start, mid);
+        mergeSort(C, Aux, mid+1, end);
+        merge(C, Aux, start, mid, end);
     }
 
     return;
@@ -136,43 +135,43 @@ RadixSort should be, in theory, an incredibly fast algorithm to sort numbers. It
 Its basic idea is that it uses $$10$$ stacks, to put each number in a different one according to a specific digit of it (that's why it only works for specific kinds of data, like integers and strings). If you order the numbers going from the least significant digit to the most significant one, using a stack to maintain its stability, you have a really fast algorithm, which can be seen below, as well as a chart to see some information about it:
 
 ```c title="sort2.c"
-int digito(int valor, int posicao){
+int digitAt(int value, int position){
   int r;
 
-  r = valor % pow(10, posicao+1);
-  r = r / pow(10, posicao);
+  r = value % pow(10, position+1);
+  r = r / pow(10, position);
 
   return r;
 }
 
 int* radixSort(int* A, int size)
 {
-    int d, i, dj;
+    int d, i, digit;
     int *C = (int*) malloc(10*sizeof(int)),
         *B = (int*) malloc(size*sizeof(int));
 
     for(d=0; d<MAX_DIGITS; d++){
 
-      //Zera matriz contadora
+      // Reset the counting array
       for(i=0; i<10; i++)
         C[i] = 0;
 
-      // Conta numeros
+      // Count how many numbers have each digit
       for(i=0; i<size; i++)
-        C[digito(A[i], d)]++;
+        C[digitAt(A[i], d)]++;
 
-      //Usado para manter estabilidade
+      // Prefix sums, so equal digits keep their order (stability)
       for(i=1; i<10; i++)
         C[i] += C[i-1];
 
-      // Ordena array
+      // Place each number in its sorted position
       for(i=size-1; i>=0; i--){
-        dj = digito(A[i], d);
-        B[C[dj] - 1] = A[i];
-        C[dj]--;
+        digit = digitAt(A[i], d);
+        B[C[digit] - 1] = A[i];
+        C[digit]--;
       }
 
-      // Transfere da array auxiliar
+      // Copy back from the auxiliary array
       for(i=0; i<size; i++)
         A[i] = B[i];
     }
@@ -213,13 +212,13 @@ All the implementations can be seen in the codes below (QuickSort will be omitte
 ```c title="sort2.c"
 void mergeSortedArrays(int** input, int* output, int p, int N)
 {
-    int i, k, menor, index=-1;
+    int i, k, smallest, index=-1;
     for(i=0; i<N; i++){
-      menor = topFromArray(input, 0);
+      smallest = topFromArray(input, 0);
       index = 0;
       for(k=1; k<p; k++){
-        if (topFromArray(input, k) < menor){
-          menor = topFromArray(input, k);
+        if (topFromArray(input, k) < smallest){
+          smallest = topFromArray(input, k);
           index = k;
         }
       }
@@ -232,14 +231,14 @@ void mergeSortedArrays(int** input, int* output, int p, int N)
 
 ```c title="sort2.c"
 void heapify(int* heap, int** input, int p, int i){
-  int e, d, menor;
+  int left, right, smallest;
 
   while(i < p-1){
-    e = 2*i + 1;
-    d = 2*i + 2;
-    menor = heap[e] <= heap[d] ? e : d;
-    heap[i] = heap[menor];
-    i = menor;
+    left = 2*i + 1;
+    right = 2*i + 2;
+    smallest = heap[left] <= heap[right] ? left : right;
+    heap[i] = heap[smallest];
+    i = smallest;
   }
 
   heap[i] = popFromArray(input, i-p+1);
@@ -249,7 +248,7 @@ void heapify(int* heap, int** input, int p, int i){
 
 int* buildHeap(int* heap, int** input, int p, int heapSize){
 
-  //Heapify it, pulling stuff from the files
+  // Heapify it, pulling stuff from the files
   for(int i=heapSize-1; i>=0; i--)
     heapify(heap, input, p, i);
 
@@ -258,12 +257,12 @@ int* buildHeap(int* heap, int** input, int p, int heapSize){
 
 int popFromSelectionTree(int* tree, int size, int** input, int p)
 {
-    int r = tree[0], i = 0, menor;
+    int r = tree[0], i = 0, smallest;
 
     while(i < p-1){
-      menor = tree[2*i + 1] <= tree[2*i + 2] ? 2*i + 1 : 2*i + 2;
-      tree[i] = tree[menor];
-      i = menor;
+      smallest = tree[2*i + 1] <= tree[2*i + 2] ? 2*i + 1 : 2*i + 2;
+      tree[i] = tree[smallest];
+      i = smallest;
     }
 
     tree[i] = popFromArray(input, i-p+1);
@@ -293,4 +292,4 @@ These algorithms were also "translated" to JavaScript, which you can play with i
 
 <SortingTable extended client:load />
 
-> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](http://ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some order of magnitudes faster than this one up here) on [this repository tag](https://github.com/rafaeelaudibert/LaboratoriosCPD.js/tree/nodeJS) on my Github.
+> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](https://www.ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some order of magnitudes faster than this one up here) on [this repository tag](https://github.com/rafaeelaudibert/CPDClassReports.js/tree/nodeJS) on my Github.

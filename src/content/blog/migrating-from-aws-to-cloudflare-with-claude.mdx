@@ -62,7 +62,6 @@ whose keys sat in GitHub Actions secrets, which means six repositories each held
 credentials that could do anything at all to the account.
 
 This would be solved either way because that account would be going away, but damn, was I lazy huh.
-Worth checking your o
 
 ## A bug that had been lying for six years
 
@@ -162,7 +161,7 @@ So the cap is 25,000 now.
 | Lambda + API Gateway | one Worker route on the same domain |
 | Route 53 | Cloudflare DNS |
 | ACM | [Universal SSL](https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/) |
-| Zoho Mail | [Email Routing](https://developers.cloudflare.com/email-routing/) |
+| Zoho Mail | [Email Routing](https://developers.cloudflare.com/email-service/) |
 | GitHub Actions + AWS keys | [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) |
 
 The AWS account is empty. Zero buckets, zero distributions, zero functions, zero tables,
@@ -170,7 +169,7 @@ zero zones, zero roles.
 
 One row in that table wasn't part of the plan. I'd been on Zoho for mail and never liked
 it, and since the DNS was already moving I figured I'd look at what Cloudflare had.
-[Email Routing](https://developers.cloudflare.com/email-routing/) is free, took about two
+[Email Routing](https://developers.cloudflare.com/email-service/) is free, took about two
 minutes, and gives you a catch-all: anything `@rafaaudibert.dev` now lands in my normal
 inbox, so I can hand out a throwaway address per service and see who leaks it. Genuinely
 one of the nicer things I've set up this year, and I only found it because I happened to

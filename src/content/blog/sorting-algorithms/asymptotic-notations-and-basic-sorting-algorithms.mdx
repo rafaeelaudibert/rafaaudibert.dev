@@ -191,34 +191,34 @@ Again, arrays size varying from $$2^1$$ until $$2^{18}$$ to generate the data be
 The code used for it, as well as the code used in the binary search, can be seen below, followed by the charts showing the data.
 
 ```c title="sort1.c"
-int binarySearch(int* data, int inf, int sup, int key)
+int binarySearch(int* data, int low, int high, int key)
 {
-    int half = inf + ((sup-inf)/2);
+    int mid = low + ((high-low)/2);
 
-    if (inf == sup) return inf;
-    else if (key > data[half]) return binarySearch(data, half+1, sup, key);
-    else if (key < data[half]) return binarySearch(data, inf, half, key);
-    else return half;
+    if (low == high) return low;
+    else if (key > data[mid]) return binarySearch(data, mid+1, high, key);
+    else if (key < data[mid]) return binarySearch(data, low, mid, key);
+    else return mid;
 }
 
 long long int binaryInsertionSort(int *C, int n)
 {
     long long int changes = 0;
-    int i, j, key, posicao;
+    int i, key, position;
 
     for(int j=1; j<n; j++)
     {
         key = C[j];
         i = j-1;
-        posicao = binarySearch(C, 0, j, key);
-        while(i>=posicao)
+        position = binarySearch(C, 0, j, key);
+        while(i>=position)
         {
             C[i+1] = C[i];
             i--;
             changes++;
         }
 
-        C[posicao] = key;
+        C[position] = key;
     }
 
     return changes;
@@ -245,12 +245,12 @@ This time, arrays size will vary from $$2^1$$ until $$2^{28}$$ to generate the d
 The code used for it can be seen below, followed by the charts for each sequence and input order. The gap sequence generation will be omitted for sake of brevity.
 
 ```c title="sort1.c"
-long long int insertionShellSort(int *C, int n, int h, int f)
+long long int insertionShellSort(int *C, int n, int h, int offset)
 {
     long long int changes = 0;
-    int i, j, key;
+    int i, key;
 
-    for(int j=f+h; j<n; j+=h)
+    for(int j=offset+h; j<n; j+=h)
     {
         key = C[j];
         i = j-h;
@@ -272,14 +272,14 @@ long long int shellSort(int *C, int n, int typeSequence)
     int* sequence = generateGapSequence(n,typeSequence,&numElems);
 
     long long int changes = 0;
-    int i, h, f;
+    int i, h, offset;
 
     for(i=numElems-1; i>=0; i--)
     {
         h = sequence[i];
-        for(f=0; f<h; f++)
+        for(offset=0; offset<h; offset++)
         {
-            changes += insertionShellSort(C,n,h,f);
+            changes += insertionShellSort(C,n,h,offset);
         }
     }
 
@@ -309,4 +309,4 @@ These algorithms were also "translated" to JavaScript, which you can play with i
 
 <SortingTable client:load />
 
-> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](http://ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some order of magnitude faster than this one up here) on [this repo](https://github.com/rafaeelaudibert/LaboratoriosCPD.js/tree/nodeJS) on my Github.
+> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](https://www.ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some order of magnitude faster than this one up here) on [this repo](https://github.com/rafaeelaudibert/CPDClassReports.js/tree/nodeJS) on my Github.

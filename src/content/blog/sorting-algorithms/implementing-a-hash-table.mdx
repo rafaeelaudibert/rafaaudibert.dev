@@ -8,6 +8,7 @@ img_alt: Hacker-like background with green flaky pixels with some HTML and JS co
 tags: [Asymptotic, JavaScript, Hash Table]
 ---
 import HashTable from './hashTable.tsx'
+import { HashCollisionsChart } from './charts.tsx'
 
 This is the third and last article on which we will talk about Sorting Algorithms with tons of charts. In this one, we will actually not speak about a sorting algorithm, I am sorry, but about hashing algorithms which will allow us to build a Hash Table (think about a `dictionary` on Python). This kind of algorithms allows us to retrieve some data with an alphanumeric key, instead of a numeric key, as we would do with an array. You will be able to experiment it in the bottom of the page, adding information to the hash, and seeing if it is available or not with an incredible $$\Theta(1)$$ time complexity.
 
@@ -43,10 +44,9 @@ computeHashExtra(key) {
 
 ### Comparing the hash functions
 
-Three types of hashing algorithms will be used, divided into two categories: Open and Closed Hashing. Talking about Open Hashing we will have the Linear Search algorithm, which tries to verify the next position of the Hash Table if the actual is already filled, and the Rehashing Algorithm, which has an increment calculated through another hashing function, trying to minimize the conflicts. The closed hashing algorithm used is the Listing Algorithm, which creates a list in each of the possible hashed key values instead of trying to find another place to insert it. In the chart below we can see the comparison between the three. They were tested against this name database when inserting, and these names when searching, varying the table size, and the data shown is the number of collisions during insertion.
+Three types of hashing algorithms will be used, divided into two categories: Open and Closed Hashing. Talking about Open Hashing we will have the Linear Search algorithm, which tries to verify the next position of the Hash Table if the actual is already filled, and the Rehashing Algorithm, which has an increment calculated through another hashing function, trying to minimize the conflicts. The closed hashing algorithm used is the Listing Algorithm, which creates a list in each of the possible hashed key values instead of trying to find another place to insert it. In the chart below we can see the comparison between the three. They were tested against [this name database](/assets/hash/names.txt) when inserting, and [these names](/assets/hash/queries.txt) when searching, varying the table size. The chart shows the number of collisions, split into those during insertion and those during search.
 
-{/* This used to be a chart but I couldn't make it work using MUI X Charts, so it's a static image now */}
-![Hash Analysis](./assets/hash-analysis.png)
+<HashCollisionsChart client:only="react" />
 
 ## Playground
 
@@ -54,4 +54,4 @@ This time we only made JavaScript code, as it would be kinda hard to deal with s
 
 <HashTable client:only="react" />
 
-> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](http://ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some orders of magnitude faster than this one up here) on [this repository tag](https://github.com/rafaeelaudibert/LaboratoriosCPD.js/tree/nodeJS) on my Github.
+> This article was first written as a report for the Data Search & Classification 📊 Subject at the CS Bsc. course at [UFRGS](https://www.ufrgs.br), and adapted to this blog post. You can find the original post with the API running on a Node.JS backend (some orders of magnitude faster than this one up here) on [this repository tag](https://github.com/rafaeelaudibert/CPDClassReports.js/tree/nodeJS) on my Github.

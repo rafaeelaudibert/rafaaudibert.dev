@@ -148,7 +148,7 @@ Just to help you further, we can calculate the angle between two points $$A$$ an
 
 ### Day Twelve
 
-On day 12, [**The N-Body Problem**](https://adventofcode.com/2019/day/12), we are introduced to the `forEach` method. It is basically a replacement for a `for (var x in y) { doSomething(x); doOtherThing(x); }`. With a `forEach` we would write `y.forEach((x) { doSomething(x); doOtherThing(x); }`. It is actually [non-idiomatic](https://dart.dev/guides/language/effective-dart) to use a `forEach` in this case, but my functionally curious heart likes using it, sorry.
+On day 12, [**The N-Body Problem**](https://adventofcode.com/2019/day/12), we are introduced to the `forEach` method. It is basically a replacement for a `for (var x in y) { doSomething(x); doOtherThing(x); }`. With a `forEach` we would write `y.forEach((x) { doSomething(x); doOtherThing(x); }`. It is actually [non-idiomatic](https://dart.dev/effective-dart) to use a `forEach` in this case, but my functionally curious heart likes using it, sorry.
 
 **Part two** also brings some interesting math theory to the board. On this day we are basically making a really rough gravitational simulation, and we are asked when will all the planets return to their start position for the first time. We can't simulate it, because, for my input, it occurs after $$572087463375796$$ steps, which would take **LITERALLY ALMOST 4 YEARS** on my computer (it takes 2,1s for 10 million iterations). To make it faster we only need to see how many iterations it take to repeat on the $$x$$-axis, $$y$$-axis and $$z$$-axis and compute their LCM. This way we only iterate something like 200k iterations until they repeat on each of the axis. Below we have the `LCM` function implementation in Dart:
 

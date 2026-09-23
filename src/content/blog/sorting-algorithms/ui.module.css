@@ -135,11 +135,57 @@
   .sortForm {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   }
+}
 
-  .hashForm {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
-  }
+/* Hash table key/value rows */
+
+.pairs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(5rem, 28%, 8rem) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pairs.keysOnly {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.pairs > .label {
+  margin-bottom: -0.125rem;
+}
+
+.numeric {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: transparent;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--gray-400);
+  cursor: pointer;
+  transition:
+    color var(--theme-transition),
+    border-color var(--theme-transition);
+}
+
+.remove:hover {
+  border-color: var(--gray-700);
+  color: var(--gray-0);
+}
+
+.remove:focus-visible {
+  outline: 2px solid var(--accent-regular);
+  outline-offset: 2px;
 }
 
 .label {
@@ -235,6 +281,28 @@ select.input {
 .secondary:hover:not(:disabled) {
   border-color: var(--gray-500);
   color: var(--gray-0);
+}
+
+.ghost {
+  margin-left: auto;
+  padding: 0.5625rem 0.5rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  color: var(--link-color);
+  cursor: pointer;
+}
+
+.ghost:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.ghost:focus-visible {
+  outline: 2px solid var(--accent-regular);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
 }
 
 .primary:disabled,

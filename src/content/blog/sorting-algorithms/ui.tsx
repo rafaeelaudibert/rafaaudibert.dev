@@ -38,6 +38,8 @@ const PALETTES = {
     // Bounds in the complexity charts: lower, function, upper
     bounds: ["#3b6fd8", "#7611a6", "#d98a00"],
     series: ["#7611a6", "#3b6fd8", "#0f9d8a", "#d98a00", "#d6456b", "#5b6478"],
+    // Lighter partners for series[0..2], for the top half of stacked bars
+    tints: ["#cfa3e3", "#a9c0ef", "#93d6cc"],
   },
   dark: {
     text: "#c3cadb",
@@ -48,6 +50,7 @@ const PALETTES = {
     bar: "#34497d",
     bounds: ["#7aa2ff", "#c561f6", "#f5b83d"],
     series: ["#c561f6", "#7aa2ff", "#3cc9b3", "#f5b83d", "#f0708f", "#a3acc8"],
+    tints: ["#6e3a8a", "#3b5288", "#1f6d62"],
   },
 } as const
 
