@@ -45,7 +45,8 @@ export default defineConfig({
   // Fonts are downloaded at build time and served from this domain, with
   // metric-matched fallbacks to avoid layout shift while they load.
   // Roles: Rubik for headings, Literata for prose, Public Sans for interface
-  // text, IBM Plex Mono for metadata and code. See AGENTS.md.
+  // text, IBM Plex Mono for metadata and code. The OG images (src/utils/og.ts)
+  // load the same families from @fontsource. See AGENTS.md, "Typography".
   fonts: [
     {
       provider: fontProviders.google(),
@@ -109,26 +110,8 @@ export default defineConfig({
   integrations: [
     // Code blocks: syntax highlighting, frames, titles and copy buttons.
     // Must come before mdx() so it also handles code blocks inside MDX.
-    expressiveCode({
-      themes: ["catppuccin-latte", "catppuccin-mocha"],
-      // The site toggles dark mode with a class on <html>, not the media query
-      themeCssSelector: (theme) =>
-        theme.type === "dark" ? ".theme-dark" : ":root:not(.theme-dark)",
-      useDarkModeMediaQuery: false,
-      styleOverrides: {
-        borderRadius: "0.625rem",
-        borderColor: "var(--gray-800)",
-        codeFontFamily: "var(--font-mono)",
-        codeFontSize: "0.8125rem",
-        codeLineHeight: "1.65",
-        uiFontFamily: "var(--font-body)",
-        uiFontSize: "0.8125rem",
-        frames: {
-          shadowColor: "transparent",
-          editorActiveTabIndicatorTopColor: "var(--accent-regular)",
-        },
-      },
-    }),
+    // Options are in ec.config.mjs so the <Code> component can read them too.
+    expressiveCode(),
 
     // React and MDX for content
     react(),
