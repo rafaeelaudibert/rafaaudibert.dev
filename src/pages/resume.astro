@@ -126,8 +126,11 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
           {
             LANGUAGES.map((language) => (
               <li>
-                <span class="language">
-                  <span class="flag" aria-hidden="true">{language.flag}</span> {language.language}
+                <span class="language-row">
+                  <span class="language">
+                    <span class="flag" aria-hidden="true">{language.flag}</span> {language.language}
+                  </span>
+                  <abbr class="cefr text-meta" title="CEFR level">{language.cefr}</abbr>
                 </span>
                 <span class="level text-meta">{language.level}</span>
               </li>
@@ -490,6 +493,22 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     margin-right: 0.125rem;
   }
 
+  .language-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .cefr {
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-xs);
+    color: var(--gray-100);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
   /* Technologies */
   .help-text {
     margin-bottom: 1.25rem;
@@ -808,6 +827,20 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
     .languages li:not(:last-child)::after {
       content: " · ";
+    }
+
+    .language-row {
+      display: inline;
+    }
+
+    .cefr {
+      padding: 0;
+      border: 0;
+      color: #444;
+    }
+
+    .cefr::before {
+      content: " ";
     }
 
     .level::before {
