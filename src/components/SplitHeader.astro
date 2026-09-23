@@ -1,0 +1,64 @@
+---
+/**
+ * The header the travel and changelog pages open with: eyebrow, title and
+ * dek on the left, a large photo on the right, stacked on narrow screens.
+ * The default slot goes under the dek (a meta line); `media` is the photo.
+ */
+interface Props {
+  title: string
+  eyebrow?: string
+  dek?: string
+}
+
+const { title, eyebrow, dek } = Astro.props
+---
+
+<header class="split-header">
+  <div class="intro">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="title">{title}</h1>
+    {dek && <p class="text-dek">{dek}</p>}
+    <slot />
+  </div>
+  <div class="media">
+    <slot name="media" />
+  </div>
+</header>
+
+<style>
+  .split-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 1rem;
+  }
+
+  .intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .title {
+    color: var(--gray-0);
+  }
+
+  .media :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 50em) {
+    .split-header {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: center;
+      gap: 3rem;
+      padding-top: 2rem;
+    }
+  }
+</style>

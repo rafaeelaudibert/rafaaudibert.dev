@@ -6,6 +6,7 @@ import changelogImage from "../assets/changelog.jpg"
 
 import { Image } from "astro:assets"
 import Link from "../components/Link.astro"
+import SplitHeader from "../components/SplitHeader.astro"
 import ChangelogEntry from "../components/changelog/ChangelogEntry.astro"
 import ChangelogYear from "../components/changelog/ChangelogYear.astro"
 import ChangelogGallery from "../components/changelog/ChangelogGallery"
@@ -21,26 +22,21 @@ import {
 >
   <div class="stack gap-20 mb-4">
     <main class="wrapper changelog">
-      <header class="changelog-header">
-        <div class="changelog-intro">
-          <p class="eyebrow">Changelog</p>
-          <h1 class="changelog-title">What's going on in my life</h1>
-          <p class="text-dek">A timeline, newest first.</p>
-          {/* Written at build time, so it changes on deploy only */}
-          <p class="text-meta">
-            Last updated {
-              new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-            }
-          </p>
-        </div>
+      <SplitHeader eyebrow="Changelog" title="What's going on in my life" dek="A timeline, newest first.">
+        {/* Written at build time, so it changes on deploy only */}
+        <p class="text-meta">
+          Last updated {
+            new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+          }
+        </p>
         <Image
+          slot="media"
           src={changelogImage}
           alt="Rafa Audibert and his wife at the top of the Montreal Ferris Wheel looking at the marina and the bridge behind it"
-          class="hero-image"
           widths={[480, 800, 1200]}
           sizes="(min-width: 50em) 40vw, 100vw"
         />
-      </header>
+      </SplitHeader>
 
       <!-- =========== 2026 =========== -->
       <ChangelogYear year={2026}>
@@ -428,44 +424,7 @@ import {
     gap: 3rem;
   }
 
-  /* Header: text beside a large photo, like the home page */
-  .changelog-header {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    padding-top: 1rem;
-  }
-
-  .changelog-intro {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .changelog-title {
-    color: var(--gray-0);
-  }
-
-  .changelog-intro .text-meta {
+  .text-meta {
     margin-top: 0.5rem;
-  }
-
-  .hero-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-  }
-
-  @media (min-width: 50em) {
-    .changelog-header {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      align-items: center;
-      gap: 3rem;
-      padding-top: 2rem;
-    }
   }
 </style>

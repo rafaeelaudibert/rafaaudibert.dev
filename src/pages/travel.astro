@@ -2,6 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 import TravelGlobe from "../components/TravelGlobe"
 import TravelGallery from "../components/TravelGallery"
+import { Image } from "astro:assets"
+import SplitHeader from "../components/SplitHeader.astro"
+import travelHero from "../assets/travel-hero.jpg"
 import {
   COUNTRY_CODE_TO_LONG_NAME,
   COUNTRIES_GEOMETRY,
@@ -92,10 +95,17 @@ const arcs = FLIGHTS.map((f) => ({
 >
   <div class="stack gap-20 mb-4">
     <main class="wrapper travel">
-      <header class="travel-header">
-        <p class="eyebrow">Travel</p>
-        <h1 class="travel-title">My Travel Journey</h1>
-        <p class="text-dek">Exploring the world, one flight at a time.</p>
+      <div class="travel-header">
+        <SplitHeader eyebrow="Travel" title="My Travel Journey" dek="Exploring the world, one flight at a time.">
+          <Image
+            slot="media"
+            src={travelHero}
+            alt="An aeroplane wing over a sea of clouds, with the ocean far below"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 50em) 40vw, 100vw"
+            loading="eager"
+          />
+        </SplitHeader>
 
         <ul class="stat-strip">
           <li class="stat">
@@ -115,7 +125,7 @@ const arcs = FLIGHTS.map((f) => ({
             <span class="stat-label eyebrow">Flights</span>
           </li>
         </ul>
-      </header>
+      </div>
 
       <TravelGlobe
         client:visible
@@ -247,23 +257,17 @@ const arcs = FLIGHTS.map((f) => ({
     gap: 3rem;
   }
 
-  /* Header: type over the gradient, then the numbers as a strip */
+  /* Header: the shared split header, then the numbers as a strip */
   .travel-header {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding-top: 1rem;
-  }
-
-  .travel-title {
-    color: var(--gray-0);
   }
 
   .stat-strip {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem 2rem;
-    margin: 1.75rem 0 0;
+    margin: 2.5rem 0 0;
     padding: 1.5rem 0 0;
     border-top: 1px solid var(--gray-800);
     list-style: none;
@@ -429,10 +433,6 @@ const arcs = FLIGHTS.map((f) => ({
   }
 
   @media (min-width: 50em) {
-    .travel-header {
-      padding-top: 2rem;
-    }
-
     .stat-strip {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 2rem;
