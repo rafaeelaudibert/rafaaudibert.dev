@@ -104,6 +104,7 @@
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
+  --radius-pill: 999rem; /* the nav bar and its controls stay fully round */
 
   /* Height of the sticky nav, so anchors and sticky rails clear it */
   --nav-height: 4.25rem;
