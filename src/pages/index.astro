@@ -41,18 +41,6 @@ const FACTS = [
             own, shipped Core Web Vitals for Web Analytics, and now lead the
             Growth team. When I'm not at the keyboard I'm usually at an airport.
           </p>
-          <div class="hero-actions">
-            <Link
-              class="action action-primary"
-              href="/resume/"
-              external={false}
-            >
-              Read my resume <Icon icon="arrow-right" size="1em" />
-            </Link>
-            <Link class="action" href="/blog/" external={false}
-              >Read the blog</Link
-            >
-          </div>
         </div>
 
         <Image
@@ -255,52 +243,6 @@ const FACTS = [
     max-width: 44em;
   }
 
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .action {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.625rem 1rem;
-    border: 1px solid var(--gray-800);
-    border-radius: var(--radius-sm);
-    background-color: var(--gray-999);
-    color: var(--gray-100);
-    font-family: var(--font-body);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    line-height: 1.2;
-    text-decoration: none;
-    transition:
-      background-color var(--theme-transition),
-      border-color var(--theme-transition),
-      color var(--theme-transition);
-  }
-
-  .action:hover,
-  .action:focus-visible {
-    border-color: var(--accent-regular);
-    color: var(--gray-0);
-  }
-
-  .action-primary {
-    border-color: var(--accent-regular);
-    background-color: var(--accent-regular);
-    color: var(--accent-text-over);
-  }
-
-  .action-primary:hover,
-  .action-primary:focus-visible {
-    background-color: var(--accent-dark);
-    border-color: var(--accent-dark);
-    color: var(--accent-text-over);
-  }
-
   /* On phones the portrait is a short landscape crop centred on the face;
      the desktop column shows it upright and top-anchored */
   .hero img {
@@ -458,9 +400,13 @@ const FACTS = [
       padding-top: 2rem;
     }
 
+    /* A square, capped portrait: at 900px tall the Work section still
+       starts above the fold */
     .hero img {
-      aspect-ratio: 4 / 5;
-      object-position: top;
+      max-width: 26rem;
+      justify-self: end;
+      aspect-ratio: 1;
+      object-position: 50% 38%;
     }
 
     .section-label {
@@ -488,7 +434,6 @@ const FACTS = [
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .action,
     .work-link,
     .section-more,
     .beyond-text a {
