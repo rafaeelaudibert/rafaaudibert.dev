@@ -238,7 +238,6 @@ const FACTS = [
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    padding-top: 1rem;
   }
 
   .hero-intro {
@@ -302,12 +301,14 @@ const FACTS = [
     color: var(--accent-text-over);
   }
 
+  /* On phones the portrait is a short landscape crop centred on the face;
+     the desktop column shows it upright and top-anchored */
   .hero img {
     width: 100%;
     height: auto;
-    aspect-ratio: 5 / 4;
+    aspect-ratio: 3 / 2;
     object-fit: cover;
-    object-position: top;
+    object-position: 50% 40%;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     cursor: pointer;
@@ -459,6 +460,7 @@ const FACTS = [
 
     .hero img {
       aspect-ratio: 4 / 5;
+      object-position: top;
     }
 
     .section-label {
