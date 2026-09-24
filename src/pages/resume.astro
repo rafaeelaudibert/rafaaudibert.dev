@@ -67,7 +67,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         <ol class="content jobs">
           {
             PAST_EXPERIENCES.map((experience) => (
-              <li class="job" data-company={experience.company}>
+              <li class:list={["job", { "no-print": experience.print === false }]}>
                 <div class="job-header">
                   <span class="logo">
                     <Image
@@ -560,9 +560,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     :global(nav),
     :global(footer),
     :global(aside),
-    .help-text,
-    /* The printed resume stops at the last three roles */
-    .job[data-company="FEENG/UFRGS"] {
+    .help-text {
       display: none !important;
     }
 

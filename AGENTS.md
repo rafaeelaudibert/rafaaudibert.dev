@@ -109,7 +109,11 @@ Common ARIA patterns used in this codebase:
 | `aria-current="page"` | Current page in navigation                      |
 | `aria-live`           | Dynamic content regions                         |
 
-### 9. Screen Reader Text
+### 9. Print
+
+- `.no-print` (global) hides an element when printing. The resume marks experiences with `print: false` in `src/data/resume.ts` and applies the class, so the printed resume stays at two pages without the stylesheet knowing any company names.
+
+### 10. Screen Reader Text
 
 Use the `.sr-only` utility class for screen-reader-only text:
 

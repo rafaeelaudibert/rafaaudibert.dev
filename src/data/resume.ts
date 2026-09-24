@@ -14,6 +14,8 @@ export const getBackgroundContent = () => [
   "I build end to end: data models and APIs in <b>Rails</b>, <b>Django</b> and <b>Phoenix</b>, interfaces in <b>TypeScript + React</b>, and the infrastructure underneath on AWS and Cloudflare. I care most about shipping things people actually use, and measuring whether they do.",
 ]
 
+// `print: false` keeps an entry on the web page but off the printed resume,
+// which has to fit two pages.
 export const PAST_EXPERIENCES = [
   {
     company: "PostHog",
@@ -58,6 +60,7 @@ export const PAST_EXPERIENCES = [
     role: "Software Engineer",
     startDate: "Mar 2017",
     endDate: "Nov 2019",
+    print: false,
     bulletPoints: [
       "Led the initial MVP for the Brazilian government in a 3-month timeframe with a team of 3 junior engineers, and got the project greenlit by it.",
       "Built a <strong>fully-dockerized Ruby on Rails MVC</strong> application for the Brazilian public health system UBSs (small health clinics spread through Brazilian neighborhoods).",

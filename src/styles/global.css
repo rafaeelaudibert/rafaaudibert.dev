@@ -356,6 +356,13 @@ pre {
   }
 }
 
+/* Anything a page wants on screen but not on paper */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
 /* Definition Lists */
 dl {
   display: flex;
