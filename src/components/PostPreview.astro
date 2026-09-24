@@ -67,7 +67,8 @@ if (!images[pathFor(data.img)])
     gap: 0.25rem;
     margin: 0.5rem;
     padding: 0.625rem 1rem;
-    background: var(--gray-999);
+    /* Slightly translucent so the cover shows through the label */
+    background: color-mix(in srgb, var(--gray-999) 92%, transparent);
     border-radius: var(--radius-sm);
   }
 
