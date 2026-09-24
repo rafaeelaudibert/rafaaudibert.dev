@@ -9,7 +9,9 @@ import portrait from "../assets/portrait.jpg"
 import { site } from "../data/site"
 import { PAST_EXPERIENCES, yearsOfExperience } from "../data/resume"
 import { FLIGHTS, getVisitedCountries } from "../data/travel"
-import { MCP_PRS, MERGED_PRS, POSTHOG_REPO, SELECTED_PRS, prUrl } from "../data/work"
+import { MERGED_PRS, POSTHOG_REPO, PRS, prUrl } from "../data/work"
+
+const pr = (key: keyof typeof PRS) => prUrl(PRS[key])
 
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
@@ -78,19 +80,16 @@ const FACTS = [
           <li class="work-card">
             <p class="eyebrow">In the open</p>
             <h3 class="work-title">{MERGED_PRS.count} pull requests to posthog/posthog</h3>
-            <ul class="pr-list">
-              {
-                SELECTED_PRS.map((pr) => (
-                  <li>
-                    <a class="pr" href={prUrl(pr.number)} target="_blank" rel="noopener noreferrer">
-                      <span class="pr-number">#{pr.number}</span>
-                      <span>{pr.label}</span>
-                      <span class="sr-only">(opens in new tab)</span>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
+            <p class="work-text text-reading">
+              Two years of it, all public. I built <a href={pr("webVitals")}>the Core Web Vitals view</a> in my
+              first months and the query runner behind <a href={pr("churn")}>new, expansion, contraction and
+              churn revenue</a> for Revenue Analytics. On Growth I shipped <a href={pr("sidebar")}>a sidebar people
+              can shape</a>, <a href={pr("campaigns")}>organisation-level product push campaigns</a> and{" "}
+              <a href={pr("emptyStates")}>a first-run screen for every product</a>. Lately it has been auth: PostHog
+              as <a href={pr("oidc")}>an OpenID Connect provider</a>, <a href={pr("partners")}>partners
+              authenticating as OAuth clients</a>, and <a href={pr("reauth")}>re-authentication that only asks
+              when a write needs it</a>. Also <a href={pr("toolbar")}>a toolbar that loads in a kilobyte</a>.
+            </p>
             <a
               class="work-link"
               href={`${POSTHOG_REPO}/pulls?q=is%3Apr+is%3Amerged+author%3Arafaeelaudibert`}
@@ -106,23 +105,11 @@ const FACTS = [
             <p class="eyebrow">MCP</p>
             <h3 class="work-title">Model Context Protocol, at work and at home</h3>
             <p class="work-text text-reading">
-              At PostHog: apps that render inside MCP clients, hints in the app that show how to do the same
-              through your agent, and health checks as tools. Here: this site runs its own MCP server, so you can
-              point Claude or Cursor at it and ask about me.
+              At PostHog I built <a href={pr("mcpApps")}>apps that render inside MCP clients</a>, <a
+                href={pr("mcpHints")}>hints in the app</a> that show how to do what you just did through your
+              agent, and exposed <a href={pr("mcpHealth")}>every health check as a tool</a>. Here, this site runs
+              its own MCP server, so you can point Claude or Cursor at it and ask about me.
             </p>
-            <ul class="pr-list">
-              {
-                MCP_PRS.map((pr) => (
-                  <li>
-                    <a class="pr" href={prUrl(pr.number)} target="_blank" rel="noopener noreferrer">
-                      <span class="pr-number">#{pr.number}</span>
-                      <span>{pr.label}</span>
-                      <span class="sr-only">(opens in new tab)</span>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
             <a class="work-link" href="/mcp/">This site's MCP server <Icon icon="arrow-right" size="0.9em" /></a>
           </li>
 
@@ -320,41 +307,16 @@ const FACTS = [
     margin-top: auto;
   }
 
-  .pr-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.375rem;
-    margin: 0.25rem 0 0.75rem;
-    padding: 0;
-    list-style: none;
+  .work-text a {
+    color: var(--link-color);
+    text-decoration: 1px solid underline transparent;
+    text-underline-offset: 0.25em;
+    transition: text-decoration-color var(--theme-transition);
   }
 
-  .pr {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5em;
-    padding: 0.3rem 0.5rem;
-    border: 1px solid var(--gray-800);
-    border-radius: var(--radius-sm);
-    background-color: var(--gray-999_40);
-    font-size: 0.8125rem;
-    color: var(--gray-100);
-    text-decoration: none;
-    transition:
-      border-color var(--theme-transition),
-      color var(--theme-transition);
-  }
-
-  .pr:hover,
-  .pr:focus-visible {
-    border-color: var(--accent-regular);
-    color: var(--gray-0);
-  }
-
-  .pr-number {
-    flex-shrink: 0;
-    font-family: var(--font-mono);
-    color: var(--gray-400);
+  .work-text a:hover,
+  .work-text a:focus-visible {
+    text-decoration-color: currentColor;
   }
 
   .work-link,
@@ -496,7 +458,7 @@ const FACTS = [
 
   @media (prefers-reduced-motion: reduce) {
     .action,
-    .pr,
+    .work-text a,
     .work-link,
     .section-more,
     .beyond-text a {
