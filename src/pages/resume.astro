@@ -30,7 +30,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
   <div class="stack gap-20 mb-4">
     <main class="wrapper resume">
       <PageHeader eyebrow="Resume" title={site.fullName} dek="Senior Product Engineer">
-        <Image slot="media" src={work} alt="Rafael Audibert at his desk" class="profile-image" />
+        <Image slot="media" src={work} alt="Rafael Audibert at his desk" class="profile-image" width={240} height={300} densities={[1, 2]} />
 
         <ul class="facts text-meta">
           <li>{site.location}</li>
@@ -67,16 +67,18 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
         <ol class="content jobs">
           {
             PAST_EXPERIENCES.map((experience) => (
-              <li class="job">
+              <li class="job" data-company={experience.company}>
                 <div class="job-header">
                   <span class="logo">
                     <Image
                       src={COMPANY_LOGOS[experience.company]}
                       alt=""
+                      width={48}
+                      height={48}
                       class:list={{ "logo-light": COMPANY_LOGOS_DARK[experience.company] }}
                     />
                     {COMPANY_LOGOS_DARK[experience.company] && (
-                      <Image src={COMPANY_LOGOS_DARK[experience.company]!} alt="" class="logo-dark" />
+                      <Image src={COMPANY_LOGOS_DARK[experience.company]!} alt="" width={48} height={48} class="logo-dark" />
                     )}
                   </span>
                   <div class="job-heading">
@@ -558,15 +560,17 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     :global(nav),
     :global(footer),
     :global(aside),
-    .help-text {
+    .help-text,
+    /* The printed resume stops at the last three roles */
+    .job[data-company="FEENG/UFRGS"] {
       display: none !important;
     }
 
     :global(body) {
       background: white !important;
       color: #1a1a1a !important;
-      font-size: 11pt;
-      line-height: 1.4;
+      font-size: 10pt;
+      line-height: 1.35;
     }
 
     :global(.backgrounds) {
@@ -581,12 +585,12 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
     .wrapper {
       max-width: none !important;
-      padding: 0.5in !important;
+      padding: 0.45in 0.55in !important;
       margin: 0 !important;
     }
 
     .resume {
-      gap: 1rem;
+      gap: 0.5rem;
     }
 
     .profile-image {
@@ -609,7 +613,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
     section {
       display: block;
-      padding-top: 0.75rem;
+      padding-top: 0.5rem;
       border-top: 0;
       color: #1a1a1a;
       page-break-inside: avoid;
@@ -617,17 +621,21 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
     .section-title {
       position: static;
-      font-size: 13pt;
+      font-size: 12pt;
       color: #1a1a1a;
       border-bottom: 1pt solid #1a1a1a;
       padding-bottom: 2pt;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.375rem;
       page-break-after: avoid;
     }
 
     .content {
       max-width: none;
-      font-size: 11pt;
+      font-size: 10pt;
+    }
+
+    .text-reading p + p {
+      margin-top: 0.5rem;
     }
 
     .content :global(strong),
@@ -639,7 +647,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     }
 
     .jobs {
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .job {
@@ -668,7 +676,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     }
 
     .job-role {
-      font-size: 12pt;
+      font-size: 11pt;
     }
 
     .job-role .at,
@@ -678,8 +686,8 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     }
 
     .bullets {
-      gap: 0.125rem;
-      margin-top: 0.25rem;
+      gap: 0;
+      margin-top: 0.125rem;
     }
 
     .bullets li::marker {
