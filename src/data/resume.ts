@@ -103,12 +103,12 @@ export const TECHNOLOGIES = [
   {
     type: "Programming Languages",
     technologies: [
-      "Ruby",
-      "Python",
-      "Typescript",
-      "Javascript",
       "Elixir",
+      "Javascript",
+      "Python",
+      "Ruby",
       "Rust",
+      "Typescript",
     ],
   },
   {
@@ -125,34 +125,36 @@ export const TECHNOLOGIES = [
   },
   {
     type: "Databases",
-    technologies: ["PostgreSQL", "Clickhouse", "Redis", "Elasticsearch"],
+    technologies: ["Clickhouse", "Elasticsearch", "PostgreSQL", "Redis"],
   },
   {
     type: "Cloud",
     technologies: [
       "AWS (Lambda, DynamoDB, S3, CloudFront, CloudWatch, RDS, ELB, Route 53)",
+      "Cloudflare",
+      "Convex",
+      "Netlify",
       "Supabase",
       "Vercel",
-      "Netlify",
     ],
   },
   {
     type: "Tools",
     technologies: [
+      "CI/CD",
+      "Depot",
       "Docker",
-      "Kubernetes",
-      "Terraform",
       "Git",
       "GitHub",
-      "GitLab",
-      "CI/CD",
-      "Semaphore CI",
       "Github Actions",
+      "GitLab",
       "PostHog",
+      "Semaphore CI",
+      "Terraform",
     ],
   },
   {
     type: "AI Tooling",
-    technologies: ["Cursor", "Claude Code", "Lovable"],
+    technologies: ["Claude Code", "Cursor", "Lovable"],
   },
 ]
