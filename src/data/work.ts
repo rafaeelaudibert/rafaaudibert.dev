@@ -17,7 +17,6 @@ export const PRS = {
   partners: 74089,
   toolbar: 69093,
   campaigns: 67968,
-  sidebar: 41407,
   churn: 36812,
   webVitals: 27479,
   mcpApps: 46063,
