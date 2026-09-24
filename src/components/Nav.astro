@@ -202,7 +202,8 @@ const isCurrentPage = (href: string) => {
     position: relative;
     font-family: var(--font-brand);
     font-weight: 500;
-    margin-bottom: 3.5rem;
+    /* Tighter on phones, where the header is already a full row of chrome */
+    margin-bottom: 1.5rem;
   }
 
   .menu-header {
@@ -331,6 +332,7 @@ const isCurrentPage = (href: string) => {
       align-items: center;
       padding: 2.5rem 5rem;
       gap: 1rem;
+      margin-bottom: 3.5rem;
     }
 
     .menu-header {
