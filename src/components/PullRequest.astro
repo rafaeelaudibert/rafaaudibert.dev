@@ -1,0 +1,49 @@
+---
+/** An inline chip linking a pull request on PostHog/posthog: icon plus number. */
+import Icon from "./Icon.astro"
+import { prUrl } from "../data/work"
+
+interface Props {
+  number: number
+}
+
+const { number } = Astro.props
+---
+
+{/* Kept on one line: whitespace here would surface as a space before the punctuation that follows the chip */}
+<a class="pr" href={prUrl(number)} target="_blank" rel="noopener noreferrer"><Icon icon="git-pull-request" size="1em" /><span>#{number}</span><span class="sr-only">(pull request, opens in new tab)</span></a>
+
+<style>
+  .pr {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    vertical-align: 0.1em;
+    margin-inline: 0.1em;
+    padding: 0.05em 0.45em;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-sm);
+    background-color: var(--gray-999);
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    line-height: 1.5;
+    color: var(--gray-200);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      border-color var(--theme-transition),
+      color var(--theme-transition);
+  }
+
+  .pr:hover,
+  .pr:focus-visible {
+    border-color: var(--accent-regular);
+    color: var(--gray-0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pr {
+      transition: none;
+    }
+  }
+</style>
