@@ -105,6 +105,11 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
       "theme-dark",
     )
   })
+  // Marks a page reached by client-side navigation, so styles can run an
+  // entrance animation there but not on a full load (see Nav.astro)
+  document.addEventListener("astro:after-swap", () => {
+    document.documentElement.dataset.navigated = ""
+  })
 
   // Only run this on the client side
   if (typeof localStorage !== "undefined") {

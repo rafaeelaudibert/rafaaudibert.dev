@@ -224,6 +224,30 @@ const isCurrentPage = (href: string) => {
     background-color: var(--accent-regular);
   }
 
+  /* After a client-side navigation the highlight slides in from the old
+     link over about 250ms, but the new label is already white, so it would
+     sit invisible on the light pill until the highlight arrives. Hold it
+     grey while the highlight travels, then fade it to white. */
+  :global(html[data-navigated]) .link[aria-current="page"] {
+    animation: nav-active-text 0.36s ease-out both;
+  }
+
+  @keyframes nav-active-text {
+    0%,
+    60% {
+      color: var(--gray-300);
+    }
+    100% {
+      color: var(--accent-text-over);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(html[data-navigated]) .link[aria-current="page"] {
+      animation: none;
+    }
+  }
+
   .menu-footer {
     --icon-size: 1.25rem;
     --icon-padding: 0.375rem;
