@@ -34,9 +34,7 @@ const FACTS = [
       <header class="hero">
         <div class="hero-intro">
           <p class="eyebrow">Product engineer · {site.location}</p>
-          <h1 class="hero-title">
-            Hi, I'm Rafa. I build data products at PostHog.
-          </h1>
+          <h1 class="hero-title">Hi, I'm Rafa. I build products at PostHog.</h1>
           <p class="text-dek">
             {yearsOfExperience()}+ years shipping full-stack software, from
             seed-stage startups to a scale-up. I started Revenue Analytics on my
@@ -44,10 +42,16 @@ const FACTS = [
             Growth team. When I'm not at the keyboard I'm usually at an airport.
           </p>
           <div class="hero-actions">
-            <Link class="action action-primary" href="/resume/" external={false}>
+            <Link
+              class="action action-primary"
+              href="/resume/"
+              external={false}
+            >
               Read my resume <Icon icon="arrow-right" size="1em" />
             </Link>
-            <Link class="action" href="/blog/" external={false}>Read the blog</Link>
+            <Link class="action" href="/blog/" external={false}
+              >Read the blog</Link
+            >
           </div>
         </div>
 
@@ -107,9 +111,7 @@ const FACTS = [
               <PullRequest number={PRS.emptyStates} />.
             </p>
             <p class="work-text text-reading">
-              Lately it has been authentication: Client ID Metadata Documents,
-              so MCP clients such as Claude Code register with a URL{" "}
-              <PullRequest number={PRS.cimd} />, PostHog as an OpenID Connect
+              Lately it has been authentication: PostHog as an OpenID Connect
               provider <PullRequest number={PRS.oidc} />, and partners
               authenticating as OAuth clients{" "}
               <PullRequest number={PRS.partners} />.
@@ -130,15 +132,13 @@ const FACTS = [
               Model Context Protocol, at work and at home
             </h3>
             <p class="work-text text-reading">
-              At PostHog I helped architect our first MCP, and built apps that
+              At PostHog I helped architect our first MCP, built apps that
               render inside MCP clients <PullRequest number={PRS.mcpApps} />,
-              hints in the app that show how to do what you just did through
-              your agent{" "}
-              <PullRequest number={PRS.mcpHints} />, and exposed every health
-              check as a tool{" "}
-              <PullRequest number={PRS.mcpHealth} />. Here, this site runs its
-              own MCP server, so you can point Claude or Cursor at it and ask
-              about me.
+              and added Client ID Metadata Documents so clients such as Claude
+              Code connect with a URL instead of registering first{" "}
+              <PullRequest number={PRS.cimd} />. Here, this site runs its own
+              MCP server, so you can point Claude or Cursor at it and ask about
+              me.
             </p>
             <Link class="work-link" href="/mcp/" external={false}>
               This site's MCP server <Icon icon="arrow-right" size="0.9em" />
@@ -154,8 +154,15 @@ const FACTS = [
               shipping, a sales page and checkout, and a member area where
               subscribers help themselves.
             </p>
-            <Link class="work-link" href="https://trioassinaturas.com.br" utm="trio-card">
-              trioassinaturas.com.br <Icon icon="arrow-square-out" size="0.9em" />
+            <Link
+              class="work-link"
+              href="https://trioassinaturas.com.br"
+              utm="trio-card"
+            >
+              trioassinaturas.com.br <Icon
+                icon="arrow-square-out"
+                size="0.9em"
+              />
             </Link>
           </li>
         </ul>
@@ -198,10 +205,12 @@ const FACTS = [
               2026. Our cat is called Aura.
             </p>
             <p>
-              Travel is the other constant: <Link href="/travel/" external={false}
-                >{countries} countries and territories</Link
-              > so far, most of them shared with Lili. The <Link href="/changelog/" external={false}
-                >changelog</Link
+              Travel is the other constant: <Link
+                href="/travel/"
+                external={false}>{countries} countries and territories</Link
+              > so far, most of them shared with Lili. The <Link
+                href="/changelog/"
+                external={false}>changelog</Link
               > keeps the running record, from offsites in Barbados and Tulum to watching
               a total solar eclipse from a boat off Mallorca.
             </p>

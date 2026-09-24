@@ -21,6 +21,4 @@ export const PRS = {
   churn: 36812,
   webVitals: 27479,
   mcpApps: 46063,
-  mcpHints: 59126,
-  mcpHealth: 61960,
 } as const
