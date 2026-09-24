@@ -19,7 +19,6 @@ const posts = (await getCollection("blog"))
 const current = PAST_EXPERIENCES[0]
 const countries = getVisitedCountries().size
 
-
 const FACTS = [
   { label: "Countries", value: `${countries}` },
   { label: "Flights logged", value: `${FLIGHTS.length}` },
@@ -34,14 +33,19 @@ const FACTS = [
       <header class="hero">
         <div class="hero-intro">
           <p class="eyebrow">Product engineer · {site.location}</p>
-          <h1 class="hero-title">Hi, I'm Rafa. I build data products at PostHog.</h1>
+          <h1 class="hero-title">
+            Hi, I'm Rafa. I build data products at PostHog.
+          </h1>
           <p class="text-dek">
-            {yearsOfExperience()}+ years shipping full-stack software, from seed-stage startups to a scale-up.
-            I started Revenue Analytics on my own, shipped Core Web Vitals for Web Analytics, and now lead
-            the Growth team. When I'm not at the keyboard I'm usually at an airport.
+            {yearsOfExperience()}+ years shipping full-stack software, from
+            seed-stage startups to a scale-up. I started Revenue Analytics on my
+            own, shipped Core Web Vitals for Web Analytics, and now lead the
+            Growth team. When I'm not at the keyboard I'm usually at an airport.
           </p>
           <div class="hero-actions">
-            <a class="action action-primary" href="/resume/">Read my resume <Icon icon="arrow-right" size="1em" /></a>
+            <a class="action action-primary" href="/resume/"
+              >Read my resume <Icon icon="arrow-right" size="1em" /></a
+            >
             <a class="action" href="/blog/">Read the blog</a>
           </div>
         </div>
@@ -66,11 +70,20 @@ const FACTS = [
             <p class="eyebrow">Now</p>
             <h3 class="work-title">Leading Growth at PostHog</h3>
             <p class="work-text text-reading">
-              Onboarding, activation and the paths that turn a signup into a paying team. Equal parts product,
-              data and engineering. Before that I started Revenue Analytics on my own and shipped Core Web Vitals
-              for Web Analytics.
+              Onboarding, activation and the paths that turn a signup into a
+              paying customer. Also responsible for trying to figure out how do
+              we grow in an agentic world.
             </p>
-            <a class="work-link" href={current.href} target="_blank" rel="noopener noreferrer">
+            <p class="work-text text-reading">
+              Before that I started Revenue Analytics on my own and shipped Core
+              Web Vitals for Web Analytics.
+            </p>
+            <a
+              class="work-link"
+              href={current.href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               PostHog <Icon icon="arrow-square-out" size="0.9em" />
               <span class="sr-only">(opens in new tab)</span>
             </a>
@@ -78,18 +91,31 @@ const FACTS = [
 
           <li class="work-card">
             <p class="eyebrow">In the open</p>
-            <h3 class="work-title">Two years of pull requests to posthog/posthog</h3>
+            <h3 class="work-title">
+              Two years of pull requests to posthog/posthog
+            </h3>
             <p class="work-text text-reading">
-              All public. I built the Core Web Vitals view <PullRequest number={PRS.webVitals} /> in my first
-              months, and the query runner behind new, expansion, contraction and churn revenue{" "}
-              <PullRequest number={PRS.churn} /> for Revenue Analytics. On Growth I shipped a sidebar people can
-              shape <PullRequest number={PRS.sidebar} />, organisation-level product push campaigns{" "}
-              <PullRequest number={PRS.campaigns} /> and a first-run screen for every product{" "}
-              <PullRequest number={PRS.emptyStates} />. Lately it has been auth: PostHog as an OpenID Connect
-              provider <PullRequest number={PRS.oidc} />, partners authenticating as OAuth clients{" "}
-              <PullRequest number={PRS.partners} />, and re-authentication that only asks when a write needs it{" "}
-              <PullRequest number={PRS.reauth} />. Also a toolbar that loads in a kilobyte{" "}
+              All public. I built the Core Web Vitals view <PullRequest
+                number={PRS.webVitals}
+              /> in my first months, and the query runner behind new, expansion, contraction
+              and churn revenue{" "}
+              <PullRequest number={PRS.churn} /> for Revenue Analytics. Also a toolbar
+              that loads in a kilobyte{" "}
               <PullRequest number={PRS.toolbar} />.
+            </p>
+            <p class="work-text text-reading">
+              On Growth I shipped a sidebar people can shape <PullRequest
+                number={PRS.sidebar}
+              />, organisation-level product push campaigns{" "}
+              <PullRequest number={PRS.campaigns} /> and the empty state screens for
+              every product{" "}
+              <PullRequest number={PRS.emptyStates} />.
+            </p>
+            <p class="work-text text-reading">
+              Lately it has been authentication: PostHog as an OpenID Connect
+              provider <PullRequest number={PRS.oidc} />, partners
+              authenticating as OAuth clients{" "}
+              <PullRequest number={PRS.partners} />.
             </p>
             <a
               class="work-link"
@@ -97,34 +123,55 @@ const FACTS = [
               target="_blank"
               rel="noopener noreferrer"
             >
-              All of them, since {MERGED_PRS.since} <Icon icon="arrow-square-out" size="0.9em" />
+              All of them, since {MERGED_PRS.since}
+              <Icon icon="arrow-square-out" size="0.9em" />
               <span class="sr-only">(opens in new tab)</span>
             </a>
           </li>
 
           <li class="work-card">
             <p class="eyebrow">MCP</p>
-            <h3 class="work-title">Model Context Protocol, at work and at home</h3>
+            <h3 class="work-title">
+              Model Context Protocol, at work and at home
+            </h3>
             <p class="work-text text-reading">
-              At PostHog I built apps that render inside MCP clients <PullRequest number={PRS.mcpApps} />, hints in
-              the app that show how to do what you just did through your agent{" "}
-              <PullRequest number={PRS.mcpHints} />, and exposed every health check as a tool{" "}
-              <PullRequest number={PRS.mcpHealth} />. Here, this site runs its own MCP server, so you can point
-              Claude or Cursor at it and ask about me.
+              At PostHog I helped architect our first MCP, and built apps that
+              render inside MCP clients <PullRequest number={PRS.mcpApps} />,
+              hints in the app that show how to do what you just did through
+              your agent{" "}
+              <PullRequest number={PRS.mcpHints} />, and exposed every health
+              check as a tool{" "}
+              <PullRequest number={PRS.mcpHealth} />. Here, this site runs its
+              own MCP server, so you can point Claude or Cursor at it and ask
+              about me.
             </p>
-            <a class="work-link" href="/mcp/">This site's MCP server <Icon icon="arrow-right" size="0.9em" /></a>
+            <a class="work-link" href="/mcp/"
+              >This site's MCP server <Icon
+                icon="arrow-right"
+                size="0.9em"
+              /></a
+            >
           </li>
 
           <li class="work-card">
-            <p class="eyebrow">Side project</p>
+            <p class="eyebrow">Side business</p>
             <h3 class="work-title">Trio Assinaturas</h3>
             <p class="work-text text-reading">
-              A platform for subscription box clubs in Brazil: plans, subscribers, recurring card and PIX billing
-              with retries, shipping, a sales page and checkout, and a member area where subscribers help
-              themselves. I'm building it with people who have run a subscription club for over thirteen years.
+              A platform for subscription box clubs in Brazil: plans,
+              subscribers, recurring card and PIX billing with retries,
+              shipping, a sales page and checkout, and a member area where
+              subscribers help themselves.
             </p>
-            <a class="work-link" href="https://trioassinaturas.com.br" target="_blank" rel="noopener noreferrer">
-              trioassinaturas.com.br <Icon icon="arrow-square-out" size="0.9em" />
+            <a
+              class="work-link"
+              href="https://trioassinaturas.com.br"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              trioassinaturas.com.br <Icon
+                icon="arrow-square-out"
+                size="0.9em"
+              />
               <span class="sr-only">(opens in new tab)</span>
             </a>
           </li>
@@ -134,13 +181,16 @@ const FACTS = [
       <section class="labelled-section" aria-labelledby="writing">
         <div class="section-label">
           <h2 class="section-title" id="writing">Writing</h2>
-          <a class="section-more" href="/blog/">All posts <Icon icon="arrow-right" size="0.9em" /></a>
+          <a class="section-more" href="/blog/"
+            >All posts <Icon icon="arrow-right" size="0.9em" /></a
+          >
         </div>
         <div class="stack gap-4 writing">
           <p class="text-reading writing-intro">
-            Long-form, infrequent, and usually with data attached: sorting algorithms and hash tables from
-            university, what applying to remote jobs actually looks like in numbers, and what happened when I
-            let Claude move this site off AWS.
+            Long-form, infrequent, and usually with data attached: sorting
+            algorithms and hash tables from university, what applying to remote
+            jobs actually looks like in numbers, and what happened when I let
+            Claude move this site off AWS.
           </p>
           <ul class="posts">
             {
@@ -159,15 +209,18 @@ const FACTS = [
         <div class="beyond">
           <div class="beyond-text text-reading">
             <p>
-              Computer Science at UFRGS, <i>summa cum laude</i>, with an exchange year at TU Kaiserslautern in
-              Germany and two trips to the Brazilian ICPC finals along the way. Married to Lili since April
+              Computer Science at UFRGS, <i>summa cum laude</i>, with an
+              exchange year at TU Kaiserslautern in Germany and two trips to the
+              Brazilian ICPC finals along the way. Married to Lili since April
               2026. Our cat is called Aura.
             </p>
             <p>
-              Travel is the other constant: <a href="/travel/">{countries} countries and territories</a> so
-              far, most of them shared with Lili. The <a href="/changelog/">changelog</a> keeps the running
-              record, from offsites in Barbados and Tulum to watching a total solar eclipse from a boat off
-              Mallorca.
+              Travel is the other constant: <a href="/travel/"
+                >{countries} countries and territories</a
+              > so far, most of them shared with Lili. The <a href="/changelog/"
+                >changelog</a
+              > keeps the running record, from offsites in Barbados and Tulum to watching
+              a total solar eclipse from a boat off Mallorca.
             </p>
           </div>
           <ul class="facts">
@@ -184,7 +237,6 @@ const FACTS = [
       </section>
     </main>
   </div>
-
 </BaseLayout>
 
 <style>
