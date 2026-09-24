@@ -115,14 +115,19 @@ const isCurrentPage = (href: string) => {
    * links on its own row, scrolling sideways if it has to. From 50em: the
    * three parts sit on one row, the pill centred.
    */
+  /*
+   * Phones: the pill of links floats fixed at the top of the viewport, and
+   * the header row (title, icons, theme toggle) sits below the space it
+   * takes. From 50em everything is one static row: title, pill, icons.
+   */
   nav {
     z-index: 9999;
     position: relative;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 0.75rem;
-    padding: 1.25rem 1.5rem 0;
+    gap: 0.75rem;
+    /* Top padding reserves the floating pill's height plus its margins */
+    padding: calc(var(--nav-offset)) 1.5rem 0;
     margin-bottom: 1.5rem;
     font-family: var(--font-brand);
     font-weight: 500;
@@ -144,8 +149,11 @@ const isCurrentPage = (href: string) => {
 
   /* The gradient stroke is a border-box background layer */
   .nav-items {
-    order: 3;
-    flex-basis: 100%;
+    position: fixed;
+    top: 0.75rem;
+    left: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
     display: flex;
     gap: 0.125rem;
     margin: 0;
@@ -246,8 +254,10 @@ const isCurrentPage = (href: string) => {
     }
 
     .nav-items {
-      order: 0;
-      flex-basis: auto;
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
       padding: 0.5rem 0.5625rem;
       font-size: var(--text-sm);
       overflow: visible;
@@ -267,15 +277,6 @@ const isCurrentPage = (href: string) => {
       justify-self: flex-end;
     }
 
-    .social {
-      color: var(--accent-dark);
-    }
-
-    .social:hover,
-    .social:focus-visible {
-      color: var(--accent-text-over);
-    }
-
     /* Tight desktops keep the toggle and drop the icons */
     .socials {
       display: none;
@@ -291,6 +292,12 @@ const isCurrentPage = (href: string) => {
   @media (forced-colors: active) {
     .link[aria-current="page"] {
       color: SelectedItem;
+    }
+  }
+
+  @media print {
+    .nav-items {
+      position: static;
     }
   }
 

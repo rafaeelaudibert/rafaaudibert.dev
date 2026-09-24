@@ -95,6 +95,11 @@
   --font-reading: var(--font-flags), var(--font-literata);
   --font-mono: var(--font-flags), var(--font-ibm-plex-mono);
 
+  /* Space the floating pill of links takes at the top of the viewport on
+     phones: its height plus margins. The nav pads by it and anchors scroll
+     past it. Zero from 50em, where the pill is in the header row. */
+  --nav-offset: 4.25rem;
+
   /* Corner radii. Deliberately tight: the design should read as squared-off.
      xs: focus rings, inline code, hairline bars
      sm: buttons, pills, chips, keys, tooltips
@@ -166,6 +171,7 @@ body {
   /* clip rather than hidden: hidden makes body a scroll container, which
      breaks position: sticky (the blog contents rail) */
   overflow-x: clip;
+  scroll-padding-top: calc(var(--nav-offset) + 1rem);
 }
 
 body {
@@ -326,6 +332,10 @@ pre {
 }
 
 @media (min-width: 50em) {
+  :root {
+    --nav-offset: 0rem;
+  }
+
   .labelled-section {
     display: grid;
     grid-template-columns: 12rem minmax(0, 1fr);
