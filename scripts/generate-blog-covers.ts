@@ -248,11 +248,15 @@ function jobSearch() {
   return wrap(s)
 }
 
-/** Boxes leaving a faded cluster on the left for a lit one on the right. */
+/**
+ * Boxes leaving a faded cluster on the left for a lit one on the right, along
+ * an arc that fills the top of the frame; a magnifying glass on the old side.
+ */
 function awsToCloudflare() {
   let s = ""
-  const box = 110
-  const gap = 26
+  const box = 140
+  const gap = 30
+  const clusterSize = 3 * box + 2 * gap
   const cluster = (x0: number, y0: number, lit: boolean, missing: number[] = []) => {
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 3; c++) {
@@ -260,23 +264,24 @@ function awsToCloudflare() {
         if (missing.includes(idx)) continue
         const x = x0 + c * (box + gap)
         const y = y0 + r * (box + gap)
-        s += rect(x, y, box, box, lit ? `fill="${PURPLE}" fill-opacity="0.3" stroke="${PURPLE_LIGHT}"` : `stroke="${GREY_DIM}" stroke-dasharray="${idx % 2 ? "8 10" : "none"}"`)
-        if (lit) s += `<rect x="${x + 24}" y="${y + 24}" width="${box - 48}" height="14" rx="3" fill="${PURPLE_LIGHT}" fill-opacity="0.8" stroke="none"/>`
+        s += rect(x, y, box, box, lit ? `fill="${PURPLE}" fill-opacity="0.3" stroke="${PURPLE_LIGHT}"` : `stroke="${GREY_DIM}" stroke-dasharray="${idx % 2 ? "10 12" : "none"}"`)
+        if (lit) s += `<rect x="${x + 32}" y="${y + 32}" width="${box - 64}" height="18" rx="4" fill="${PURPLE_LIGHT}" fill-opacity="0.8" stroke="none"/>`
       }
     }
   }
-  const leftX = 200
-  const rightX = W - 200 - 3 * box - 2 * gap
-  const y0 = (H - (3 * box + 2 * gap)) / 2
+  // Clusters sit low so the arc has the top of the frame
+  const y0 = H - clusterSize - 84
+  const leftX = 140
+  const rightX = W - 140 - clusterSize
   cluster(leftX, y0, false, [4, 8])
   cluster(rightX, y0, true)
-  // one arc from cluster to cluster, with two boxes riding it
-  const midY = H / 2
-  const lx = leftX + 3 * box + 2 * gap
-  const p0 = { x: lx + 30, y: midY }
-  const p1 = { x: lx + 160, y: midY - 300 }
-  const p2 = { x: rightX - 160, y: midY - 300 }
-  const p3 = { x: rightX - 30, y: midY }
+
+  // One wide arc from the top of one cluster to the top of the other, two
+  // boxes riding it. The control points put the peak near y = 110.
+  const p0 = { x: leftX + clusterSize / 2 + box / 2 + gap / 2, y: y0 - 24 }
+  const p1 = { x: p0.x + 260, y: 54 }
+  const p3 = { x: rightX + clusterSize / 2, y: y0 - 24 }
+  const p2 = { x: p3.x - 260, y: 54 }
   const bez = (t: number) => {
     const mt = 1 - t
     return {
@@ -285,16 +290,18 @@ function awsToCloudflare() {
     }
   }
   s += `<path d="M${p0.x} ${p0.y} C ${p1.x} ${p1.y}, ${p2.x} ${p2.y}, ${p3.x} ${p3.y}" stroke="${PURPLE_LIGHT}"/>`
-  s += `<path d="M${p3.x - 44} ${p3.y - 30} L${p3.x} ${p3.y} L${p3.x - 8} ${p3.y - 52}" stroke="${PURPLE_LIGHT}"/>`
-  ;[0.2, 0.8].forEach((t) => {
+  s += `<path d="M${p3.x - 34} ${p3.y - 46} L${p3.x} ${p3.y} L${p3.x + 34} ${p3.y - 46}" stroke="${PURPLE_LIGHT}"/>`
+  ;[0.3, 0.7].forEach((t) => {
     const c = bez(t)
-    s += rect(c.x - 44, c.y - 44, 88, 88, `fill="${PURPLE}" fill-opacity="0.3" stroke="${PURPLE_LIGHT}"`)
+    s += rect(c.x - 56, c.y - 56, 112, 112, `fill="${PURPLE}" fill-opacity="0.3" stroke="${PURPLE_LIGHT}"`)
+    s += `<rect x="${c.x - 24}" y="${c.y - 24}" width="48" height="18" rx="4" fill="${PURPLE_LIGHT}" fill-opacity="0.8" stroke="none"/>`
   })
-  // a magnifying glass over the left cluster: the digging
-  const gx = leftX + box + gap / 2 + box / 2
-  const gy = y0 + 2 * (box + gap) + box / 2
-  s += `<circle cx="${gx}" cy="${gy}" r="58" stroke="${WHITE}" fill="${NAVY}" fill-opacity="0.4"/>`
-  s += line(gx + 42, gy + 42, gx + 96, gy + 96, `stroke="${WHITE}" stroke-width="12"`)
+
+  // The magnifying glass over the gap in the old cluster: the digging
+  const gx = leftX + 2 * (box + gap) + box / 2
+  const gy = y0 + (box + gap) + box / 2
+  s += `<circle cx="${gx}" cy="${gy}" r="84" stroke="${WHITE}" stroke-width="8" fill="${NAVY}" fill-opacity="0.5"/>`
+  s += line(gx + 60, gy + 60, gx + 150, gy + 150, `stroke="${WHITE}" stroke-width="16"`)
   return wrap(s)
 }
 
