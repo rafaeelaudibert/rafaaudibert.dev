@@ -162,7 +162,10 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 </BaseLayout>
 
 <script>
-  document.querySelector("[data-print]")?.addEventListener("click", () => window.print())
+  // Bound on every page load: the router swaps the DOM without re-running scripts
+  document.addEventListener("astro:page-load", () => {
+    document.querySelector("[data-print]")?.addEventListener("click", () => window.print())
+  })
 
   // Hook the browser's own print event rather than the button, so the File
   // menu, Ctrl/Cmd+P and mobile share sheets are counted too.

@@ -144,6 +144,13 @@ Blog cover images are generated, not hand-made: `bun run blog-covers` runs `scri
 
 Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`, not `astro.config.mjs`, because the `<Code>` component on `/mcp` reads them at render time.
 
+## Client-side navigation
+
+Every page includes Astro's `ClientRouter` (in `MainHead.astro`), so links swap the page in place and elements that share a `transition:name` morph between pages: the nav's purple highlight (`nav-active`), and a blog card's label and cover into the post's title block and cover. Two rules follow:
+
+- A `<script>` in a page or component runs once per full load, not per navigation. Anything that queries or binds to the DOM must do so inside `document.addEventListener("astro:page-load", ...)`, which also fires on the first load. Custom elements and React islands need nothing extra.
+- The router replaces `<html>`'s attributes; the theme class is carried over in `MainHead.astro`'s `astro:before-swap` handler. Do not move that to `astro:after-swap`: the mutation observer would persist "light" first.
+
 ## Component Patterns
 
 ### Creating New Components

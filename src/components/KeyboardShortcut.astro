@@ -121,12 +121,6 @@ const { keys, class: className } = Astro.props
     })
   }
 
-  // Run on page load
-  if (typeof window !== "undefined") {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", updateKeyboardShortcuts)
-    } else {
-      updateKeyboardShortcuts()
-    }
-  }
+  // On the first load and after every client-side navigation
+  document.addEventListener("astro:page-load", updateKeyboardShortcuts)
 </script>

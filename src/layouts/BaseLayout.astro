@@ -15,15 +15,14 @@ interface Props {
   description?: string | undefined
   ogImage?: string | undefined
   type?: "website" | "article" | undefined
-  transitions?: boolean
 }
 
-const { title, description, ogImage, type, transitions } = Astro.props
+const { title, description, ogImage, type } = Astro.props
 ---
 
 <html lang="en">
   <head>
-    <MainHead title={title} description={description} ogImage={ogImage} type={type} transitions={transitions} />
+    <MainHead title={title} description={description} ogImage={ogImage} type={type} />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -37,7 +36,8 @@ const { title, description, ogImage, type, transitions } = Astro.props
 
     <EasterEggs />
     <WebMCP />
-    <ShortcutsManager client:load navigationShortcuts={NAV_SHORTCUTS} />
+    {/* Persisted across client-side navigations so its key listener is bound once */}
+    <ShortcutsManager client:load transition:persist navigationShortcuts={NAV_SHORTCUTS} />
 
     <script>
       // Windows has no country flag glyphs, so Chromium there renders "BR"

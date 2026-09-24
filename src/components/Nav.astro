@@ -77,6 +77,10 @@ const isCurrentPage = (href: string) => {
             target={external ? "_blank" : undefined}
             rel={external ? "noopener noreferrer" : undefined}
           >
+            {/* The purple highlight is its own element with one transition
+                name, so the router slides it from the old page's link to the
+                new one's instead of fading two highlights */}
+            {isCurrentPage(href) && <span class="active" aria-hidden="true" transition:name="nav-active" />}
             {label}
             {external && <Icon icon="arrow-square-out" size="0.85em" />}
             {shortcut && (
@@ -180,6 +184,8 @@ const isCurrentPage = (href: string) => {
   }
 
   .link {
+    position: relative;
+    isolation: isolate;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -202,6 +208,19 @@ const isCurrentPage = (href: string) => {
 
   .link[aria-current="page"] {
     color: var(--accent-text-over);
+  }
+
+  .link[aria-current="page"]:hover,
+  .link[aria-current="page"]:focus-visible {
+    color: var(--accent-text-over);
+    background-color: transparent;
+  }
+
+  .active {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-pill);
     background-color: var(--accent-regular);
   }
 

@@ -236,6 +236,8 @@ const arcs = FLIGHTS.map((f) => ({
 </BaseLayout>
 
 <script>
+  // Bound on every page load: the router swaps the DOM without re-running scripts
+  document.addEventListener("astro:page-load", () => {
   document.querySelectorAll(".country-card.has-images").forEach((card) => {
     card.addEventListener("click", () => {
       const countryCode = card.getAttribute("data-country")
@@ -247,6 +249,7 @@ const arcs = FLIGHTS.map((f) => ({
         }),
       )
     })
+  })
   })
 </script>
 

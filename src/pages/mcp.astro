@@ -161,6 +161,8 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
   // Copy buttons. Clipboard access needs a user gesture and a secure context,
   // both of which a click on a served page satisfies. Failure leaves the
   // text selectable in the <pre>, so nothing is lost if it does not work.
+  // Bound on every page load: the router swaps the DOM without re-running scripts
+  document.addEventListener("astro:page-load", () => {
   const status = document.querySelector<HTMLElement>("[data-copy-status]")
 
   for (const button of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
@@ -179,6 +181,7 @@ const sourceUrl = "https://github.com/rafaeelaudibert/rafaaudibert.dev/tree/mast
       }, 2000)
     })
   }
+  })
 </script>
 
 <style>
