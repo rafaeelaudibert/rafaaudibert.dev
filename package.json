@@ -19,6 +19,7 @@
     "check-metadata": "bun scripts/strip-image-metadata.ts --check",
     "describe-images": "bun scripts/describe-travel-images.ts",
     "blog-covers": "bun scripts/generate-blog-covers.ts",
+    "icons": "bun scripts/generate-icons.ts",
     "check-descriptions": "bun scripts/describe-travel-images.ts --check",
     "check": "bun run check-metadata && bun run check-descriptions"
   },

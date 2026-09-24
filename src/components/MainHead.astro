@@ -65,7 +65,13 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 <meta name="twitter:site" content={site.twitter} />
 <meta name="twitter:creator" content={site.twitter} />
 
-<link rel="icon" type="image/png" href="/favicon.png" />
+<!-- Icons come from `bun run icons` (scripts/generate-icons.ts). The SVG is
+     what current browsers pick; the .ico covers the rest. -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#7611a6" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- Self-hosted fonts (astro.config.mjs). Preload only what the first paint

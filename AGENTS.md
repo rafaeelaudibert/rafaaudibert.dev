@@ -142,6 +142,8 @@ Open Graph images (`src/pages/og.png.ts`, `src/pages/blog/[...slug]/og.png.ts`) 
 
 Blog cover images are generated, not hand-made: `bun run blog-covers` runs `scripts/generate-blog-covers.ts`, which draws one SVG per post (navy backdrop with the header glow, a dot grid, and a monoline diagram of the post's subject in the site palette, no text) and rasterises it to `src/assets/blog/<slug>.png` at 1600x900. A new post gets a new drawing function in that script and an `img`/`img_alt` pair in its frontmatter; do not drop stock images or screenshots in. The `blog-cover` skill in `.claude/skills/` describes the style and the steps.
 
+The favicon and app icons are generated too: `bun run icons` draws the header aurora tile and writes `public/favicon.svg`, `favicon.ico`, `favicon.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` and `logo.png`. Change the drawing in `scripts/generate-icons.ts`, never the files.
+
 Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`, not `astro.config.mjs`, because the `<Code>` component on `/mcp` reads them at render time.
 
 ## Client-side navigation
