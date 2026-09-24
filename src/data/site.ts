@@ -1,7 +1,7 @@
 export const site = {
   name: "Rafa Audibert",
   fullName: "Rafael Baldasso Audibert",
-  tagline: "Software Engineer based in Porto Alegre, Brazil",
+  tagline: "Product Engineer @ PostHog, based in Porto Alegre, Brazil",
   description: "The personal site of Rafa Audibert",
   location: "Porto Alegre, Brazil",
   url: "https://rafaaudibert.dev",
