@@ -68,9 +68,9 @@ element:focus {
 - All pages should ensure their main content container has `tabindex="-1"` so it can receive focus
 - The skip link is visually hidden until focused
 
-### 4. Mobile Menu / Modals
+### 4. Modals
 
-- Menus and modals should close when Escape key is pressed
+- Modals should close when Escape key is pressed
 - Focus should return to the trigger element when closed
 - Consider focus trapping for modal dialogs
 
@@ -155,7 +155,7 @@ Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`
 
 ### Existing Components to Reference
 
-- `Nav.astro` - Mobile menu with keyboard support
+- `Nav.astro` - Header row plus the pill of links; on phones the pill takes its own row and scrolls sideways
 - `ThemeToggle.astro` - Toggle button with aria-pressed
 - `SplitHeader.astro` / `PageHeader.astro` - Page headers with a photo or a frosted card
 - `Link.astro` - The anchor: new-tab handling, screen-reader text and UTMs
