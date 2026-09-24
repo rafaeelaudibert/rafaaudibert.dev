@@ -9,6 +9,7 @@ import portrait from "../assets/portrait.jpg"
 import { site } from "../data/site"
 import { PAST_EXPERIENCES, yearsOfExperience } from "../data/resume"
 import { FLIGHTS, getVisitedCountries } from "../data/travel"
+import Link from "../components/Link.astro"
 import PullRequest from "../components/PullRequest.astro"
 import { MERGED_PRS, POSTHOG_REPO, PRS } from "../data/work"
 
@@ -43,10 +44,10 @@ const FACTS = [
             Growth team. When I'm not at the keyboard I'm usually at an airport.
           </p>
           <div class="hero-actions">
-            <a class="action action-primary" href="/resume/"
-              >Read my resume <Icon icon="arrow-right" size="1em" /></a
-            >
-            <a class="action" href="/blog/">Read the blog</a>
+            <Link class="action action-primary" href="/resume/" external={false}>
+              Read my resume <Icon icon="arrow-right" size="1em" />
+            </Link>
+            <Link class="action" href="/blog/" external={false}>Read the blog</Link>
           </div>
         </div>
 
@@ -78,15 +79,9 @@ const FACTS = [
               Before that I started Revenue Analytics on my own and shipped Core
               Web Vitals for Web Analytics.
             </p>
-            <a
-              class="work-link"
-              href={current.href}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link class="work-link" href={current.href} utm="growth-card">
               PostHog <Icon icon="arrow-square-out" size="0.9em" />
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
+            </Link>
           </li>
 
           <li class="work-card">
@@ -119,16 +114,14 @@ const FACTS = [
               authenticating as OAuth clients{" "}
               <PullRequest number={PRS.partners} />.
             </p>
-            <a
+            <Link
               class="work-link"
               href={`${POSTHOG_REPO}/pulls?q=is%3Apr+is%3Amerged+author%3Arafaeelaudibert`}
-              target="_blank"
-              rel="noopener noreferrer"
+              utm="all-prs"
             >
               All of them, since {MERGED_PRS.since}
               <Icon icon="arrow-square-out" size="0.9em" />
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
+            </Link>
           </li>
 
           <li class="work-card">
@@ -147,12 +140,9 @@ const FACTS = [
               own MCP server, so you can point Claude or Cursor at it and ask
               about me.
             </p>
-            <a class="work-link" href="/mcp/"
-              >This site's MCP server <Icon
-                icon="arrow-right"
-                size="0.9em"
-              /></a
-            >
+            <Link class="work-link" href="/mcp/" external={false}>
+              This site's MCP server <Icon icon="arrow-right" size="0.9em" />
+            </Link>
           </li>
 
           <li class="work-card">
@@ -164,18 +154,9 @@ const FACTS = [
               shipping, a sales page and checkout, and a member area where
               subscribers help themselves.
             </p>
-            <a
-              class="work-link"
-              href="https://trioassinaturas.com.br"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              trioassinaturas.com.br <Icon
-                icon="arrow-square-out"
-                size="0.9em"
-              />
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
+            <Link class="work-link" href="https://trioassinaturas.com.br" utm="trio-card">
+              trioassinaturas.com.br <Icon icon="arrow-square-out" size="0.9em" />
+            </Link>
           </li>
         </ul>
       </section>
@@ -183,9 +164,9 @@ const FACTS = [
       <section class="labelled-section" aria-labelledby="writing">
         <div class="section-label">
           <h2 class="section-title" id="writing">Writing</h2>
-          <a class="section-more" href="/blog/"
-            >All posts <Icon icon="arrow-right" size="0.9em" /></a
-          >
+          <Link class="section-more" href="/blog/" external={false}>
+            All posts <Icon icon="arrow-right" size="0.9em" />
+          </Link>
         </div>
         <div class="stack gap-4 writing">
           <p class="text-reading writing-intro">
@@ -217,10 +198,10 @@ const FACTS = [
               2026. Our cat is called Aura.
             </p>
             <p>
-              Travel is the other constant: <a href="/travel/"
-                >{countries} countries and territories</a
-              > so far, most of them shared with Lili. The <a href="/changelog/"
-                >changelog</a
+              Travel is the other constant: <Link href="/travel/" external={false}
+                >{countries} countries and territories</Link
+              > so far, most of them shared with Lili. The <Link href="/changelog/" external={false}
+                >changelog</Link
               > keeps the running record, from offsites in Barbados and Tulum to watching
               a total solar eclipse from a boat off Mallorca.
             </p>

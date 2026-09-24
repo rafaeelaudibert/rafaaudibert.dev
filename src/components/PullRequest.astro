@@ -1,6 +1,7 @@
 ---
 /** An inline chip linking a pull request on PostHog/posthog: icon plus number. */
 import Icon from "./Icon.astro"
+import Link from "./Link.astro"
 import { prUrl } from "../data/work"
 
 interface Props {
@@ -11,7 +12,7 @@ const { number } = Astro.props
 ---
 
 {/* Kept on one line: whitespace here would surface as a space before the punctuation that follows the chip */}
-<a class="pr" href={prUrl(number)} target="_blank" rel="noopener noreferrer"><Icon icon="git-pull-request" size="1em" /><span>#{number}</span><span class="sr-only">(pull request, opens in new tab)</span></a>
+<Link class="pr" href={prUrl(number)} utm={`pr-${number}`}><Icon icon="git-pull-request" size="1em" /><span>#{number}</span></Link>
 
 <style>
   .pr {

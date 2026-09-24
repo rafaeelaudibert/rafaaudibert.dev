@@ -1,25 +1,44 @@
 ---
-interface Props {
+/**
+ * The site's anchor. External links open in a new tab, say so to screen
+ * readers, and carry UTM parameters naming this site and the page they sit
+ * on (see utils/utm.ts). Pass `utm` to name the specific link, or `utm={false}`
+ * to leave a URL untouched. `class` and any other attribute pass through.
+ */
+import type { HTMLAttributes } from "astro/types"
+import { utmPageFromPath, withUtm } from "../utils/utm"
+
+interface Props extends Omit<HTMLAttributes<"a">, "href"> {
   href: string
   external?: boolean
+  utm?: string | false
 }
 
-const { href, external = true } = Astro.props
+const { href, external = true, utm, class: className, ...rest } = Astro.props
+
+const resolvedHref =
+  external && utm !== false
+    ? withUtm(href, { page: utmPageFromPath(Astro.url.pathname), content: utm })
+    : href
+
+const hasText = Astro.slots.has("default")
 ---
 
 {
   external ? (
     <a
-      href={href}
+      href={resolvedHref}
+      class={className}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${Astro.slots.has("default") ? "" : href} (opens in new tab)`}
+      aria-label={hasText ? undefined : `${href} (opens in new tab)`}
+      {...rest}
     >
       <slot />
-      <span class="sr-only">(opens in new tab)</span>
+      {hasText && <span class="sr-only">(opens in new tab)</span>}
     </a>
   ) : (
-    <a href={href}>
+    <a href={href} class={className} {...rest}>
       <slot />
     </a>
   )

@@ -82,7 +82,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
                   <div class="job-heading">
                     <h3 class="job-role">
                       {experience.role} <span class="at">at</span>{" "}
-                      <Link href={experience.href}>{experience.company}</Link>
+                      <Link utm={false} href={experience.href}>{experience.company}</Link>
                     </h3>
                     <span class="dates text-meta">
                       {experience.startDate} – {experience.endDate}
