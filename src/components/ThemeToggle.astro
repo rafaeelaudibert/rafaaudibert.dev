@@ -29,7 +29,9 @@ import Icon from "./Icon.astro"
     width: 2rem;
     height: 2rem;
     font-size: 1rem;
-    color: var(--accent-overlay);
+    /* The inactive side: solid grey rather than translucent purple, which
+       disappeared over the header gradient */
+    color: var(--gray-400);
   }
 
   .icon.light::before {
