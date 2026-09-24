@@ -69,12 +69,12 @@ const wrap = (body: string) =>
 /** Bars in a shuffled order, two of them mid-swap. Basic sorting. */
 function basicSorting() {
   const heights = [0.35, 0.8, 0.5, 0.95, 0.25, 0.65, 0.45, 0.9, 0.3, 0.7, 0.55, 0.85]
-  const barW = 72
-  const gap = 28
+  const barW = 84
+  const gap = 32
   const totalW = heights.length * barW + (heights.length - 1) * gap
   const x0 = (W - totalW) / 2
-  const baseY = 700
-  const maxH = 460
+  const baseY = 790
+  const maxH = 580
   const swap = new Set([3, 4])
   let s = line(x0 - 40, baseY, x0 + totalW + 40, baseY, `stroke="${GREY_DIM}"`)
   heights.forEach((h, i) => {
@@ -183,18 +183,19 @@ function hashTable() {
 function dartAdventOfCode() {
   const y = H / 2
   const stages = [
-    { x: 160, count: 6, w: 200 },
-    { x: 500, count: 6, w: 200 },
-    { x: 840, count: 3, w: 200 },
-    { x: 1180, count: 1, w: 200 },
+    { x: 140, count: 9, w: 240 },
+    { x: 500, count: 9, w: 240 },
+    { x: 860, count: 4, w: 240 },
+    { x: 1220, count: 1, w: 240 },
   ]
+  const stageH = 700
   let s = ""
   stages.forEach((st, si) => {
     const isLast = si === stages.length - 1
-    s += rect(st.x, y - 150, st.w, 300, `stroke="${isLast ? PURPLE_LIGHT : GREY_DIM}" fill="${isLast ? PURPLE : NAVY}" fill-opacity="${isLast ? 0.2 : 0.5}"`)
+    s += rect(st.x, y - stageH / 2, st.w, stageH, `stroke="${isLast ? PURPLE_LIGHT : GREY_DIM}" fill="${isLast ? PURPLE : NAVY}" fill-opacity="${isLast ? 0.2 : 0.5}"`)
     if (!isLast) {
-      const cell = 36
-      const gap = 12
+      const cell = 52
+      const gap = 16
       const totalH = st.count * cell + (st.count - 1) * gap
       for (let i = 0; i < st.count; i++) {
         const cy = y - totalH / 2 + i * (cell + gap)
@@ -205,7 +206,7 @@ function dartAdventOfCode() {
       const cx = st.x + st.w / 2
       const pts: string[] = []
       for (let i = 0; i < 10; i++) {
-        const r = i % 2 === 0 ? 70 : 30
+        const r = i % 2 === 0 ? 96 : 42
         const a = -Math.PI / 2 + (i * Math.PI) / 5
         pts.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(y + r * Math.sin(a)).toFixed(1)}`)
       }
@@ -214,8 +215,8 @@ function dartAdventOfCode() {
     if (si < stages.length - 1) {
       const ax = st.x + st.w
       const nx = stages[si + 1].x
-      s += line(ax + 16, y, nx - 40, y, `stroke="${PURPLE_LIGHT}"`)
-      s += `<path d="M${nx - 64} ${y - 20} L${nx - 36} ${y} L${nx - 64} ${y + 20}" stroke="${PURPLE_LIGHT}"/>`
+      s += line(ax + 18, y, nx - 44, y, `stroke="${PURPLE_LIGHT}"`)
+      s += `<path d="M${nx - 72} ${y - 24} L${nx - 40} ${y} L${nx - 72} ${y + 24}" stroke="${PURPLE_LIGHT}"/>`
     }
   })
   return wrap(s)

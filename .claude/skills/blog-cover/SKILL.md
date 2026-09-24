@@ -51,14 +51,18 @@ twelve shapes is the right count; more turns into texture.
    many applications down to one"), not the post.
 5. Look at it. Compose a contact sheet with sharp, or open `/blog/` on the dev
    server, and check the new cover next to the others for size, weight and
-   margins. Check it in the card on the homepage too, where the top is covered
-   by the title label.
+   margins. Check it in the card too: the card is a little squarer than 16:9,
+   so about 6% is cropped off each side, and the title label covers the
+   top-left quarter. Use a fresh browser session or a hard reload; the
+   optimised image responses are cached and an old cover can linger.
 
 ## Common fixes
 
-- Too much empty space: the shapes are too small or the composition is
-  centred in the middle band. Scale the shapes up and anchor them low or
-  high so a secondary element (an arc, a curve) can use the rest.
+- Too much empty space, usually at the bottom of the card: the shapes are too
+  small or the composition is centred in the middle band, and the label then
+  hides the top of it. Scale the shapes up so the drawing spans from about
+  y = 100 to y = 800, or anchor it low and let a secondary element (an arc, a
+  curve) use the top.
 - Reads as noise: too many shapes, or more than one purple element. Drop
   shapes and keep one focal point.
 - Looks like another cover: the same primitive (a grid of boxes, a row of
