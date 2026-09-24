@@ -11,6 +11,7 @@ export const prUrl = (number: number) => `${POSTHOG_REPO}/pull/${number}`
 /** Pull requests the homepage prose links to, by key. */
 export const PRS = {
   reauth: 104809,
+  cimd: 52324,
   oidc: 99353,
   emptyStates: 74452,
   partners: 74089,
