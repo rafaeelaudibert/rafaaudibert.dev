@@ -140,6 +140,8 @@ Every role stack starts with `--font-flags`, the `@font-face` that `country-flag
 
 Open Graph images (`src/pages/og.png.ts`, `src/pages/blog/[...slug]/og.png.ts`) are rendered with satori from `src/components/og/*`. They use the same families, read from the `@fontsource/*` dev dependencies via `src/utils/og.ts` because satori needs raw WOFF/TTF bytes. Adding a weight or style to an OG image means adding the matching file there. Check a card at `/og.png` or `/blog/<slug>/og.png` on the dev server.
 
+Blog cover images are generated, not hand-made: `bun run blog-covers` runs `scripts/generate-blog-covers.ts`, which draws one SVG per post (navy backdrop with the header glow, a dot grid, and a monoline diagram of the post's subject in the site palette, no text) and rasterises it to `src/assets/blog/<slug>.png` at 1600x900. A new post gets a new drawing function in that script and an `img`/`img_alt` pair in its frontmatter; do not drop stock images or screenshots in.
+
 Code blocks are rendered by Expressive Code; its options live in `ec.config.mjs`, not `astro.config.mjs`, because the `<Code>` component on `/mcp` reads them at render time.
 
 ## Component Patterns
