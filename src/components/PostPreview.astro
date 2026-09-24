@@ -6,11 +6,16 @@ import { convertToHumanReadableDate } from "../utils/date"
 
 interface Props {
   post: CollectionEntry<"blog">
+  /** Morph the label and cover into the post page on navigation. On by
+      default; the homepage turns it off, since its cards sit in a different
+      layout and the morph from there looks wrong. */
+  morph?: boolean
 }
 
 const pathFor = (path: string) => `../assets/blog/${path}`
 
 const { data, id } = Astro.props.post
+const morph = Astro.props.morph ?? true
 const images = import.meta.glob<{ default: ImageMetadata }>(
   "../assets/blog/*.{png,jpg}"
 )
@@ -26,13 +31,30 @@ if (!images[pathFor(data.img)])
     a named element is lifted onto its own layer, and a title lifted out of
     its box would leave the white box to fade in underneath it. */}
 <a class="card" href={`/blog/${id}`}>
-  <span class="label" transition:name={`post-${id}-title`}>
-    <span class="title">{data.title}</span>
-    <time class="text-meta" datetime={data.publishDate.toISOString()}>
-      {convertToHumanReadableDate(data.publishDate)}
-    </time>
-  </span>
-  <Image src={images[pathFor(data.img)]()} alt={data.img_alt || ""} transition:name={`post-${id}-cover`} />
+  {
+    morph ? (
+      <span class="label" transition:name={`post-${id}-title`}>
+        <span class="title">{data.title}</span>
+        <time class="text-meta" datetime={data.publishDate.toISOString()}>
+          {convertToHumanReadableDate(data.publishDate)}
+        </time>
+      </span>
+    ) : (
+      <span class="label">
+        <span class="title">{data.title}</span>
+        <time class="text-meta" datetime={data.publishDate.toISOString()}>
+          {convertToHumanReadableDate(data.publishDate)}
+        </time>
+      </span>
+    )
+  }
+  {
+    morph ? (
+      <Image src={images[pathFor(data.img)]()} alt={data.img_alt || ""} transition:name={`post-${id}-cover`} />
+    ) : (
+      <Image src={images[pathFor(data.img)]()} alt={data.img_alt || ""} />
+    )
+  }
 </a>
 
 <style>
