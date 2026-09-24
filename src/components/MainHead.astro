@@ -2,6 +2,7 @@
 import "../styles/global.css"
 import "katex/dist/katex.min.css"
 import { Font } from "astro:assets"
+import { ClientRouter } from "astro:transitions"
 import PostHog from "./PostHog.astro"
 import { site } from "../data/site"
 
@@ -10,6 +11,7 @@ interface Props {
   description?: string | undefined
   ogImage?: string | undefined
   type?: "website" | "article" | undefined
+  transitions?: boolean
 }
 
 const {
@@ -17,6 +19,7 @@ const {
   description = site.description,
   ogImage,
   type = "website",
+  transitions = false,
 } = Astro.props
 
 const canonicalUrl = Astro.url.href
@@ -36,6 +39,7 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
   content="AuEoDlfu/WcACUz0nKrs4zv6dqIH6I/n4/KwBYGbkpquhLuEtDK7N/sxJ4QCtFQsqklayFRNg6ZcRxdZUT24fw4AAABQeyJvcmlnaW4iOiJodHRwczovL3JhZmFhdWRpYmVydC5kZXY6NDQzIiwiZmVhdHVyZSI6IldlYk1DUCIsImV4cGlyeSI6MTc5NDg3MzYwMH0="
 />
 <title>{title}</title>
+{transitions && <ClientRouter />}
 
 <!-- Primary Meta Tags -->
 <meta name="title" content={title} />
@@ -67,9 +71,15 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 
 <!-- Self-hosted fonts (astro.config.mjs). Preload only what the first paint
      needs: body and heading text. -->
-<Font cssVariable="--font-public-sans" preload={[{ style: "normal", subset: "latin" }]} />
+<Font
+  cssVariable="--font-public-sans"
+  preload={[{ style: "normal", subset: "latin" }]}
+/>
 <Font cssVariable="--font-rubik" preload={[{ subset: "latin" }]} />
-<Font cssVariable="--font-literata" preload={[{ style: "normal", subset: "latin" }]} />
+<Font
+  cssVariable="--font-literata"
+  preload={[{ style: "normal", subset: "latin" }]}
+/>
 <Font cssVariable="--font-ibm-plex-mono" />
 
 <script is:inline>
@@ -84,6 +94,18 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
   }
   const isDark = getThemePreference() === "dark"
   document.documentElement.classList[isDark ? "add" : "remove"]("theme-dark")
+
+  // The view-transition router replaces <html>'s attributes with the new
+  // page's, which never carry the class. Copy it onto the incoming document
+  // before the swap, so the class survives and the observer below sees no
+  // change (an after-swap fix would run too late: the observer would already
+  // have persisted "light").
+  document.addEventListener("astro:before-swap", (event) => {
+    const dark = document.documentElement.classList.contains("theme-dark")
+    event.newDocument.documentElement.classList[dark ? "add" : "remove"](
+      "theme-dark",
+    )
+  })
 
   // Only run this on the client side
   if (typeof localStorage !== "undefined") {

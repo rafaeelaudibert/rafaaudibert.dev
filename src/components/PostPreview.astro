@@ -20,14 +20,19 @@ if (!images[pathFor(data.img)])
   )
 ---
 
+{/* transition:name pairs each card's label and cover with the post page's
+    title block and cover, so opening a post morphs them into place under the
+    view-transition router. The whole label is named, not just the title:
+    a named element is lifted onto its own layer, and a title lifted out of
+    its box would leave the white box to fade in underneath it. */}
 <a class="card" href={`/blog/${id}`}>
-  <span class="label">
+  <span class="label" transition:name={`post-${id}-title`}>
     <span class="title">{data.title}</span>
     <time class="text-meta" datetime={data.publishDate.toISOString()}>
       {convertToHumanReadableDate(data.publishDate)}
     </time>
   </span>
-  <Image src={images[pathFor(data.img)]()} alt={data.img_alt || ""} />
+  <Image src={images[pathFor(data.img)]()} alt={data.img_alt || ""} transition:name={`post-${id}-cover`} />
 </a>
 
 <style>

@@ -57,19 +57,22 @@ const showContents = sections.length >= 3
   description={entry.data.description}
   ogImage={`${Astro.site}blog/${entry.id}/og.png`}
   type="article"
+  transitions
 >
   <div class="stack gap-20">
     <main class="layout">
       <header class="head">
         <a class="back-link" href="/blog/"><Icon icon="arrow-left" /> All posts</a>
-        <p class="meta text-meta">
-          <time datetime={entry.data.publishDate.toISOString()}>
-            {convertToHumanReadableDate(entry.data.publishDate)}
-          </time>
-          <span aria-hidden="true">·</span>
-          {readingMinutes} min read
-        </p>
-        <h1>{entry.data.title}</h1>
+        <div class="title-block" transition:name={`post-${entry.id}-title`}>
+          <p class="meta text-meta">
+            <time datetime={entry.data.publishDate.toISOString()}>
+              {convertToHumanReadableDate(entry.data.publishDate)}
+            </time>
+            <span aria-hidden="true">·</span>
+            {readingMinutes} min read
+          </p>
+          <h1>{entry.data.title}</h1>
+        </div>
         <p class="dek text-dek">{entry.data.description}</p>
         <ul class="tags" aria-label="Tags">
           {entry.data.tags.map((t) => <li>{t}</li>)}
@@ -83,6 +86,7 @@ const showContents = sections.length >= 3
             src={images[pathFor(entry.data.img)]()}
             alt={entry.data.img_alt || ""}
             loading="eager"
+            transition:name={`post-${entry.id}-cover`}
           />
         )
       }
@@ -174,7 +178,8 @@ const showContents = sections.length >= 3
     measure()
   }
 
-  setup()
+  // Runs on the first load and again after each client-side navigation
+  document.addEventListener("astro:page-load", setup)
 </script>
 
 <style>
@@ -197,6 +202,12 @@ const showContents = sections.length >= 3
   .head {
     padding-top: 2rem;
   }
+  .title-block {
+    display: flex;
+    flex-direction: column;
+    gap: inherit;
+  }
+
 
   .back-link {
     display: inline-flex;
