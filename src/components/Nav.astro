@@ -112,6 +112,36 @@ const isCurrentPage = (href: string) => {
   </div>
 </nav>
 
+<script>
+  // The highlight slides only when the active item changes and the old
+  // highlight is on screen. Otherwise (going back to a page that restores a
+  // far scroll position, or leaving from a footer link with the nav scrolled
+  // away) the morph would come from or fly off to nowhere, so both snapshots
+  // drop their name and the root cross-fade covers it. The html attribute
+  // lets the label-colour hold below run only when a slide happens.
+  // Wrapping the loader is the one hook that sees the new document before
+  // the old page is captured for the transition.
+  document.addEventListener("astro:before-preparation", (event) => {
+    const load = event.loader
+    event.loader = async () => {
+      await load()
+      const oldActive = document.querySelector<HTMLElement>(".nav-items .active")
+      const newActive = event.newDocument.querySelector<HTMLElement>(".nav-items .active")
+      const oldHref = oldActive?.closest("a")?.getAttribute("href")
+      const newHref = newActive?.closest("a")?.getAttribute("href")
+      const rect = oldActive?.getBoundingClientRect()
+      const onScreen = !!rect && rect.bottom > 0 && rect.top < window.innerHeight
+
+      if (oldActive && newActive && oldHref !== newHref && onScreen) {
+        event.newDocument.documentElement.dataset.navSlide = ""
+        return
+      }
+      if (oldActive) oldActive.style.viewTransitionName = "none"
+      if (newActive) newActive.style.viewTransitionName = "none"
+    }
+  })
+</script>
+
 <style>
   /*
    * One layout, two arrangements. On phones: a header row with the title on
@@ -224,11 +254,11 @@ const isCurrentPage = (href: string) => {
     background-color: var(--accent-regular);
   }
 
-  /* After a client-side navigation the highlight slides in from the old
-     link over about 250ms, but the new label is already white, so it would
-     sit invisible on the light pill until the highlight arrives. Hold it
-     grey while the highlight travels, then fade it to white. */
-  :global(html[data-navigated]) .link[aria-current="page"] {
+  /* When the highlight slides in from the old link (about 250ms), the new
+     label is already white and would sit invisible on the light pill until
+     it arrives. Hold it grey while the highlight travels, then fade it to
+     white. The script above sets the attribute only for a real slide. */
+  :global(html[data-nav-slide]) .link[aria-current="page"] {
     animation: nav-active-text 0.36s ease-out both;
   }
 
@@ -243,7 +273,7 @@ const isCurrentPage = (href: string) => {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(html[data-navigated]) .link[aria-current="page"] {
+    :global(html[data-nav-slide]) .link[aria-current="page"] {
       animation: none;
     }
   }

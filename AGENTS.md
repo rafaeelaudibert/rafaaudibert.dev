@@ -150,6 +150,7 @@ Every page includes Astro's `ClientRouter` (in `MainHead.astro`), so links swap 
 
 - A `<script>` in a page or component runs once per full load, not per navigation. Anything that queries or binds to the DOM must do so inside `document.addEventListener("astro:page-load", ...)`, which also fires on the first load. Custom elements and React islands need nothing extra.
 - The router replaces `<html>`'s attributes; the theme class is carried over in `MainHead.astro`'s `astro:before-swap` handler. Do not move that to `astro:after-swap`: the mutation observer would persist "light" first.
+- `Nav.astro` decides in `astro:after-preparation` whether the highlight should slide (active item changed and the old highlight is on screen) and otherwise strips the name from both snapshots. Back navigation to a scrolled page is the case that needs this.
 
 ## Component Patterns
 
