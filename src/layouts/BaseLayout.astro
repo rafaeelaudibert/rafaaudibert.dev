@@ -14,15 +14,16 @@ interface Props {
   title?: string | undefined
   description?: string | undefined
   ogImage?: string | undefined
+  ogImageAlt?: string | undefined
   type?: "website" | "article" | undefined
 }
 
-const { title, description, ogImage, type } = Astro.props
+const { title, description, ogImage, ogImageAlt, type } = Astro.props
 ---
 
 <html lang="en">
   <head>
-    <MainHead title={title} description={description} ogImage={ogImage} type={type} />
+    <MainHead title={title} description={description} ogImage={ogImage} ogImageAlt={ogImageAlt} type={type} />
   </head>
   <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>

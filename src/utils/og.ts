@@ -1,5 +1,5 @@
 /**
- * Open Graph image rendering: a satori JSX tree -> SVG -> PNG (1200x630).
+ * Open Graph image rendering: a satori JSX tree -> SVG -> PNG (1200x600, 2:1).
  *
  * Fonts are the same families the site uses (see astro.config.mjs), read
  * from the @fontsource packages because satori needs raw font bytes (WOFF or
@@ -13,7 +13,7 @@ import satori, { type SatoriOptions } from "satori"
 import sharp from "sharp"
 
 export const OG_WIDTH = 1200
-export const OG_HEIGHT = 630
+export const OG_HEIGHT = 600 // 2:1
 
 /** Dark-theme tokens from global.css, resolved to literals for satori. */
 export const og = {

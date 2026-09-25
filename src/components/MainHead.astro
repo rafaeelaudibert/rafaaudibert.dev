@@ -5,11 +5,13 @@ import { Font } from "astro:assets"
 import { ClientRouter } from "astro:transitions"
 import PostHog from "./PostHog.astro"
 import { site } from "../data/site"
+import { OG_WIDTH, OG_HEIGHT } from "../utils/og"
 
 interface Props {
   title?: string | undefined
   description?: string | undefined
   ogImage?: string | undefined
+  ogImageAlt?: string | undefined
   type?: "website" | "article" | undefined
 }
 
@@ -17,6 +19,7 @@ const {
   title = site.name,
   description = site.description,
   ogImage,
+  ogImageAlt = `${site.name} — ${site.tagline}`,
   type = "website",
 } = Astro.props
 
@@ -53,6 +56,10 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={resolvedOgImage} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(OG_WIDTH)} />
+<meta property="og:image:height" content={String(OG_HEIGHT)} />
+<meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:locale" content={site.locale} />
 
@@ -62,6 +69,7 @@ const resolvedOgImage = ogImage ?? new URL("/og.png", Astro.site).href
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={resolvedOgImage} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
 <meta name="twitter:site" content={site.twitter} />
 <meta name="twitter:creator" content={site.twitter} />
 
