@@ -238,6 +238,7 @@ const NON_FLIGHT_VISITS: VisitedCountry[] = [
   { code: "CH", year: 2021 }, // Train from Grenoble (FR) to Geneve (CH)
   { code: "FR", year: 2021 }, // Train from Kaiserslautern (DE) to Strasbourg (FR)
   { code: "FR", year: 2021 }, // Bus from Freiburg (DE) to Grenoble (FR)
+  { code: "UY", year: 2025 }, // Ferry from Buenos Aires (AR) to Colonia (UY)
   { code: "MC", year: 2026 }, // Train from Nice (FR) to Monaco (MC)
   { code: "IT", year: 2026 }, // Train from Zurich (CH) to Florence (IT)
   { code: "VA", year: 2026 }, // Walk from Rome (IT) to Vatican City (VA)
