@@ -151,13 +151,15 @@ const listVisitedCountries = defineTool({
     year: z.number().int().optional().describe("Only countries visited in this year."),
   },
   handler: ({ year }) => {
+    // Built from the whole timeline so `firstVisit` and `years` stay true when
+    // filtering to one year; the filter only picks which countries are listed.
     const byCode = new Map<CountryCode, number[]>()
     for (const visit of getVisitedCountriesTimeline()) {
-      if (year !== undefined && visit.year !== year) continue
       byCode.set(visit.code, [...(byCode.get(visit.code) ?? []), visit.year])
     }
 
     const countries = [...byCode.entries()]
+      .filter(([, years]) => year === undefined || years.includes(year))
       .map(([code, years]) => ({
         ...describeCountry(code),
         home: code === HOME_COUNTRY,
