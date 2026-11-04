@@ -62,12 +62,13 @@ const FACTS = [
             <p class="eyebrow">Now</p>
             <h3 class="work-title">Leading Growth at PostHog</h3>
             <p class="work-text text-reading">
-              Onboarding, activation and the paths that turn a signup into a
-              paying customer. Also responsible for trying to figure out how do
-              we grow in an agentic world.
+              Onboarding, activation and cross-sell: the paths that turn a
+              signup into a paying customer. Lately, how people <em>and their
+              AI agents</em> find, set up and adopt PostHog.
             </p>
             <p class="work-text text-reading">
-              Before that I shipped Core Web Vitals for Web Analytics.
+              Before that I shipped Core Web Vitals for Web Analytics, and spent
+              six months as a one-person Revenue Analytics team.
             </p>
             <Link class="work-link" href={current.href} utm="growth-card">
               PostHog <Icon icon="arrow-square-out" size="0.9em" />
@@ -94,10 +95,13 @@ const FACTS = [
               <PullRequest number={PRS.emptyStates} />.
             </p>
             <p class="work-text text-reading">
-              Lately it has been authentication: PostHog as an OpenID Connect
-              provider <PullRequest number={PRS.oidc} />, and partners
-              authenticating as OAuth clients{" "}
-              <PullRequest number={PRS.partners} />.
+              Lately it has been letting other products bring their users in:
+              partners provision PostHog accounts headlessly, authenticating as
+              OAuth clients <PullRequest number={PRS.partners} /> with
+              per-partner rate limits <PullRequest
+                number={PRS.partnerRateLimits}
+              />, and PostHog is now an OpenID Connect provider{" "}
+              <PullRequest number={PRS.oidc} />.
             </p>
             <Link
               class="work-link"
@@ -110,16 +114,20 @@ const FACTS = [
           </li>
 
           <li class="work-card">
-            <p class="eyebrow">MCP</p>
-            <h3 class="work-title">
-              Model Context Protocol, at work and at home
-            </h3>
+            <p class="eyebrow">AI agents</p>
+            <h3 class="work-title">Building for agents, at work and at home</h3>
             <p class="work-text text-reading">
               At PostHog I helped architect our first MCP, built apps that
               render inside MCP clients <PullRequest number={PRS.mcpApps} />,
               and added Client ID Metadata Documents so clients such as Claude
               Code connect with a URL instead of registering first{" "}
-              <PullRequest number={PRS.cimd} />. Here, this site runs its own
+              <PullRequest number={PRS.cimd} />. Companies can also approve MCP
+              access through their own identity provider{" "}
+              <PullRequest number={PRS.enterpriseAuth} />.
+            </p>
+            <p class="work-text text-reading">
+              Most recently I built <code>hog</code>, PostHog's agent-optimized
+              CLI <PullRequest number={PRS.hog} />. Here, this site runs its own
               MCP server, so you can point Claude or Cursor at it and ask about
               me.
             </p>

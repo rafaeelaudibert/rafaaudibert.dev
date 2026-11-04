@@ -4,7 +4,7 @@
 export const POSTHOG_REPO = "https://github.com/PostHog/posthog"
 
 /** Merged pull requests on PostHog/posthog by me, and when that was counted. */
-export const MERGED_PRS = { count: 863, asOf: "September 2026", since: "November 2024" }
+export const MERGED_PRS = { count: 1007, asOf: "November 2026", since: "November 2024" }
 
 export const prUrl = (number: number) => `${POSTHOG_REPO}/pull/${number}`
 
@@ -19,4 +19,7 @@ export const PRS = {
   campaigns: 67968,
   webVitals: 27479,
   mcpApps: 46063,
+  enterpriseAuth: 64747,
+  partnerRateLimits: 83935,
+  hog: 124430,
 } as const
