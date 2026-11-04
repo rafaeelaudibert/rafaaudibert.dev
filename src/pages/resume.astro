@@ -24,6 +24,14 @@ import { site, SOCIAL_LINKS } from "../data/site"
 const EMAIL = "me@rafaaudibert.dev"
 const profiles = SOCIAL_LINKS.filter(({ label }) => label === "GitHub" || label === "LinkedIn")
 const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
+
+// The data's HTML strings can't use Link.astro, so give their external links
+// the same new-tab behaviour and screen-reader text here.
+const withExternalLinks = (html: string) =>
+  html.replace(
+    /<a href='(https?:[^']+)'>(.*?)<\/a>/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$2<span class="sr-only"> (opens in new tab)</span></a>'
+  )
 ---
 
 <BaseLayout title="Resume | Rafa Audibert" description="Rafa Audibert's Resume">
@@ -58,7 +66,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       <section class="labelled-section" aria-labelledby="background">
         <h2 class="section-title" id="background">Background</h2>
         <div class="content text-reading">
-          {getBackgroundContent().map((content) => <p set:html={content} />)}
+          {getBackgroundContent().map((content) => <p set:html={withExternalLinks(content)} />)}
         </div>
       </section>
 
@@ -94,7 +102,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
                 <ul class="bullets text-reading">
                   {experience.bulletPoints.map((bulletPoint) => (
-                    <li set:html={bulletPoint} />
+                    <li set:html={withExternalLinks(bulletPoint)} />
                   ))}
                 </ul>
               </li>
@@ -110,7 +118,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
             EDUCATION_AND_ACHIEVEMENTS.map((content) => (
               <li>
                 <span class="year text-meta">{content.year}</span>
-                <span set:html={content.description} />
+                <span set:html={withExternalLinks(content.description)} />
               </li>
             ))
           }
@@ -650,23 +658,30 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     }
 
     .jobs {
-      gap: 0.5rem;
+      gap: 1rem;
     }
 
+    /* Bullet text starts where the job title does: logo plus gap */
     .job {
+      --logo-size: 16px;
+      --logo-gap: 0.5rem;
       page-break-inside: avoid;
     }
 
+    .job-header {
+      gap: var(--logo-gap);
+    }
+
     .logo {
-      width: 16px;
-      height: 16px;
+      width: var(--logo-size);
+      height: var(--logo-size);
       border: 0;
       background: none;
     }
 
     .logo img {
-      width: 16px;
-      height: 16px;
+      width: var(--logo-size);
+      height: var(--logo-size);
     }
 
     /* Paper is white, so always print the light logo */
@@ -680,6 +695,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
 
     .job-role {
       font-size: 11pt;
+      color: #1a1a1a;
     }
 
     .job-role .at,
@@ -691,6 +707,7 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
     .bullets {
       gap: 0;
       margin-top: 0.125rem;
+      padding-left: calc(var(--logo-size) + var(--logo-gap));
     }
 
     .bullets li::marker {
@@ -702,41 +719,34 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       border-bottom: 0;
     }
 
+    /* The web cards without their boxes: name and level, description below */
     .languages {
-      display: block;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.375rem 1rem;
     }
 
     .languages li {
-      display: inline;
+      gap: 0;
       padding: 0;
       border: 0;
       background: none;
-    }
-
-    .languages li:not(:last-child)::after {
-      content: " · ";
+      font-family: var(--font-reading);
+      font-size: 10pt;
     }
 
     .language-row {
-      display: inline;
+      justify-content: flex-start;
+      gap: 0.375rem;
     }
 
-    .cefr {
+    .cefr,
+    .level {
       padding: 0;
       border: 0;
+      font-family: var(--font-reading);
+      font-size: 10pt;
+      letter-spacing: 0;
       color: #444;
-    }
-
-    .cefr::before {
-      content: " ";
-    }
-
-    .level::before {
-      content: " (";
-    }
-
-    .level::after {
-      content: ")";
     }
 
     .tech {
@@ -766,17 +776,22 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       display: inline;
     }
 
+    /* Read like the rest of the printed text, not like interface chips */
     .chips li {
       display: inline;
       padding: 0;
       border: 0;
       background: none;
-      font-size: 11pt;
+      font-family: var(--font-reading);
+      font-size: 10pt;
       color: #1a1a1a;
+      white-space: nowrap; /* "Cloudflare R2" never splits across lines */
     }
 
+    /* ...but the space after each comma can still break */
     .chips li:not(:last-child)::after {
       content: ", ";
+      white-space: normal;
     }
 
     /* Links print as plain text with the address after them */
@@ -785,7 +800,8 @@ const iconFor = { GitHub: "github-logo", LinkedIn: "linkedin-logo" } as const
       text-decoration: none !important;
     }
 
-    .content :global(a[href^="http"])::after {
+    /* Only the company links: inline links in the text would cost lines */
+    .job-role :global(a[href^="http"])::after {
       content: " (" attr(href) ")";
       font-size: 0.8em;
       color: #444;

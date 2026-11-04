@@ -1,5 +1,7 @@
 // Plain data only: this module is imported by the Worker as well as the site,
 // so anything that needs the Astro build (images, astro:* modules) lives elsewhere.
+// Links in the HTML strings stay bare `<a href='…'>`: the resume page adds the
+// new-tab handling and the Worker turns them into Markdown links.
 // Company logos are looked up by company name in ./companyLogos.ts.
 
 export const FIRST_WORKING_YEAR = 2017
@@ -10,8 +12,8 @@ export const FIRST_WORKING_YEAR = 2017
 export const yearsOfExperience = () => new Date().getFullYear() - FIRST_WORKING_YEAR
 
 export const getBackgroundContent = () => [
-  `Product engineer with ${yearsOfExperience()}+ years across seed-stage startups and a scale-up, currently leading the Growth team at PostHog after starting <b>Revenue Analytics</b> on my own and shipping <b>Core Web Vitals</b> for Web Analytics.`,
-  "I build end to end: data models and APIs in <b>Rails</b>, <b>Django</b> and <b>Phoenix</b>, interfaces in <b>TypeScript + React</b>, and the infrastructure underneath on AWS and Cloudflare. I care most about shipping things people actually use, and measuring whether they do.",
+  `Product engineer with ${yearsOfExperience()}+ years across seed-stage startups and a scale-up. I lead the <a href='https://posthog.com/teams/growth'><b>Growth</b></a> team at PostHog, working on how people and their AI agents find, set up and adopt PostHog. Previously worked on onboarding, activation and cross-sell for humans, while also shipping <a href='https://posthog.com/docs/web-analytics/web-vitals'><b>Core Web Vitals</b></a> monitoring and <a href='https://posthog.com/docs/revenue-analytics'>Revenue tracking</a>.`,
+  "I build end to end: data models and APIs in <b>Rails</b>, <b>Django</b> and <b>Phoenix</b>, interfaces in <b>TypeScript + React</b>, and the infrastructure underneath on AWS and Cloudflare.",
 ]
 
 // `print: false` keeps an entry on the web page but off the printed resume,
@@ -24,9 +26,10 @@ export const PAST_EXPERIENCES = [
     startDate: "Nov 2024",
     endDate: "Present",
     bulletPoints: [
-      "While working on the <strong>Web Analytics</strong> team ($5M+ ARR), implemented the <strong>Core Web Vitals + Performance</strong> tracking feature.",
-      "Solo-built the <strong>Revenue Analytics</strong> product to help companies understand their revenue metrics and improve their products.",
-      "After transferring Revenue Analytics to a new team, since it didn't find traction, I moved on to lead the <strong>Growth</strong> team, with focus on the company's growth and expansion.",
+      "Lead the <a href='https://posthog.com/teams/growth'><strong>Growth</strong></a> team, owning onboarding, activation and cross-sell: how a signup gets set up, reaches value and finds the rest of PostHog's products. PostHog grew from <strong>$30M to $100M ARR</strong> in that time (as of Nov 2026).",
+      "Made PostHog usable by AI agents: interactive <strong>MCP Apps</strong>, enterprise-managed authorization for the MCP server, and OAuth support that lets <strong>CIMD</strong> and <strong>DCR</strong> apps connect to PostHog. Built APIs that let partners provision new PostHog accounts headlessly.",
+      "Built <strong>hog</strong>, PostHog's agent-optimized CLI, covering login, queries, the full API, CI, installation and AI skills.",
+      "While working on the <strong>Web Analytics</strong> team ($5M+ ARR), implemented the <a href='https://posthog.com/docs/web-analytics/web-vitals'><strong>Core Web Vitals + Performance</strong></a> tracking feature. Also spun up a new solo <a href='https://posthog.com/docs/revenue-analytics'><strong>Revenue Analytics</strong></a> team for 6 months, tracking revenue and connecting it to analytics.",
     ],
   },
   {
@@ -37,9 +40,8 @@ export const PAST_EXPERIENCES = [
     endDate: "Nov 2024",
     bulletPoints: [
       "Built the company's flagship product in <strong>Ruby on Rails</strong> + <strong>React/TS</strong>, with a fully-fledged <strong>GraphQL API</strong>, deploying tens of times every day.",
-      "Implemented integrations with 4 big players in the Proptech industry, including 2-way sync PubSub-based infrastructure.",
-      "Reduced frontend bundle size by 95% by applying modern frontend bundling practices while migrating from CRA to <strong>Vite</strong>.",
-      "Grew company by 2 orders of magnitude while ensuring both the database and app architecture could sustain the higher load by migrating the company infrastructure from Heroku to AWS.",
+      "Integrated with 4 big Proptech players, including 2-way sync PubSub-based infrastructure.",
+      "Reduced frontend bundle size by 95% with modern bundling practices while migrating from CRA to <strong>Vite</strong>.",
     ],
   },
   {
@@ -49,9 +51,9 @@ export const PAST_EXPERIENCES = [
     startDate: "Nov 2019",
     endDate: "Mar 2021",
     bulletPoints: [
-      "Developed a novel logistics IaC microservice architecture, integrating with tens of shipping companies, to handle 70k deliveries/month in a continental country such as Brazil, using <strong>Terraform</strong>.",
-      "Maintained a legacy <strong>Django</strong> monolith responsible for the subscription process, while rewriting the old billing system on Serverless.",
-      "Built an internal CLI to coordinate the company software deployment process, <strong>decreasing deployment time by 60%</strong>.",
+      "Developed a novel logistics IaC microservice architecture, integrating with tens of shipping companies, to handle 70k deliveries/month in a continental country such as Brazil, using <strong>Terraform</strong> and <strong>AWS Lambda</strong>.",
+      "Maintained a legacy <strong>Django</strong> monolith handling subscriptions, while rewriting the billing system on Serverless.",
+      "Built an internal CLI to coordinate company deployments, <strong>decreasing deployment time by 60%</strong>.",
     ],
   },
   {
@@ -60,7 +62,6 @@ export const PAST_EXPERIENCES = [
     role: "Software Engineer",
     startDate: "Mar 2017",
     endDate: "Nov 2019",
-    print: false,
     bulletPoints: [
       "Led the initial MVP for the Brazilian government in a 3-month timeframe with a team of 3 junior engineers, and got the project greenlit by it.",
       "Built a <strong>fully-dockerized Ruby on Rails MVC</strong> application for the Brazilian public health system UBSs (small health clinics spread through Brazilian neighborhoods).",
@@ -73,17 +74,17 @@ export const EDUCATION_AND_ACHIEVEMENTS = [
   {
     year: "2022",
     description:
-      "<i>summa cum laude</i> Bachelor's degree in Computer Science from Universidade Federal do Rio Grande do Sul (UFRGS), Brazil",
+      "<b><i>summa cum laude</i></b> Bachelor's degree in <b>Computer Science</b> from <a href='https://www.ufrgs.br/'>Universidade Federal do Rio Grande do Sul (UFRGS)</a>, Brazil",
   },
   {
     year: "2021",
     description:
-      "Exchange student at the Technische Universität Kaiserslautern (TUK), Germany",
+      "<b>Exchange student</b> at the <a href='https://rptu.de/'>Rheinland-Pfälzische Technische Universität Kaiserslautern-Landau (RPTU)</a>, Germany",
   },
   {
     year: "2019/2020",
     description:
-      "2-time finalist in the Brazilian Competitive Programming Contest (ICPC)",
+      "<b>2-time finalist</b> in the Brazilian Competitive Programming Contest (<a href='https://maratona.sbc.org.br/'>ICPC</a>)",
   },
 ]
 
@@ -117,6 +118,8 @@ export const TECHNOLOGIES = [
       "Ruby on Rails",
       "Django",
       "React",
+      "TanStack",
+      "Tailwind",
       "Phoenix",
       "NextJS",
       "Gatsby",
@@ -130,8 +133,14 @@ export const TECHNOLOGIES = [
   {
     type: "Cloud",
     technologies: [
-      "AWS (Lambda, DynamoDB, S3, CloudFront, CloudWatch, RDS, ELB, Route 53)",
-      "Cloudflare",
+      "AWS Lambda",
+      "AWS DynamoDB",
+      "AWS S3",
+      "AWS CloudFront",
+      "AWS Route 53",
+      "Cloudflare Workers",
+      "Cloudflare R2",
+      "Cloudflare D1",
       "Convex",
       "Netlify",
       "Supabase",
@@ -144,17 +153,21 @@ export const TECHNOLOGIES = [
       "CI/CD",
       "Depot",
       "Docker",
+      "Gauge",
       "Git",
       "GitHub",
       "Github Actions",
       "GitLab",
+      "Graphite",
+      "Greptile",
       "PostHog",
       "Semaphore CI",
       "Terraform",
+      "Trunk",
     ],
   },
   {
     type: "AI Tooling",
-    technologies: ["Claude Code", "Cursor", "Lovable"],
+    technologies: ["Claude Code", "Codex", "Cursor", "Lovable"],
   },
 ]

@@ -77,7 +77,7 @@ element:focus {
 ### 5. External Links
 
 - Links that open in new tabs should indicate this to screen readers
-- Use the `Link.astro` component for every anchor, internal (`external={false}`) or external. External links open in a new tab, add "(opens in new tab)" for screen readers, and get UTM parameters (`utm_source` this domain, `utm_medium` referral, `utm_campaign` the page, `utm_content` from the `utm` prop). Pass `utm={false}` where the raw URL matters, such as the resume, whose print stylesheet prints link addresses. `class` and other attributes pass through, so scoped styles keep working
+- Use the `Link.astro` component for every anchor, internal (`external={false}`) or external. External links open in a new tab, add "(opens in new tab)" for screen readers, and get UTM parameters (`utm_source` this domain, `utm_medium` referral, `utm_campaign` the page, `utm_content` from the `utm` prop). Pass `utm={false}` where the raw URL matters, such as the resume, whose print stylesheet prints link addresses. `class` and other attributes pass through, so scoped styles keep working. The one exception is the HTML strings in `src/data/resume.ts`, which go through `set:html` and also feed the MCP Worker: they use bare `<a href='…'>`, `resume.astro` adds the new-tab handling, and `worker/mcp/text.ts` turns them into Markdown links
 - Include `rel="noopener noreferrer"` for security
 
 ### 6. Images and Visual Content
@@ -111,7 +111,8 @@ Common ARIA patterns used in this codebase:
 
 ### 9. Print
 
-- `.no-print` (global) hides an element when printing. The resume marks experiences with `print: false` in `src/data/resume.ts` and applies the class, so the printed resume stays at two pages without the stylesheet knowing any company names.
+- `.no-print` (global) hides an element when printing. An experience in `src/data/resume.ts` can be marked `print: false` to get the class, so the printed resume stays at two pages without the stylesheet knowing any company names.
+- The printed resume shows the address only after company links. Links inside the resume's HTML strings stay clickable in the PDF but print as plain text, so they cost no extra lines.
 
 ### 10. Screen Reader Text
 
