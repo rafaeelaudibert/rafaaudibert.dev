@@ -2,9 +2,10 @@
 // the site. Pull requests on github.com/PostHog/posthog worth pointing at.
 
 export const POSTHOG_REPO = "https://github.com/PostHog/posthog"
+export const GITHUB_USER = "rafaeelaudibert"
 
-/** Merged pull requests on PostHog/posthog by me, and when that was counted. */
-export const MERGED_PRS = { count: 1007, asOf: "November 2026", since: "November 2024" }
+/** When I started merging into PostHog/posthog. The count itself comes from GitHub at build time (src/utils/mergedPrs.ts). */
+export const MERGED_PRS_SINCE = "November 2024"
 
 export const prUrl = (number: number) => `${POSTHOG_REPO}/pull/${number}`
 

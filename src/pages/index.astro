@@ -11,13 +11,15 @@ import { PAST_EXPERIENCES, yearsOfExperience } from "../data/resume"
 import { FLIGHTS, getVisitedCountries } from "../data/travel"
 import Link from "../components/Link.astro"
 import PullRequest from "../components/PullRequest.astro"
-import { MERGED_PRS, POSTHOG_REPO, PRS } from "../data/work"
+import { MERGED_PRS_SINCE, PRS } from "../data/work"
+import { getMergedPrsLabel, mergedPrsUrl } from "../utils/mergedPrs"
 
 const posts = (await getCollection("blog"))
   .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
   .slice(0, 2)
 
 const current = PAST_EXPERIENCES[0]
+const mergedPrs = await getMergedPrsLabel()
 const countries = getVisitedCountries().size
 
 const FACTS = [
@@ -105,10 +107,10 @@ const FACTS = [
             </p>
             <Link
               class="work-link"
-              href={`${POSTHOG_REPO}/pulls?q=is%3Apr+is%3Amerged+author%3Arafaeelaudibert`}
+              href={mergedPrsUrl}
               utm="all-prs"
             >
-              All of them, since {MERGED_PRS.since}
+              All {mergedPrs} of them, since {MERGED_PRS_SINCE}
               <Icon icon="arrow-square-out" size="0.9em" />
             </Link>
           </li>
