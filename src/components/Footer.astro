@@ -1,5 +1,7 @@
 ---
 import { site, SOCIAL_LINKS } from "../data/site"
+import { BUILD } from "../utils/build"
+import Link from "./Link.astro"
 
 const currentYear = new Date().getFullYear()
 const footerLinks = SOCIAL_LINKS.filter((link) =>
@@ -9,12 +11,27 @@ const footerLinks = SOCIAL_LINKS.filter((link) =>
 
 <footer>
   <div class="group">
-    <p>
-      Designed & Developed in Porto Alegre 🇧🇷 with <a
-        href="https://astro.build/">Astro</a
-      >&nbsp;🚀
+    <div class="credits">
+      <p>
+        Designed & Developed in Porto Alegre 🇧🇷 with <a
+          href="https://astro.build/">Astro</a
+        >&nbsp;🚀
+      </p>
+      <p>&copy; {currentYear} {site.fullName}</p>
+    </div>
+    <p class="build">
+      Built <time datetime={BUILD.builtAt.toISOString()}>{BUILD.builtAtLabel} UTC</time>
+      {
+        BUILD.commit && (
+          <>
+            {" "}from{" "}
+            <Link href={BUILD.commit.url} utm={false} title="This build's commit on GitHub">
+              <code>{BUILD.commit.short}</code>
+            </Link>
+          </>
+        )
+      }
     </p>
-    <p>&copy; {currentYear} {site.fullName}</p>
   </div>
   <p class="socials">
     {footerLinks.map((link) => <a href={link.href}>{link.label}</a>)}
@@ -34,22 +51,36 @@ const footerLinks = SOCIAL_LINKS.filter((link) =>
     font-size: 0.8125rem;
   }
 
-  footer a {
+  /* :global so anchors rendered by Link.astro are styled too */
+  footer :global(a) {
     color: var(--gray-400);
     text-decoration: 1px solid underline transparent;
     text-underline-offset: 0.25em;
     transition: text-decoration-color var(--theme-transition);
   }
 
-  footer a:hover,
-  footer a:focus {
+  footer :global(a:hover),
+  footer :global(a:focus-visible) {
     text-decoration-color: currentColor;
   }
 
-  .group {
+  .group,
+  .credits {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .build {
+    font-size: 0.75rem;
+  }
+
+  /* The blog's inline code chip; the footer is already mono, so no resize */
+  .build code {
+    padding: 0.125em 0.3em;
+    border-radius: var(--radius-xs);
+    background: var(--gray-900);
+    color: var(--gray-0);
   }
 
   .socials {
@@ -66,10 +97,14 @@ const footerLinks = SOCIAL_LINKS.filter((link) =>
       padding: 2.5rem 5rem;
     }
 
-    .group {
+    .credits {
       flex-direction: row;
       gap: 1rem;
       flex-wrap: wrap;
+    }
+
+    .group {
+      align-items: flex-start;
     }
 
     .socials {
