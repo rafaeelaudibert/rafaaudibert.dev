@@ -22,11 +22,13 @@
     "run_worker_first": ["/mcp", "/mcp/", "/api/*"]
   },
   // The email composer's mail (worker/contact.ts). Sending is free only to a
-  // verified Email Routing destination address, which CONTACT_TO has to be.
+  // verified Email Routing destination address, which CONTACT_TO has to be:
+  // me@rafaaudibert.dev is a routing address, not a destination, and the
+  // binding refuses it ("destination address is not a verified address").
   // `wrangler dev` only simulates sends and logs them.
   "send_email": [{ "name": "CONTACT_EMAIL" }],
   "vars": {
-    "CONTACT_TO": "me@rafaaudibert.dev"
+    "CONTACT_TO": "rafaeelaudibert@gmail.com"
   },
   // Per Cloudflare location, eventually consistent, period 10 or 60 seconds
   // only. Turnstile does the real gatekeeping; these keep one visitor, or a
