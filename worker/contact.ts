@@ -8,7 +8,8 @@
  *
  * The mail goes out through the send_email binding (Cloudflare Email Service).
  * Sending to a verified Email Routing destination address is free, so the
- * recipient is CONTACT_TO (a var in wrangler.jsonc). The sender is fixed on
+ * recipient is the CONTACT_TO secret: a verified destination address, not
+ * me@rafaaudibert.dev, which only routes there. The sender is fixed on
  * this domain and the visitor's address is only the Reply-To: nobody can make
  * the form send as someone else or to someone else.
  */
@@ -29,7 +30,7 @@ export interface ContactEnv {
   CONTACT_VISITOR_LIMIT?: RateLimit
   /** Everyone together: however many visitors there are, the inbox only takes this many. */
   CONTACT_GLOBAL_LIMIT?: RateLimit
-  /** The verified destination address the form delivers to (wrangler.jsonc vars). */
+  /** Secret: the verified destination address the form delivers to. */
   CONTACT_TO?: string
   /** Secret: the Turnstile widget's secret key. */
   TURNSTILE_SECRET_KEY?: string
