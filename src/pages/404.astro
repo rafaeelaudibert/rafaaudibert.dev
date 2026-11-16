@@ -1,8 +1,123 @@
 ---
-import Hero from "../components/Hero.astro"
 import BaseLayout from "../layouts/BaseLayout.astro"
+import Link from "../components/Link.astro"
+import LostBubble from "../components/LostBubble.astro"
 ---
 
 <BaseLayout title="Not Found" description="404 Error: this page was not found">
-  <Hero title="Page Not Found" tagline="Not found" />
+  <section class="lost" aria-labelledby="lost-title">
+    <div class="copy">
+      <p class="eyebrow">404 · Not found</p>
+      <h1 id="lost-title" class="title">This page floated away</h1>
+      <p class="text-dek">
+        The link might be old, or the page drifted off somewhere.<span class="hint"
+          >{" "}While you're here, try popping the bubble.</span
+        >
+      </p>
+      <div class="actions">
+        <Link href="/" external={false} class="action primary">Take me home</Link>
+        <Link href="/blog/" external={false} class="action">Read the blog</Link>
+      </div>
+    </div>
+  </section>
+  <LostBubble />
 </BaseLayout>
+
+<style>
+  /* The main column grows to fill what the nav and footer leave, so the
+     message sits in the middle of the screen. Matched with :has so it only
+     ever applies while this page is the one showing */
+  :global(#main-content:has(.lost)) {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+  }
+
+  /* The extra bottom padding matches the nav's bottom margin (Nav.astro), so
+     the message is centred between the nav and the footer, not just in the
+     space below that margin */
+  .lost {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    padding: 2rem 1.5rem calc(2rem + 1.5rem);
+    text-align: center;
+  }
+
+  @media (min-width: 50em) {
+    .lost {
+      padding-bottom: calc(2rem + 3.5rem);
+    }
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    max-width: 36rem;
+  }
+
+  .title {
+    color: var(--gray-0);
+    text-wrap: balance;
+  }
+
+  .text-dek {
+    text-wrap: pretty;
+  }
+
+  /* The bubble holds still when motion is reduced, so it can't be popped */
+  @media (prefers-reduced-motion: reduce) {
+    .hint {
+      display: none;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .actions :global(.action) {
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--gray-999) 70%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--gray-0);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color var(--theme-transition),
+      border-color var(--theme-transition),
+      color var(--theme-transition);
+  }
+
+  .actions :global(.action:hover),
+  .actions :global(.action:focus-visible) {
+    border-color: var(--accent-regular);
+  }
+
+  .actions :global(.action.primary) {
+    border-color: var(--accent-regular);
+    background: var(--accent-regular);
+    color: var(--accent-text-over);
+  }
+
+  .actions :global(.action.primary:hover),
+  .actions :global(.action.primary:focus-visible) {
+    background: color-mix(in srgb, var(--accent-regular) 85%, var(--gray-0));
+  }
+
+  @media (forced-colors: active) {
+    .actions :global(.action) {
+      border: 1px solid LinkText;
+    }
+  }
+</style>

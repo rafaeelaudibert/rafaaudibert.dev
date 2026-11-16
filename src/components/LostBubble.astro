@@ -1,0 +1,498 @@
+---
+/**
+ * The 404 page's toy: a soap bubble drifting over the page's backdrop and
+ * under its text. It floats on a slow current, gets blown about by the
+ * pointer, ripples away from clicks and taps, and pops into droplets when hit,
+ * then grows back. Purely decorative, so it's hidden from assistive tech and
+ * the canvas never takes clicks: the window listens instead, and links under
+ * the bubble keep working. With reduced motion it's drawn once and stays put.
+ */
+---
+
+<canvas class="bubble-canvas" data-lost-bubble aria-hidden="true"></canvas>
+
+<script>
+  interface Mode {
+    k: number
+    amplitude: number
+    phase: number
+    speed: number
+  }
+
+  interface Droplet {
+    x: number
+    y: number
+    vx: number
+    vy: number
+    r: number
+    age: number
+    life: number
+    hue: number
+  }
+
+  interface Ripple {
+    x: number
+    y: number
+    from: number
+    age: number
+    life: number
+  }
+
+  const TAU = Math.PI * 2
+  const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
+  const random = (min: number, max: number) => min + Math.random() * (max - min)
+
+  /** How long a popped bubble stays gone before it grows back. */
+  const RESPAWN_S = 1.5
+  /** The membrane rests with a faint breathing wobble. */
+  const RESTING_WOBBLE = 0.005
+
+  function startBubble(canvas: HTMLCanvasElement): () => void {
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return () => {}
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    let width = 0
+    let height = 0
+    let time = random(0, 100)
+    let frame = 0
+    let last = 0
+
+    const bubble = {
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      r: 80,
+      scale: 1,
+      scaleVelocity: 0,
+      visible: true,
+      respawnIn: 0,
+      modes: [2, 3, 4].map<Mode>((k) => ({
+        k,
+        amplitude: RESTING_WOBBLE,
+        phase: random(0, TAU),
+        speed: random(1.2, 2.4) * (k % 2 ? -1 : 1),
+      })),
+    }
+    const droplets: Droplet[] = []
+    const ripples: Ripple[] = []
+    // `at` is in the bubble's clock, `stamp` in the event's, for measuring speed
+    const pointer = { x: 0, y: 0, vx: 0, vy: 0, at: -Infinity, stamp: 0, isMouse: true }
+
+    const isDark = () => document.documentElement.classList.contains("theme-dark")
+
+    /** Where the current carries it: a slow loop around the whole screen. */
+    const wander = (t: number) => ({
+      x: width * (0.5 + 0.33 * Math.sin(t * 0.11)),
+      y: height * (0.52 + 0.27 * Math.sin(t * 0.17 + 1.3)),
+    })
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      width = window.innerWidth
+      height = window.innerHeight
+      canvas.width = Math.round(width * dpr)
+      canvas.height = Math.round(height * dpr)
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
+      bubble.r = clamp(Math.min(width, height) * 0.13, 52, 130)
+    }
+
+    /** A knock sets the membrane wobbling, harder the bigger the knock. */
+    function kick(strength: number) {
+      for (const mode of bubble.modes) {
+        mode.amplitude = clamp(mode.amplitude + strength * random(0.4, 1), 0, 0.08)
+      }
+    }
+
+    function pop() {
+      bubble.visible = false
+      bubble.respawnIn = RESPAWN_S
+      const r = bubble.r * bubble.scale
+      ripples.push({ x: bubble.x, y: bubble.y, from: r, age: 0, life: 0.7 })
+      const count = 18
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * TAU + random(-0.2, 0.2)
+        const speed = random(90, 330)
+        droplets.push({
+          x: bubble.x + Math.cos(angle) * r * random(0.7, 1),
+          y: bubble.y + Math.sin(angle) * r * random(0.7, 1),
+          vx: Math.cos(angle) * speed + bubble.vx * 0.4,
+          vy: Math.sin(angle) * speed + bubble.vy * 0.4,
+          r: random(2, Math.max(3, r * 0.09)),
+          age: 0,
+          life: random(0.7, 1.4),
+          hue: random(180, 340),
+        })
+      }
+    }
+
+    function respawn() {
+      // It grows back somewhere along the current, away from where it burst
+      const spot = wander(time + 9)
+      bubble.x = spot.x
+      bubble.y = spot.y
+      bubble.vx = 0
+      bubble.vy = -40
+      bubble.scale = 0
+      bubble.scaleVelocity = 0
+      bubble.visible = true
+      kick(0.05)
+    }
+
+    function step(dt: number) {
+      time += dt
+
+      if (!bubble.visible) {
+        bubble.respawnIn -= dt
+        if (bubble.respawnIn <= 0) respawn()
+      } else {
+        const r = bubble.r * bubble.scale
+        const target = wander(time)
+        let ax = (target.x - bubble.x) * 0.35
+        let ay = (target.y - bubble.y) * 0.35
+        // Eddies in the current, and a little lift
+        ax += Math.sin(bubble.y * 0.006 + time * 0.7) * 16
+        ay += Math.cos(bubble.x * 0.005 + time * 0.5) * 16 - 6
+
+        // Soft walls: the edges push back rather than bounce
+        const margin = bubble.r * 1.1
+        if (bubble.x < margin) ax += (margin - bubble.x) * 8
+        if (bubble.x > width - margin) ax -= (bubble.x - (width - margin)) * 8
+        if (bubble.y < margin) ay += (margin - bubble.y) * 8
+        if (bubble.y > height - margin) ay -= (bubble.y - (height - margin)) * 8
+
+        // A pointer close by blows it away
+        if (time - pointer.at < 1.5) {
+          const dx = bubble.x - pointer.x
+          const dy = bubble.y - pointer.y
+          const distance = Math.hypot(dx, dy) || 1
+          const reach = r * 2.2
+          if (distance < reach) {
+            const push = (1 - distance / reach) ** 2 * 1100
+            ax += (dx / distance) * push
+            ay += (dy / distance) * push
+          }
+        }
+
+        bubble.vx += ax * dt
+        bubble.vy += ay * dt
+        const damping = Math.pow(0.55, dt)
+        bubble.vx *= damping
+        bubble.vy *= damping
+        bubble.x += bubble.vx * dt
+        bubble.y += bubble.vy * dt
+
+        // Growing back overshoots a little and settles, like a real film
+        bubble.scaleVelocity += ((1 - bubble.scale) * 90 - bubble.scaleVelocity * 9) * dt
+        bubble.scale = Math.max(0, bubble.scale + bubble.scaleVelocity * dt)
+
+        for (const mode of bubble.modes) {
+          mode.amplitude += (RESTING_WOBBLE - mode.amplitude) * (1 - Math.pow(0.25, dt))
+          mode.phase += mode.speed * dt
+        }
+      }
+
+      for (let i = droplets.length - 1; i >= 0; i--) {
+        const drop = droplets[i]
+        drop.age += dt
+        if (drop.age >= drop.life) {
+          droplets.splice(i, 1)
+          continue
+        }
+        const drag = Math.pow(0.15, dt)
+        drop.vx *= drag
+        drop.vy = drop.vy * drag - 40 * dt
+        drop.x += drop.vx * dt
+        drop.y += drop.vy * dt
+      }
+
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        ripples[i].age += dt
+        if (ripples[i].age >= ripples[i].life) ripples.splice(i, 1)
+      }
+
+      // Over the bubble, the cursor says it can be popped
+      if (pointer.isMouse && bubble.visible) {
+        const over = Math.hypot(pointer.x - bubble.x, pointer.y - bubble.y) < bubble.r * bubble.scale
+        document.body.style.cursor = over && time - pointer.at < 5 ? "pointer" : ""
+      }
+    }
+
+    function rim(cx: number, cy: number, alpha: number, lightness: number) {
+      const hues = [285, 220, 175, 60, 330, 285]
+      if ("createConicGradient" in ctx!) {
+        const gradient = ctx!.createConicGradient(time * 0.35, cx, cy)
+        hues.forEach((hue, i) => gradient.addColorStop(i / (hues.length - 1), `hsla(${hue}, 90%, ${lightness}%, ${alpha})`))
+        return gradient
+      }
+      return `hsla(285, 90%, ${lightness}%, ${alpha})`
+    }
+
+    function drawBubble() {
+      const c = ctx!
+      const dark = isDark()
+      const r = bubble.r * bubble.scale
+      if (r < 1) return
+      const { x, y } = bubble
+      const speed = Math.hypot(bubble.vx, bubble.vy)
+      const heading = Math.atan2(bubble.vy, bubble.vx)
+      const stretch = 1 + Math.min(speed / 2600, 0.1)
+
+      // The membrane: a wobbling circle, drawn out along the way it's moving
+      c.save()
+      c.translate(x, y)
+      c.rotate(heading)
+      c.scale(stretch, 1 / stretch)
+      c.beginPath()
+      const points = 72
+      for (let i = 0; i <= points; i++) {
+        const angle = (i / points) * TAU
+        let radius = 1
+        for (const mode of bubble.modes) radius += mode.amplitude * Math.sin(mode.k * angle + mode.phase)
+        const px = Math.cos(angle) * r * radius
+        const py = Math.sin(angle) * r * radius
+        if (i === 0) c.moveTo(px, py)
+        else c.lineTo(px, py)
+      }
+      c.closePath()
+      c.restore()
+
+      // Clear in the middle, tinted towards the edge
+      const body = c.createRadialGradient(x - r * 0.25, y - r * 0.3, 0, x, y, r)
+      body.addColorStop(0, `rgba(255, 255, 255, ${dark ? 0.03 : 0.12})`)
+      body.addColorStop(0.75, `rgba(255, 255, 255, ${dark ? 0.02 : 0.06})`)
+      body.addColorStop(1, dark ? "rgba(197, 97, 246, 0.16)" : "rgba(118, 17, 166, 0.10)")
+      c.fillStyle = body
+      c.fill()
+
+      // Thin-film colour: a soft band inside the edge, then the edge itself
+      c.save()
+      c.clip()
+      c.lineWidth = r * 0.22
+      c.strokeStyle = rim(x, y, dark ? 0.2 : 0.16, dark ? 70 : 55)
+      c.stroke()
+      c.restore()
+      c.lineWidth = Math.max(1, r * 0.022)
+      c.strokeStyle = rim(x, y, dark ? 0.75 : 0.6, dark ? 72 : 52)
+      c.stroke()
+      if (!dark) {
+        c.lineWidth = 1
+        c.strokeStyle = "rgba(9, 11, 17, 0.08)"
+        c.stroke()
+      }
+
+      // Reflections, lit from the top left whichever way it's heading
+      c.save()
+      c.translate(x, y)
+
+      c.save()
+      c.translate(-r * 0.4, -r * 0.42)
+      c.rotate(-0.7)
+      c.scale(1, 0.45)
+      const glint = c.createRadialGradient(0, 0, 0, 0, 0, r * 0.32)
+      glint.addColorStop(0, "rgba(255, 255, 255, 0.9)")
+      glint.addColorStop(0.45, "rgba(255, 255, 255, 0.35)")
+      glint.addColorStop(1, "rgba(255, 255, 255, 0)")
+      c.fillStyle = glint
+      c.beginPath()
+      c.arc(0, 0, r * 0.32, 0, TAU)
+      c.fill()
+      c.restore()
+
+      // A window, bent along the inside of the film
+      c.beginPath()
+      c.arc(0, 0, r * 0.8, Math.PI * 1.08, Math.PI * 1.36)
+      c.lineWidth = r * 0.035
+      c.lineCap = "round"
+      c.strokeStyle = "rgba(255, 255, 255, 0.55)"
+      c.stroke()
+
+      const bounce = c.createRadialGradient(r * 0.46, r * 0.5, 0, r * 0.46, r * 0.5, r * 0.12)
+      bounce.addColorStop(0, "rgba(255, 255, 255, 0.45)")
+      bounce.addColorStop(1, "rgba(255, 255, 255, 0)")
+      c.fillStyle = bounce
+      c.beginPath()
+      c.arc(r * 0.46, r * 0.5, r * 0.12, 0, TAU)
+      c.fill()
+
+      c.restore()
+    }
+
+    function draw() {
+      const c = ctx!
+      const dark = isDark()
+      c.clearRect(0, 0, width, height)
+
+      for (const ripple of ripples) {
+        const progress = ripple.age / ripple.life
+        const eased = 1 - (1 - progress) ** 3
+        c.beginPath()
+        c.arc(ripple.x, ripple.y, ripple.from + eased * 140, 0, TAU)
+        c.lineWidth = 2 * (1 - progress) + 0.5
+        c.strokeStyle = dark
+          ? `rgba(197, 97, 246, ${0.4 * (1 - progress)})`
+          : `rgba(118, 17, 166, ${0.3 * (1 - progress)})`
+        c.stroke()
+      }
+
+      if (bubble.visible) drawBubble()
+
+      for (const drop of droplets) {
+        const fade = 1 - drop.age / drop.life
+        c.beginPath()
+        c.arc(drop.x, drop.y, drop.r, 0, TAU)
+        c.lineWidth = 1
+        c.strokeStyle = `hsla(${drop.hue}, 90%, ${dark ? 72 : 50}%, ${0.7 * fade})`
+        c.stroke()
+        c.beginPath()
+        c.arc(drop.x - drop.r * 0.35, drop.y - drop.r * 0.35, drop.r * 0.3, 0, TAU)
+        c.fillStyle = `rgba(255, 255, 255, ${0.8 * fade})`
+        c.fill()
+      }
+    }
+
+    function tick(now: number) {
+      const dt = Math.min((now - last) / 1000, 1 / 20)
+      last = now
+      step(dt)
+      draw()
+      frame = requestAnimationFrame(tick)
+    }
+
+    function handlePointerMove(event: PointerEvent) {
+      const elapsed = Math.max(event.timeStamp - pointer.stamp, 1)
+      const isFresh = elapsed < 100
+      pointer.vx = isFresh ? ((event.clientX - pointer.x) / elapsed) * 1000 : 0
+      pointer.vy = isFresh ? ((event.clientY - pointer.y) / elapsed) * 1000 : 0
+      pointer.x = event.clientX
+      pointer.y = event.clientY
+      pointer.at = time
+      pointer.stamp = event.timeStamp
+      pointer.isMouse = event.pointerType === "mouse"
+
+      // The air a moving pointer drags along nudges the bubble its way
+      if (!bubble.visible) return
+      const r = bubble.r * bubble.scale
+      const distance = Math.hypot(bubble.x - pointer.x, bubble.y - pointer.y)
+      if (distance < r * 3.5) {
+        const falloff = 1 - distance / (r * 3.5)
+        bubble.vx += clamp(pointer.vx, -3000, 3000) * 0.06 * falloff
+        bubble.vy += clamp(pointer.vy, -3000, 3000) * 0.06 * falloff
+        kick(Math.min(Math.hypot(pointer.vx, pointer.vy) / 60000, 0.02) * falloff)
+      }
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (event.button > 0) return
+      handlePointerMove(event)
+      const r = bubble.r * bubble.scale
+      const dx = bubble.x - event.clientX
+      const dy = bubble.y - event.clientY
+      const distance = Math.hypot(dx, dy) || 1
+
+      if (bubble.visible && distance < r * 1.05) {
+        pop()
+        document.body.style.cursor = ""
+        return
+      }
+
+      ripples.push({ x: event.clientX, y: event.clientY, from: 4, age: 0, life: 0.8 })
+      // A click sends a puff of air outwards; the closer, the harder it hits
+      const strength = Math.max(0, 1 - distance / 520)
+      if (bubble.visible && strength > 0) {
+        bubble.vx += (dx / distance) * 650 * strength
+        bubble.vy += (dy / distance) * 650 * strength
+        kick(0.06 * strength)
+      }
+    }
+
+    function handleVisibility() {
+      cancelAnimationFrame(frame)
+      if (!document.hidden) {
+        last = performance.now()
+        frame = requestAnimationFrame(tick)
+      }
+    }
+
+    resize()
+    const start = wander(time)
+    bubble.x = start.x
+    bubble.y = start.y
+
+    if (reduceMotion) {
+      // One still frame, redrawn when the window or the theme changes
+      const redraw = () => {
+        resize()
+        const spot = wander(time)
+        bubble.x = spot.x
+        bubble.y = spot.y
+        draw()
+      }
+      const themeWatcher = new MutationObserver(redraw)
+      themeWatcher.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+      window.addEventListener("resize", redraw)
+      draw()
+      return () => {
+        themeWatcher.disconnect()
+        window.removeEventListener("resize", redraw)
+      }
+    }
+
+    window.addEventListener("resize", resize)
+    window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true })
+    document.addEventListener("visibilitychange", handleVisibility)
+    last = performance.now()
+    frame = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("resize", resize)
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("pointerdown", handlePointerDown)
+      document.removeEventListener("visibilitychange", handleVisibility)
+      document.body.style.cursor = ""
+    }
+  }
+
+  // Started per page view, and stopped before the router swaps the page out
+  let stop: (() => void) | undefined
+
+  document.addEventListener("astro:page-load", () => {
+    stop?.()
+    stop = undefined
+    const canvas = document.querySelector<HTMLCanvasElement>("[data-lost-bubble]")
+    if (canvas) stop = startBubble(canvas)
+  })
+
+  document.addEventListener("astro:before-swap", () => {
+    stop?.()
+    stop = undefined
+  })
+</script>
+
+<style>
+  /* Fixed to the window, behind the page's text but over its backdrop:
+     .backgrounds isolates, so -1 lands just above its background */
+  .bubble-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    .bubble-canvas {
+      display: none;
+    }
+  }
+
+  @media print {
+    .bubble-canvas {
+      display: none;
+    }
+  }
+</style>

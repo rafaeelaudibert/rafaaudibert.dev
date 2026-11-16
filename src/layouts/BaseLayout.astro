@@ -118,8 +118,12 @@ const { title, description, ogImage, ogImageAlt, type } = Astro.props
         }
       }
 
+      /* At least a screen tall, so a short page (the 404) still has its
+         backdrop and footer at the bottom. A percentage can't do it: body and
+         html only have a min-height, which percentages don't resolve against */
       .backgrounds {
-        min-height: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
         isolation: isolate;
         background:
 					/*noise*/
