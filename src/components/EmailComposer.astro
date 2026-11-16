@@ -228,6 +228,14 @@ import {
         if (event.target === this.dialog) this.close()
       })
 
+      // Turnstile is usually invisible, and only takes room when it asks for a
+      // click. The container gets its spacing only while there's a widget to
+      // space, so the hidden one doesn't leave a gap
+      const challenge = this.querySelector<HTMLElement>("[data-challenge]")!
+      new ResizeObserver(([entry]) => {
+        challenge.toggleAttribute("data-shown", entry.contentRect.height > 0)
+      }).observe(challenge)
+
       const head = this.querySelector<HTMLElement>("[data-head]")!
       head.addEventListener("pointerdown", (event) => this.dragStart(event))
       head.addEventListener("pointermove", (event) => this.dragMove(event))
@@ -376,7 +384,7 @@ import {
           sitekey: siteKey,
           action: TURNSTILE_ACTION,
           appearance: "interaction-only",
-          size: "flexible",
+          size: "normal",
           theme: isDark ? "dark" : "light",
           // The token goes in the JSON body, not a hidden form field
           "response-field": false,
@@ -897,12 +905,16 @@ import {
     clip-path: inset(50%);
   }
 
-  .challenge:not(:empty) {
-    padding: 0 1rem;
+  .challenge {
+    display: flex;
+    flex: none;
+    justify-content: center;
   }
 
-  .challenge :global(iframe) {
-    margin-top: 0.75rem;
+  /* A row of its own, ruled off from the message like the other fields */
+  .challenge[data-shown] {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--gray-800);
   }
 
   .foot {
