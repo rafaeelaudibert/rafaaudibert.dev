@@ -30,7 +30,8 @@ export const NAV_SHORTCUTS = NAVBAR_MENU_ITEMS.filter(
 
 interface SocialMediaItem {
   label: string
-  href: string
+  /** A link, or omitted for the button that opens the email composer */
+  href?: string
   icon: keyof typeof iconPaths
 }
 
@@ -46,8 +47,7 @@ const SOCIAL_MEDIA_ITEMS: SocialMediaItem[] = [
     icon: "linkedin-logo",
   },
   {
-    label: "Email",
-    href: "mailto:me@rafaaudibert.dev",
+    label: "Email me",
     icon: "envelope-simple",
   },
 ]
@@ -97,12 +97,20 @@ const isCurrentPage = (href: string) => {
   <div class="menu-footer">
     <div class="socials">
       {
-        SOCIAL_MEDIA_ITEMS.map(({ href, icon, label }) => (
-          <a href={href} class="social">
-            <span class="sr-only">{label}</span>
-            <Icon icon={icon} />
-          </a>
-        ))
+        SOCIAL_MEDIA_ITEMS.map(({ href, icon, label }) =>
+          href ? (
+            <a href={href} class="social">
+              <span class="sr-only">{label}</span>
+              <Icon icon={icon} />
+            </a>
+          ) : (
+            /* EmailComposer.astro adds aria-expanded and friends */
+            <button type="button" class="social" data-email-composer>
+              <span class="sr-only">{label}</span>
+              <Icon icon={icon} />
+            </button>
+          ),
+        )
       }
     </div>
 
@@ -296,13 +304,18 @@ const isCurrentPage = (href: string) => {
   .social {
     display: flex;
     padding: var(--icon-padding);
+    border: none;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
     text-decoration: none;
     color: var(--gray-0);
     transition: color var(--theme-transition);
   }
 
   .social:hover,
-  .social:focus-visible {
+  .social:focus-visible,
+  .social[aria-expanded="true"] {
     color: var(--accent-regular);
   }
 

@@ -72,3 +72,6 @@ yarn.lock
 now.json
 # wrangler local state (miniflare)
 .wrangler/
+
+# wrangler dev secrets
+.dev.vars

@@ -6,6 +6,7 @@
  *
  * - /api/sorting/*, which runs the sorting algorithms server-side for the
  *   sorting-algorithms posts.
+ * - /api/contact, the email composer's endpoint (see ./contact.ts).
  * - /mcp, the MCP server (see ./mcp/server.ts). wrangler.jsonc routes that
  *   path here first, so POST reaches the server while a browser GET is
  *   handed back to the assets binding and gets the docs page.
@@ -25,8 +26,10 @@ import {
   type SortingAlgorithm,
 } from "../src/content/blog/sorting-algorithms/sorting"
 import { handleMcpRequest, MCP_PATH, type McpEnv } from "./mcp/server"
+import { handleContact, type ContactEnv } from "./contact"
+import { CONTACT_PATH } from "../src/utils/contact"
 
-interface Env extends McpEnv {
+interface Env extends McpEnv, ContactEnv {
   ASSETS: Fetcher
 }
 
@@ -126,6 +129,10 @@ export default {
 
     if (url.pathname === MCP_PATH || url.pathname === `${MCP_PATH}/`) {
       return handleMcpRequest(request, env)
+    }
+
+    if (url.pathname === CONTACT_PATH) {
+      return handleContact(request, env)
     }
 
     if (url.pathname.startsWith("/api/sorting")) {

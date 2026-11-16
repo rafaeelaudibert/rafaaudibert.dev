@@ -1,0 +1,1168 @@
+---
+/**
+ * A floating email composer, opened by any element with `data-email-composer`
+ * (the envelope in the nav, "Email" in the footer). It's a non-modal dialog
+ * pinned to the corner, or a sheet along the bottom on phones, so the page
+ * stays usable behind it. It persists across client-side navigation, so a
+ * draft survives moving around the site.
+ *
+ * Sending goes to the Worker's /api/contact (worker/contact.ts). Turnstile
+ * checks for a person in the background while the visitor writes: the widget
+ * is "interaction-only", so it stays invisible unless Cloudflare wants a
+ * click, and then appears above the Send button.
+ */
+import Icon from "./Icon.astro"
+import {
+  MAX_EMAIL_LENGTH,
+  MAX_MESSAGE_LENGTH,
+  MAX_SUBJECT_LENGTH,
+} from "../utils/contact"
+---
+
+{/* Persisted so a half-written email survives moving around the site */}
+<email-composer transition:persist="email-composer">
+  <dialog id="email-composer" class="composer" aria-labelledby="composer-title">
+    <form novalidate>
+      <header class="head" data-head>
+        {/* Phones only: the sheet's handle, for pulling it down */}
+        <span class="grabber" aria-hidden="true"></span>
+        <h2 id="composer-title" class="title">Email Rafa</h2>
+        <button type="button" class="close" data-close aria-label="Close">
+          <Icon icon="x" size="1rem" />
+        </button>
+      </header>
+
+      {/* The fields fold away once the email is sent, and the note below unfolds in their place */}
+      <div class="fold fields-fold" data-fields>
+      <div class="fold-inner">
+      <label class="row">
+        <span class="row-label">From</span>
+        <input
+          name="from"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          enterkeyhint="next"
+          spellcheck="false"
+          maxlength={MAX_EMAIL_LENGTH}
+          placeholder="you@example.com"
+          aria-describedby="composer-from-help"
+          required
+        />
+      </label>
+      <p id="composer-from-help" class="sr-only">So I can write back.</p>
+
+      <label class="row">
+        <span class="row-label">Subject</span>
+        <input
+          name="subject"
+          type="text"
+          enterkeyhint="next"
+          maxlength={MAX_SUBJECT_LENGTH}
+          placeholder="Optional"
+        />
+      </label>
+
+      <label class="sr-only" for="composer-message">Message</label>
+      <textarea
+        id="composer-message"
+        name="message"
+        rows="7"
+        maxlength={MAX_MESSAGE_LENGTH}
+        placeholder="What's on your mind?"
+        required></textarea>
+
+      {/* Nobody sees this one. Whatever fills it in isn't a person. */}
+      <div class="trap" aria-hidden="true">
+        <label>Fax <input name="fax" type="text" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      {/* Turnstile renders here, and only shows itself if it needs a click */}
+      <div class="challenge" data-challenge></div>
+      </div>
+      </div>
+
+      <div class="fold sent-fold" data-sent inert>
+        <div class="fold-inner">
+          <div class="sent">
+            <svg class="sent-mark" viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="21" pathLength="1" />
+              <path d="M15 24.5l6.5 6.5L33.5 18" pathLength="1" />
+            </svg>
+            <div>
+              <p class="sent-title">Sent</p>
+              <p class="sent-text">Thanks! I'll reply to <span data-sent-to></span>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="foot">
+        <p class="message" data-message role="alert"></p>
+        <p class="hint" data-hint aria-hidden="true">
+          <kbd data-mod>Ctrl</kbd><kbd>↵</kbd> to send
+        </p>
+        <button type="submit" class="send" data-send>
+          {/* One slot, three states: the plane flies off, a spinner turns, a check lands */}
+          <span class="send-icon" aria-hidden="true">
+            <span class="send-plane"><Icon icon="paper-plane-tilt" size="1rem" /></span>
+            <span class="send-spinner"></span>
+            <svg class="send-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" pathLength="1" /></svg>
+          </span>
+          <span data-send-label>Send</span>
+        </button>
+      </footer>
+
+      <p class="sr-only" aria-live="polite" data-live></p>
+    </form>
+  </dialog>
+</email-composer>
+
+<script>
+  import { TURNSTILE_SITE_KEY } from "astro:env/client"
+  import {
+    CONTACT_MAILTO,
+    CONTACT_PATH,
+    TURNSTILE_ACTION,
+    TURNSTILE_TEST_SITE_KEY,
+    hasText,
+    isEmailAddress,
+  } from "../utils/contact"
+
+  interface TurnstileApi {
+    render(container: HTMLElement, options: Record<string, unknown>): string
+    reset(widgetId: string): void
+  }
+
+  declare global {
+    interface Window {
+      turnstile?: TurnstileApi
+    }
+  }
+
+  /** How long "Sent" stays up before the composer puts itself away. */
+  const SENT_LINGER_MS = 2600
+  /**
+   * "Sending" stays up at least this long. Locally, and often in production,
+   * the answer comes back in a few milliseconds, and a state that flashes by
+   * reads as a glitch rather than as progress.
+   */
+  const MIN_SENDING_MS = 900
+  /** The composer's exit, so it only empties once it's out of sight. */
+  const EXIT_MS = 200
+
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+  /** How long to wait for Turnstile, including a visitor clicking its checkbox. */
+  const CHALLENGE_TIMEOUT_MS = 60_000
+  const TRIGGER = "[data-email-composer]"
+  /**
+   * Where the composer is a modal sheet from the bottom edge instead of a
+   * floating window. Matches the stylesheet.
+   */
+  const SHEET = "(max-width: 40em), (pointer: coarse) and (max-height: 32.5em)"
+  /** How far the sheet has to be pulled down, or how fast in px/ms, before it lets go. */
+  const DISMISS_DISTANCE = 96
+  const DISMISS_VELOCITY = 0.5
+  const FIELD_ORDER = ["from", "subject", "message"]
+
+  // Local servers pair with the test secret in .dev.vars
+  const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)
+  const siteKey = isLocal ? TURNSTILE_TEST_SITE_KEY : TURNSTILE_SITE_KEY
+
+  let turnstileScript: Promise<TurnstileApi> | undefined
+
+  /** Loads Turnstile the first time someone opens the composer, never before. */
+  function loadTurnstile() {
+    turnstileScript ??= new Promise<TurnstileApi>((resolve, reject) => {
+      const script = document.createElement("script")
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+      script.onload = () => (window.turnstile ? resolve(window.turnstile) : reject())
+      script.onerror = () => {
+        turnstileScript = undefined
+        script.remove()
+        reject()
+      }
+      document.head.append(script)
+    })
+    return turnstileScript
+  }
+
+  class EmailComposer extends HTMLElement {
+    dialog!: HTMLDialogElement
+    form!: HTMLFormElement
+    trigger: HTMLElement | null = null
+    status: "idle" | "sending" | "sent" = "idle"
+    closing: ReturnType<typeof setTimeout> | undefined
+
+    widgetId: string | null = null
+    token: string | null = null
+    challengeFailed = false
+    waiting: Array<(token: string | null) => void> = []
+    drag: { startY: number; lastY: number; lastAt: number; velocity: number } | null = null
+
+    connectedCallback() {
+      // Persisted across navigation means connected again after each swap
+      if (this.dialog) return
+
+      this.dialog = this.querySelector("dialog")!
+      this.form = this.querySelector("form")!
+
+      const isApple = /Mac|iPhone|iPad/.test(navigator.platform)
+      this.querySelector("[data-mod]")!.textContent = isApple ? "⌘" : "Ctrl"
+
+      this.form.addEventListener("submit", (event) => {
+        event.preventDefault()
+        void this.send()
+      })
+      this.querySelector("[data-close]")!.addEventListener("click", () => this.close())
+      this.dialog.addEventListener("keydown", (event) => this.handleKeyDown(event))
+      // As a modal sheet, Escape (or a phone's back gesture) cancels the
+      // dialog; close it the same way the button does
+      this.dialog.addEventListener("cancel", (event) => {
+        event.preventDefault()
+        this.close()
+      })
+      // A modal's backdrop belongs to the dialog itself, so a tap on the dim
+      // around the sheet lands here with the dialog as its target
+      this.dialog.addEventListener("click", (event) => {
+        if (event.target === this.dialog) this.close()
+      })
+
+      const head = this.querySelector<HTMLElement>("[data-head]")!
+      head.addEventListener("pointerdown", (event) => this.dragStart(event))
+      head.addEventListener("pointermove", (event) => this.dragMove(event))
+      head.addEventListener("pointerup", (event) => this.dragEnd(event))
+      head.addEventListener("pointercancel", (event) => this.dragEnd(event))
+    }
+
+    /** Every trigger shows the same state, so any of them puts it away. */
+    toggle(trigger: HTMLElement) {
+      if (this.dialog.open) this.close()
+      else this.open(trigger)
+    }
+
+    open(trigger: HTMLElement) {
+      clearTimeout(this.closing)
+      // Reopened before the last one finished leaving
+      if (this.status === "sent") this.reset()
+      this.trigger = trigger
+      const isSheet = window.matchMedia(SHEET).matches
+      // On a phone it takes the screen, so the page behind goes inert. On a
+      // bigger screen it floats and the page stays usable
+      if (!this.dialog.open) {
+        if (isSheet) this.dialog.showModal()
+        else this.dialog.show()
+      }
+      this.syncTriggers()
+
+      // A focused field throws the phone's keyboard up while the sheet is
+      // still rising, so there the first tap picks the field
+      if (isSheet) {
+        this.querySelector<HTMLElement>("[data-close]")!.focus({ preventScroll: true })
+      } else {
+        const fields = this.form.elements
+        const from = fields.namedItem("from") as HTMLInputElement
+        const message = fields.namedItem("message") as HTMLTextAreaElement
+        // Pick up where the draft left off
+        ;(from.value ? message : from).focus({ preventScroll: true })
+      }
+
+      this.prepareChallenge()
+    }
+
+    close() {
+      if (!this.dialog.open) return
+      const hadFocus = this.dialog.contains(document.activeElement)
+      this.dialog.close()
+      this.syncTriggers()
+      // Hand focus back, unless the reader has already moved on
+      if (hadFocus && this.trigger?.isConnected) this.trigger.focus({ preventScroll: true })
+      if (this.status === "sent") this.closing = setTimeout(() => this.reset(), EXIT_MS)
+    }
+
+    reset() {
+      clearTimeout(this.closing)
+      this.form.reset()
+      this.status = "idle"
+      this.setMessage("")
+      this.setLive("")
+      this.render()
+    }
+
+    syncTriggers() {
+      for (const trigger of document.querySelectorAll<HTMLElement>(TRIGGER)) {
+        trigger.setAttribute("aria-haspopup", "dialog")
+        trigger.setAttribute("aria-controls", "email-composer")
+        trigger.setAttribute("aria-expanded", String(this.dialog.open))
+      }
+    }
+
+    handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        this.close()
+        return
+      }
+
+      // Safari ends an IME composition with an Enter that isn't flagged as
+      // composing, only as key 229, so both are checked
+      if (event.key !== "Enter" || event.isComposing || event.keyCode === 229) return
+
+      if (event.metaKey || event.ctrlKey) {
+        event.preventDefault()
+        this.form.requestSubmit()
+        return
+      }
+
+      // Return in a one-line field moves on, like the phone keyboard's "next",
+      // instead of sending a half-written email
+      const target = event.target
+      if (target instanceof HTMLInputElement) {
+        event.preventDefault()
+        const next = FIELD_ORDER[FIELD_ORDER.indexOf(target.name) + 1]
+        ;(this.form.elements.namedItem(next) as HTMLElement | null)?.focus()
+      }
+    }
+
+    // --- Pulling the sheet down ------------------------------------------------
+
+    dragStart(event: PointerEvent) {
+      if (event.pointerType === "mouse" || !window.matchMedia(SHEET).matches) return
+      if ((event.target as Element).closest("button")) return
+      this.drag = { startY: event.clientY, lastY: event.clientY, lastAt: event.timeStamp, velocity: 0 }
+      ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+    }
+
+    dragMove(event: PointerEvent) {
+      const drag = this.drag
+      if (!drag) return
+      const elapsed = event.timeStamp - drag.lastAt
+      if (elapsed > 0) drag.velocity = (event.clientY - drag.lastY) / elapsed
+      drag.lastY = event.clientY
+      drag.lastAt = event.timeStamp
+
+      // Down it follows the finger; up it only gives a little, as if it's
+      // already as tall as it goes
+      const pulled = event.clientY - drag.startY
+      const offset = pulled >= 0 ? pulled : -8 * Math.log1p(-pulled / 8)
+      this.dialog.style.transition = "none"
+      this.dialog.style.translate = `0 ${offset}px`
+    }
+
+    dragEnd(event: PointerEvent) {
+      const drag = this.drag
+      this.drag = null
+      if (!drag) return
+
+      // Back to the stylesheet, whose transition carries the sheet on from
+      // where the finger left it: down and away, or back up
+      this.dialog.style.transition = ""
+      this.dialog.style.translate = ""
+      const pulled = event.clientY - drag.startY
+      const isFresh = event.timeStamp - drag.lastAt < 80
+      const flicked = pulled > 16 && isFresh && drag.velocity > DISMISS_VELOCITY
+      if (event.type === "pointerup" && (pulled > DISMISS_DISTANCE || flicked)) this.close()
+    }
+
+    // --- Turnstile -----------------------------------------------------------
+
+    async prepareChallenge() {
+      if (this.widgetId || !siteKey) return
+      try {
+        const turnstile = await loadTurnstile()
+        if (this.widgetId) return
+        const isDark = document.documentElement.classList.contains("theme-dark")
+        this.widgetId = turnstile.render(this.querySelector<HTMLElement>("[data-challenge]")!, {
+          sitekey: siteKey,
+          action: TURNSTILE_ACTION,
+          appearance: "interaction-only",
+          size: "flexible",
+          theme: isDark ? "dark" : "light",
+          // The token goes in the JSON body, not a hidden form field
+          "response-field": false,
+          callback: (token: string) => {
+            this.token = token
+            this.challengeFailed = false
+            this.settleWaiting(token)
+          },
+          // Rarely, Cloudflare wants a click. The checkbox appears above Send
+          "before-interactive-callback": () => {
+            this.setMessage("Cloudflare wants a quick check first: tick the box above.")
+          },
+          "after-interactive-callback": () => {
+            this.setMessage("")
+          },
+          "expired-callback": () => {
+            this.token = null
+          },
+          "error-callback": () => {
+            this.token = null
+            this.challengeFailed = true
+            this.settleWaiting(null)
+            // Handled: tell Turnstile not to throw
+            return true
+          },
+        })
+      } catch {
+        this.challengeFailed = true
+        this.settleWaiting(null)
+      }
+    }
+
+    settleWaiting(token: string | null) {
+      const waiting = this.waiting
+      this.waiting = []
+      for (const resolve of waiting) resolve(token)
+    }
+
+    /** The current token, or waits for Turnstile to hand one over. */
+    getToken(): Promise<string | null> {
+      if (this.token) return Promise.resolve(this.token)
+      if (!siteKey || (this.challengeFailed && !this.widgetId)) return Promise.resolve(null)
+
+      if (this.challengeFailed && this.widgetId) this.refreshChallenge()
+      else void this.prepareChallenge()
+      return new Promise((resolve) => {
+        const timeout = setTimeout(() => {
+          this.waiting = this.waiting.filter((waiter) => waiter !== settle)
+          resolve(null)
+        }, CHALLENGE_TIMEOUT_MS)
+        const settle = (token: string | null) => {
+          clearTimeout(timeout)
+          resolve(token)
+        }
+        this.waiting.push(settle)
+      })
+    }
+
+    /** Tokens are single use: after every attempt, start on the next one. */
+    refreshChallenge() {
+      this.token = null
+      this.challengeFailed = false
+      if (this.widgetId) window.turnstile?.reset(this.widgetId)
+    }
+
+    // --- Sending -------------------------------------------------------------
+
+    async send() {
+      if (this.status !== "idle") return
+
+      const fields = this.form.elements
+      const from = fields.namedItem("from") as HTMLInputElement
+      const message = fields.namedItem("message") as HTMLTextAreaElement
+
+      if (!isEmailAddress(from.value.trim())) {
+        this.setMessage("Add your email so I can write back.")
+        from.focus()
+        return
+      }
+
+      if (!hasText(message.value)) {
+        this.setMessage("Write a message first.")
+        message.focus()
+        return
+      }
+
+      this.setMessage("")
+      this.status = "sending"
+      this.render()
+      this.setLive("Sending your email")
+      const minimum = wait(MIN_SENDING_MS)
+
+      const token = await this.getToken()
+      if (!token) {
+        await minimum
+        this.fail("Couldn't confirm you're a person.", { offerMailApp: true })
+        this.refreshChallenge()
+        return
+      }
+
+      const draft = Object.fromEntries(new FormData(this.form))
+
+      try {
+        const response = await fetch(CONTACT_PATH, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...draft, token }),
+        })
+
+        await minimum
+
+        if (!response.ok) {
+          const answer = (await response.json().catch(() => ({}))) as { error?: string }
+          // A field the server didn't like, or too many emails: it says which
+          const isVisitorFixable = [400, 403, 413, 429].includes(response.status)
+          this.fail(answer.error ?? "That didn't go through.", { offerMailApp: !isVisitorFixable })
+          return
+        }
+
+        this.querySelector("[data-sent-to]")!.textContent = from.value.trim()
+        const hadFocus = this.dialog.contains(document.activeElement)
+        this.status = "sent"
+        this.render()
+        this.setLive("Email sent")
+        // The field that had focus is folding away; the close button is what's left to do
+        if (hadFocus) this.querySelector<HTMLElement>("[data-close]")!.focus({ preventScroll: true })
+        this.closing = setTimeout(() => this.close(), SENT_LINGER_MS)
+      } catch {
+        await minimum
+        this.fail("That didn't go through.", { offerMailApp: true })
+      } finally {
+        this.refreshChallenge()
+      }
+    }
+
+    fail(text: string, { offerMailApp = false } = {}) {
+      this.status = "idle"
+      this.render()
+      this.setLive("")
+      this.setMessage(text, offerMailApp)
+    }
+
+    // --- Rendering -----------------------------------------------------------
+
+    render() {
+      this.dialog.dataset.status = this.status
+      const send = this.querySelector<HTMLButtonElement>("[data-send]")!
+      send.setAttribute("aria-disabled", String(this.status !== "idle"))
+      this.querySelector("[data-send-label]")!.textContent =
+        this.status === "sending" ? "Sending…" : this.status === "sent" ? "Sent" : "Send"
+      for (const field of this.form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        "input:not([name=fax]), textarea",
+      )) {
+        field.readOnly = this.status !== "idle"
+      }
+      const isSent = this.status === "sent"
+      this.querySelector<HTMLElement>("[data-fields]")!.inert = isSent
+      this.querySelector<HTMLElement>("[data-sent]")!.inert = !isSent
+    }
+
+    setMessage(text: string, offerMailApp = false) {
+      const message = this.querySelector<HTMLElement>("[data-message]")!
+      message.replaceChildren()
+      this.dialog.toggleAttribute("data-has-message", Boolean(text))
+      if (!text) return
+
+      message.append(text)
+      if (offerMailApp) {
+        const link = document.createElement("a")
+        link.href = CONTACT_MAILTO
+        link.textContent = "your mail app"
+        message.append(" Try again, or use ", link, ".")
+      }
+    }
+
+    setLive(text: string) {
+      this.querySelector("[data-live]")!.textContent = text
+    }
+  }
+
+  if (!customElements.get("email-composer")) {
+    customElements.define("email-composer", EmailComposer)
+  }
+
+  // Bound once, here, rather than per element: on navigation the router
+  // briefly connects the incoming page's copy of the composer before swapping
+  // the persisted one back in, and listeners bound by that copy would outlive
+  // it. These always act on whichever composer is in the page.
+  const composer = () => document.querySelector<EmailComposer>("email-composer")
+
+  document.addEventListener("click", (event) => {
+    const trigger = (event.target as Element | null)?.closest<HTMLElement>(TRIGGER)
+    if (!trigger) return
+    event.preventDefault()
+    composer()?.toggle(trigger)
+  })
+
+  // The nav and footer are new elements after every navigation
+  document.addEventListener("astro:page-load", () => composer()?.syncTriggers())
+
+  // As a sheet it sits on the on-screen keyboard, so it follows the part of
+  // the page that's still visible
+  const viewport = window.visualViewport
+  if (viewport) {
+    const follow = () => {
+      const dialog = composer()?.dialog
+      if (!dialog) return
+      const covered = window.innerHeight - viewport.height - viewport.offsetTop
+      dialog.style.setProperty("--keyboard-inset", `${Math.max(0, Math.round(covered))}px`)
+      dialog.style.setProperty("--visible-height", `${Math.round(viewport.height)}px`)
+    }
+    viewport.addEventListener("resize", follow)
+    viewport.addEventListener("scroll", follow)
+    document.addEventListener("astro:page-load", follow)
+  }
+</script>
+
+<style>
+  .composer {
+    --keyboard-inset: 0px;
+
+    position: fixed;
+    inset: auto 1.5rem 1.5rem auto;
+    z-index: 10000;
+    width: min(30rem, calc(100vw - 3rem));
+    max-height: calc(100dvh - 3rem);
+    margin: 0;
+    padding: 0;
+    /* Never a scroll container itself: when space runs out, the message box
+       shrinks and scrolls inside */
+    overflow: hidden;
+    border: 1px solid var(--gray-800);
+    border-radius: var(--radius-lg);
+    background: var(--gray-999);
+    color: var(--gray-0);
+    box-shadow:
+      0 24px 48px -12px rgba(9, 11, 17, 0.35),
+      var(--shadow-md);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition:
+      opacity 0.16s ease-out,
+      translate 0.16s ease-out,
+      display 0.16s allow-discrete,
+      overlay 0.16s allow-discrete;
+  }
+
+  .composer[open] {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Only a modal (the phone sheet) has one */
+  .composer::backdrop {
+    background: rgba(9, 11, 17, 0);
+    transition:
+      background-color 0.2s ease-out,
+      display 0.2s allow-discrete,
+      overlay 0.2s allow-discrete;
+  }
+
+  .composer[open]::backdrop {
+    background: rgba(9, 11, 17, 0.45);
+  }
+
+  @starting-style {
+    .composer[open]::backdrop {
+      background: rgba(9, 11, 17, 0);
+    }
+  }
+
+  /* The page behind the sheet stays put */
+  :global(html:has(#email-composer:modal)) {
+    overflow: hidden;
+  }
+
+  @starting-style {
+    .composer[open] {
+      opacity: 0;
+      translate: 0 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .composer {
+      transition: none;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .head,
+  .foot,
+  .sent-fold {
+    flex: none;
+  }
+
+  /* The fields take what's left, and inside them the message box does */
+  .fields-fold {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .fields-fold > .fold-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .row {
+    flex: none;
+  }
+
+  .grabber {
+    display: none;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.625rem 0.625rem 0.625rem 1rem;
+    background: var(--gray-900);
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--font-brand);
+    font-size: var(--text-base);
+    font-weight: 500;
+  }
+
+  .close {
+    display: flex;
+    padding: 0.375rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition:
+      color var(--theme-transition),
+      background-color var(--theme-transition);
+  }
+
+  .close:hover,
+  .close:focus-visible {
+    color: var(--gray-0);
+    background: var(--gray-800);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .row-label {
+    flex-shrink: 0;
+    width: 3.75rem;
+    color: var(--gray-400);
+  }
+
+  input,
+  textarea {
+    min-width: 0;
+    flex: 1;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    /* 16px stops iOS zooming into the field */
+    font-size: max(16px, var(--text-sm));
+    outline: none;
+  }
+
+  textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1 1 10rem;
+    min-height: 4.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--gray-800);
+    font-family: var(--font-reading);
+    line-height: 1.6;
+    resize: none;
+    overscroll-behavior: contain;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--gray-500);
+  }
+
+  /* Fields show focus on their row, since the input itself has no box */
+  .row:focus-within,
+  textarea:focus-visible {
+    background: var(--gray-900);
+    box-shadow: inset 2px 0 0 var(--accent-regular);
+  }
+
+  /*
+   * Folding: a one-row grid going from 1fr to 0fr animates to and from the
+   * content's own height, which height itself can't. The fields fold away as
+   * the note unfolds, so the composer settles at the note's height.
+   */
+  .fold {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition:
+      grid-template-rows 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.25s ease-out;
+  }
+
+  .fold-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .sent-fold {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .composer[data-status="sent"] .fields-fold {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .composer[data-status="sent"] .sent-fold {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transition-delay: 0.1s;
+  }
+
+  /* While it's on its way the draft steps back */
+  .fields-fold .fold-inner {
+    transition: opacity 0.2s ease-out;
+  }
+
+  .composer[data-status="sending"] .fields-fold .fold-inner {
+    opacity: 0.5;
+  }
+
+  .sent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .sent-title {
+    margin: 0;
+    font-family: var(--font-brand);
+    font-size: var(--text-md);
+    font-weight: 500;
+  }
+
+  .sent-text {
+    margin: 0.125rem 0 0;
+    color: var(--gray-300);
+    overflow-wrap: anywhere;
+  }
+
+  .sent-mark {
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    fill: none;
+    stroke: var(--accent-regular);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  :global(.theme-dark) .sent-mark {
+    stroke: var(--accent-dark);
+  }
+
+  /* The ring draws itself, then the tick */
+  .composer[data-status="sent"] .sent-mark circle {
+    animation: draw 0.5s 0.25s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  .composer[data-status="sent"] .sent-mark path {
+    animation: draw 0.3s 0.65s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .challenge:not(:empty) {
+    padding: 0 1rem;
+  }
+
+  .challenge :global(iframe) {
+    margin-top: 0.75rem;
+  }
+
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.75rem 0.75rem 1rem;
+    border-top: 1px solid var(--gray-800);
+  }
+
+  .message {
+    min-width: 0;
+    margin: 0;
+    color: var(--gray-300);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+
+  .message a {
+    color: var(--link-color);
+  }
+
+  .hint {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    color: var(--gray-400);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .composer:not([data-has-message], [data-status="sent"]) .hint {
+      display: flex;
+    }
+  }
+
+  .message:empty {
+    display: none;
+  }
+
+  kbd {
+    min-width: 1.25rem;
+    padding: 0.125rem 0.25rem;
+    border: 1px solid var(--gray-700);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .send {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    /* Wide enough for "Sending…", so the button doesn't jump between states */
+    min-width: 7.25rem;
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--accent-regular);
+    color: var(--accent-text-over);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color var(--theme-transition),
+      opacity var(--theme-transition);
+  }
+
+  /* Darker in the light theme, lighter in the dark one */
+  .send:hover,
+  .send:focus-visible {
+    background: color-mix(in srgb, var(--accent-regular) 85%, var(--gray-0));
+  }
+
+  .send[aria-disabled="true"] {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  .composer[data-status="sent"] .send {
+    opacity: 1;
+  }
+
+  .send-icon {
+    display: grid;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .send-icon > * {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.2s ease-out,
+      scale 0.2s ease-out;
+  }
+
+  .send-plane {
+    display: flex;
+  }
+
+  .composer[data-status="sending"] .send-plane {
+    animation: fly-off 0.45s cubic-bezier(0.5, 0, 0.75, 0) forwards;
+  }
+
+  .composer[data-status="sent"] .send-plane {
+    opacity: 0;
+  }
+
+  @keyframes fly-off {
+    to {
+      translate: 1.25rem -1.25rem;
+      opacity: 0;
+    }
+  }
+
+  .send-spinner {
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    opacity: 0;
+    scale: 0.6;
+  }
+
+  .composer[data-status="sending"] .send-spinner {
+    opacity: 1;
+    scale: 1;
+    transition-delay: 0.2s;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  .send-check {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .composer[data-status="sent"] .send-check {
+    animation: draw 0.3s 0.1s ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fold,
+    .fold-inner,
+    .send-icon > * {
+      transition: none;
+    }
+
+    .composer[data-status="sending"] .send-plane {
+      animation: none;
+      opacity: 0;
+    }
+
+    .composer[data-status="sending"] .send-spinner {
+      animation-duration: 1.6s;
+    }
+
+    .composer[data-status="sent"] .sent-mark circle,
+    .composer[data-status="sent"] .sent-mark path,
+    .composer[data-status="sent"] .send-check {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* Phones: a modal sheet along the bottom, riding on top of the keyboard.
+     Matches SHEET in the script */
+  @media (max-width: 40em), (pointer: coarse) and (max-height: 32.5em) {
+    .composer {
+      inset: auto 0 var(--keyboard-inset) 0;
+      width: 100%;
+      max-width: none;
+      max-height: calc(var(--visible-height, 100dvh) - 2.5rem);
+      border-width: 1px 0 0;
+      border-radius: 0.875rem 0.875rem 0 0;
+      translate: 0 100%;
+      transition-duration: 0.28s;
+      transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    @starting-style {
+      .composer[open] {
+        opacity: 1;
+        translate: 0 100%;
+      }
+    }
+
+    /* It slides rather than fades */
+    .composer,
+    .composer[open] {
+      opacity: 1;
+    }
+
+    .head {
+      position: relative;
+      padding-top: 1rem;
+      /* The header is the handle: dragging it moves the sheet, not the page */
+      touch-action: none;
+    }
+
+    .grabber {
+      display: block;
+      position: absolute;
+      top: 0.375rem;
+      left: 50%;
+      width: 2.25rem;
+      height: 0.3125rem;
+      border-radius: var(--radius-pill);
+      background: var(--gray-700);
+      translate: -50% 0;
+    }
+
+    .close {
+      padding: 0.625rem;
+    }
+
+    .foot {
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .composer,
+    .composer::backdrop {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .composer {
+      border: 1px solid CanvasText;
+    }
+
+    .send {
+      border: 1px solid ButtonText;
+    }
+  }
+
+  @media print {
+    .composer {
+      display: none;
+    }
+  }
+</style>

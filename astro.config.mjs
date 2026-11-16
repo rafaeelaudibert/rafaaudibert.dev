@@ -98,6 +98,11 @@ export default defineConfig({
     schema: {
       POSTHOG_API_KEY: envField.string({ context: "client", access: "public", startsWith: "phc_" }),
       POSTHOG_API_HOST: envField.string({ context: "client", access: "public", startsWith: "https://" }),
+      // The email composer's Turnstile widget. Public by design: the secret that
+      // checks its tokens is the Worker's TURNSTILE_SECRET_KEY. Optional so the
+      // site still builds before the widget exists; the composer then points
+      // people to their mail app instead
+      TURNSTILE_SITE_KEY: envField.string({ context: "client", access: "public", optional: true }),
     },
   },
 
