@@ -222,11 +222,28 @@ import {
         event.preventDefault()
         this.close()
       })
-      // A modal's backdrop belongs to the dialog itself, so a tap on the dim
-      // around the sheet lands here with the dialog as its target
-      this.dialog.addEventListener("click", (event) => {
-        if (event.target === this.dialog) this.close()
-      })
+      // A tap on the dim around the sheet puts it away: closedby="any" (set in
+      // open()) does that natively, through the cancel handler above. Safari
+      // has no closedby yet, so there the press and the release both have to
+      // land outside the sheet, which a text selection dragged off it doesn't
+      if (!("closedBy" in HTMLDialogElement.prototype)) {
+        const isOutside = (event: PointerEvent) => {
+          const box = this.dialog.getBoundingClientRect()
+          return (
+            event.clientX < box.left ||
+            event.clientX > box.right ||
+            event.clientY < box.top ||
+            event.clientY > box.bottom
+          )
+        }
+        let pressedOutside = false
+        this.dialog.addEventListener("pointerdown", (event) => {
+          pressedOutside = isOutside(event)
+        })
+        this.dialog.addEventListener("pointerup", (event) => {
+          if (pressedOutside && isOutside(event)) this.close()
+        })
+      }
 
       // Turnstile is usually invisible, and only takes room when it asks for a
       // click. The container gets its spacing only while there's a widget to
@@ -258,6 +275,10 @@ import {
       // On a phone it takes the screen, so the page behind goes inert. On a
       // bigger screen it floats and the page stays usable
       if (!this.dialog.open) {
+        // Floating, a click on the page is someone using the page, not
+        // dismissing the composer
+        if (isSheet) this.dialog.setAttribute("closedby", "any")
+        else this.dialog.removeAttribute("closedby")
         if (isSheet) this.dialog.showModal()
         else this.dialog.show()
       }
