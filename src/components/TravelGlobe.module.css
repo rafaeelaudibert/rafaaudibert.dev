@@ -233,3 +233,22 @@
   font-size: 0.7rem;
   color: rgba(255, 255, 255, 0.5);
 }
+
+/* With less motion, tags and the tooltip fade in where they land, without
+   sliding or pushing their neighbours along, and photos don't grow on hover */
+@media (prefers-reduced-motion: reduce) {
+  .flightTag,
+  .tooltip {
+    animation-name: fadeIn;
+  }
+
+  .photoPopup:hover {
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}

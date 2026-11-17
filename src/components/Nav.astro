@@ -428,6 +428,15 @@ const isCurrentPage = (href: string) => {
     transform: scale(1);
   }
 
+  /* With less motion the hints fade in where they are, without growing or
+     nudging the links beside them along */
+  @media (prefers-reduced-motion: reduce) {
+    .shortcut-hint {
+      transform: none;
+      transition: opacity 0.15s ease;
+    }
+  }
+
   /* Hide on mobile - shortcuts don't work well there */
   @media (max-width: 50em) {
     .shortcut-hint {

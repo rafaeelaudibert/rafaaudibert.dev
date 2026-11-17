@@ -21,19 +21,26 @@
     z-index: 99999;
   }
 
-  /* Secret hover effects */
-  :global(.hero img) {
-    transition:
-      transform 0.3s ease,
-      filter 0.3s ease;
-  }
+  /* Secret hover effects. The ones that move only run for people who haven't
+     asked for less motion; the colour ones below run for everyone */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.hero img) {
+      transition:
+        transform 0.3s ease,
+        filter 0.3s ease;
+    }
 
-  :global(.hero img:hover) {
-    transform: scale(1.02);
-  }
+    :global(.hero img:hover) {
+      transform: scale(1.02);
+    }
 
-  :global(.hero img.spin) {
-    animation: spin 1s ease-in-out;
+    :global(.hero img.spin) {
+      animation: spin 1s ease-in-out;
+    }
+
+    :global(.shake) {
+      animation: shake 0.5s ease-in-out;
+    }
   }
 
   :global(.site-title.party) {
@@ -83,10 +90,6 @@
     80% {
       transform: translateX(5px);
     }
-  }
-
-  :global(.shake) {
-    animation: shake 0.5s ease-in-out;
   }
 </style>
 
