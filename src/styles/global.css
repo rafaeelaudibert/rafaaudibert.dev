@@ -11,6 +11,11 @@
 
 /* Global variables */
 :root {
+  /* Native UI (scrollbars, form controls, autofill) follows the painted theme.
+     Not "light dark": the colours here only turn dark with .theme-dark, which
+     can disagree with the system setting once the toggle has been used. */
+  color-scheme: light;
+
   /* Colors */
   --gray-0: #090b11;
   --gray-50: #141925;
@@ -116,6 +121,8 @@
 }
 
 :root.theme-dark {
+  color-scheme: dark;
+
   --gray-0: #ffffff;
   --gray-50: #f3f4f7;
   --gray-100: #e3e6ee;
