@@ -1,4 +1,5 @@
-import { join } from "node:path"
+import { stat } from "node:fs/promises"
+import { basename, join } from "node:path"
 import { getImage } from "astro:assets"
 import { COUNTRY_CODE_TO_LONG_NAME } from "./countries"
 import {
@@ -7,8 +8,15 @@ import {
 } from "../utils/travelImageExif"
 
 export type TravelPhoto = {
-  image: ImageMetadata
-  src: string
+  /** The original's file name, kept as the analytics photo_id */
+  id: string
+  /** The untouched file, EXIF included, offered as a download */
+  originalSrc: string
+  originalName: string
+  originalBytes: number
+  /** Resized copy the gallery shows by default, and the srcset around it */
+  gallerySrc: string
+  gallerySrcSet: string
   placeholderSrc: string
   placeholderGallerySrc: string
   width: number
@@ -20,7 +28,12 @@ export type TravelPhoto = {
 }
 
 export type TravelGalleryImage = {
+  id: string
   src: string
+  srcSet: string
+  originalSrc: string
+  originalName: string
+  originalBytes: number
   placeholderSrc: string
   width: number
   height: number
@@ -43,8 +56,13 @@ const travelImageModules = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true },
 )
 
+// The originals are camera-sized (often 5000px+ and several MB). The gallery
+// frame is at most 1100 CSS px wide, so 2400px covers it on a 2x screen.
+const GALLERY_WIDTHS = [640, 1024, 1600, 2400]
+
 async function buildPlaceholders(image: ImageMetadata) {
-  const [thumb, gallery] = await Promise.all([
+  const { width } = image
+  const [thumb, gallery, full] = await Promise.all([
     getImage({
       src: image,
       width: 48,
@@ -52,18 +70,28 @@ async function buildPlaceholders(image: ImageMetadata) {
       format: "webp",
       quality: 30,
     }),
+    // Width only, so the blur keeps the photo's shape under the full image
     getImage({
       src: image,
       width: 64,
-      height: 64,
       format: "webp",
       quality: 25,
+    }),
+    getImage({
+      src: image,
+      width: Math.min(1600, width),
+      // Smaller photos stop at their own width rather than being upscaled
+      widths: [...new Set(GALLERY_WIDTHS.map((w) => Math.min(w, width)))],
+      format: "webp",
+      quality: 80,
     }),
   ])
 
   return {
     placeholderSrc: thumb.src,
     placeholderGallerySrc: gallery.src,
+    gallerySrc: full.src,
+    gallerySrcSet: full.srcSet.attribute,
   }
 }
 
@@ -86,13 +114,19 @@ async function buildTravelPhotos(): Promise<TravelPhoto[]> {
     const description = exif?.description ?? undefined
     const alt = buildTravelImageAlt(description ?? null, fallbackAlt)
     const placeholders = await buildPlaceholders(mod.default)
+    // Reading src is also what makes Astro ship the original file: the
+    // gallery shows resized copies and links here for the full-quality one
+    const { src: originalSrc, width, height } = mod.default
+    const { size: originalBytes } = await stat(filePath)
 
     photos.push({
-      image: mod.default,
-      src: mod.default.src,
+      id: originalSrc.split("/").pop() ?? originalSrc,
+      originalSrc,
+      originalName: basename(filePath),
+      originalBytes,
       ...placeholders,
-      width: mod.default.width,
-      height: mod.default.height,
+      width,
+      height,
       alt,
       description,
       countryCode,
@@ -103,7 +137,7 @@ async function buildTravelPhotos(): Promise<TravelPhoto[]> {
   return photos.sort((a, b) => {
     const byDate = a.date.localeCompare(b.date)
     if (byDate !== 0) return byDate
-    return a.src.localeCompare(b.src)
+    return a.id.localeCompare(b.id)
   })
 }
 
@@ -116,8 +150,25 @@ export const imagesByCountry: Record<string, TravelGalleryImage[]> =
     ).map(([code, photos]) => [
       code,
       (photos ?? []).map(
-        ({ src, placeholderGallerySrc, width, height, alt, description }) => ({
-          src,
+        ({
+          id,
+          originalSrc,
+          originalName,
+          originalBytes,
+          gallerySrc,
+          gallerySrcSet,
+          placeholderGallerySrc,
+          width,
+          height,
+          alt,
+          description,
+        }) => ({
+          id,
+          originalSrc,
+          originalName,
+          originalBytes,
+          src: gallerySrc,
+          srcSet: gallerySrcSet,
           placeholderSrc: placeholderGallerySrc,
           width,
           height,

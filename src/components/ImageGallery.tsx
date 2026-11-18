@@ -3,7 +3,15 @@ import { useGalleryNavigation } from "../hooks/useGalleryNavigation"
 import styles from "./ImageGallery.module.css"
 
 export type GalleryImage = {
+  /** Stable name for analytics; src may point at a resized copy */
+  id?: string
   src: string
+  srcSet?: string
+  /** Full-quality file offered as a download, next to the counter */
+  originalSrc?: string
+  /** File name to save it under */
+  originalName?: string
+  originalBytes?: number
   alt?: string
   description?: string
   placeholderSrc?: string
@@ -35,6 +43,7 @@ interface ImageGalleryProps {
    * got there - buttons, arrow keys, swipe, opening, or switching gallery.
    */
   onViewImage?: (image: GalleryImage, index: number, galleryId: string) => void
+  onDownload?: (image: GalleryImage, index: number, galleryId: string) => void
 }
 
 export default function ImageGallery({
@@ -47,10 +56,13 @@ export default function ImageGallery({
   onClose,
   onNavigate,
   onViewImage,
+  onDownload,
 }: ImageGalleryProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [galleryId, setGalleryId] = useState<string | null>(null)
-  const [fullImageLoaded, setFullImageLoaded] = useState(false)
+  // The src that finished loading, not a boolean: a boolean is still true for
+  // the first render after moving on, so the new photo would skip its fade
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
 
   const images = galleryId ? (galleries[galleryId] ?? []) : []
   const label = galleryId ? labels[galleryId] : undefined
@@ -66,20 +78,31 @@ export default function ImageGallery({
     swipeProps,
   } = useGalleryNavigation(images, isOpen)
 
+  const fullImageLoaded = loadedSrc !== null && loadedSrc === currentItem?.src
   const hasPlaceholder = Boolean(currentItem?.placeholderSrc)
   const showSpinner = !fullImageLoaded && !hasPlaceholder
-  const aspectRatio =
-    currentItem?.width && currentItem?.height
-      ? currentItem.width / currentItem.height
-      : undefined
+  const aspectRatio = aspectRatioOf(currentItem)
 
-  useEffect(() => {
-    setFullImageLoaded(false)
-  }, [currentItem?.src])
+  const markLoaded = useCallback((src: string) => setLoadedSrc(src), [])
 
-  const onImageLoad = useCallback(() => {
-    setFullImageLoaded(true)
+  // A photo already in the cache (usually because it was preloaded below) is
+  // complete as soon as it mounts: show it at once instead of fading it in
+  const fullImageRef = useCallback((img: HTMLImageElement | null) => {
+    if (img?.complete && img.naturalWidth > 0) {
+      setLoadedSrc(img.dataset.src ?? null)
+    }
   }, [])
+
+  // Once the visible photo is in, fetch its neighbours so the next tap is
+  // instant. Waiting keeps them from competing with the one being looked at.
+  useEffect(() => {
+    if (!isOpen || !fullImageLoaded || images.length < 2) return
+    const neighbours = new Set([
+      images[(currentIndex + 1) % images.length],
+      images[(currentIndex - 1 + images.length) % images.length],
+    ])
+    for (const image of neighbours) preloadImage(image)
+  }, [isOpen, fullImageLoaded, currentIndex, images])
 
   useEffect(() => {
     if (!isOpen || !currentItem || !galleryId) return
@@ -183,7 +206,10 @@ export default function ImageGallery({
                 </div>
               )}
               {currentItem?.placeholderSrc && (
+                // Keyed so the old photo's blur is dropped right away instead
+                // of staying on screen until the new one has downloaded
                 <img
+                  key={currentItem.placeholderSrc}
                   src={currentItem.placeholderSrc}
                   className={styles.placeholderImage}
                   alt=""
@@ -193,9 +219,13 @@ export default function ImageGallery({
               )}
               <img
                 key={currentItem?.src}
+                ref={fullImageRef}
+                data-src={currentItem?.src}
+                sizes={currentItem?.srcSet ? sizesFor(aspectRatio) : undefined}
+                srcSet={currentItem?.srcSet || undefined}
                 src={currentItem?.src}
                 className={`${styles.image} ${fullImageLoaded ? styles.imageLoaded : ""}`}
-                onLoad={onImageLoad}
+                onLoad={() => currentItem && markLoaded(currentItem.src)}
                 alt={currentItem?.alt ?? ""}
                 draggable={false}
               />
@@ -221,8 +251,42 @@ export default function ImageGallery({
               </svg>
             </button>
           </div>
-          <div className={styles.counter}>
-            {currentIndex + 1} / {images.length}
+          <div className={styles.meta}>
+            <span className={styles.counter}>
+              {currentIndex + 1} / {images.length}
+            </span>
+            {currentItem?.originalSrc && (
+              <a
+                className={styles.download}
+                href={currentItem.originalSrc}
+                download={currentItem.originalName ?? ""}
+                onClick={() =>
+                  galleryId && onDownload?.(currentItem, currentIndex, galleryId)
+                }
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 4v11" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <path d="M5 20h14" />
+                </svg>
+                Download original{" "}
+                {currentItem.originalBytes ? (
+                  <span className={styles.downloadSize}>
+                    {formatBytes(currentItem.originalBytes)}
+                  </span>
+                ) : null}
+              </a>
+            )}
           </div>
           {currentItem?.description && (
             <p className={styles.caption}>{currentItem.description}</p>
@@ -243,4 +307,36 @@ export default function ImageGallery({
       )}
     </dialog>
   )
+}
+
+function aspectRatioOf(image: GalleryImage | undefined) {
+  return image?.width && image?.height ? image.width / image.height : undefined
+}
+
+/**
+ * How wide the photo is drawn, mirroring .imageFrameSized: the frame is at
+ * most min(95vw, 1100px) wide and 65vh tall, so portrait photos are bound by
+ * height. Getting this right is what stops a phone downloading the 2400px copy.
+ */
+function sizesFor(aspectRatio: number | undefined) {
+  if (aspectRatio && aspectRatio < 1) {
+    return `${Math.ceil(65 * aspectRatio)}vh`
+  }
+  return "(max-width: 1158px) 95vw, 1100px"
+}
+
+function preloadImage(image: GalleryImage) {
+  if (image.placeholderSrc) new Image().src = image.placeholderSrc
+  const img = new Image()
+  // sizes before srcset, or the browser may pick a candidate without it
+  if (image.srcSet) {
+    img.sizes = sizesFor(aspectRatioOf(image))
+    img.srcset = image.srcSet
+  }
+  img.src = image.src
+}
+
+function formatBytes(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }

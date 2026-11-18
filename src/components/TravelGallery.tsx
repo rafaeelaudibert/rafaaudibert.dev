@@ -17,7 +17,12 @@ export default function TravelGallery({
     Object.entries(imagesByCountry).map(([code, images]) => [
       code,
       images.map((image) => ({
+        id: image.id,
         src: image.src,
+        srcSet: image.srcSet,
+        originalSrc: image.originalSrc,
+        originalName: image.originalName,
+        originalBytes: image.originalBytes,
         alt: image.alt,
         description: image.description,
         placeholderSrc: image.placeholderSrc,
@@ -47,10 +52,18 @@ export default function TravelGallery({
       onOpen={(galleryId) => capture("gallery opened", { surface: "travel", country: galleryId })}
       onClose={(galleryId) => capture("gallery closed", { surface: "travel", country: galleryId })}
       onNavigate={(direction) => capture("gallery navigated", { surface: "travel", direction })}
+      onDownload={(image, index, galleryId) =>
+        capture("photo downloaded", {
+          surface: "travel",
+          photo_id: image.id,
+          photo_index: index,
+          country: galleryId,
+        })
+      }
       onViewImage={(image, index, galleryId) =>
         capture("photo viewed", {
           surface: "travel",
-          photo_id: image.src.split("/").pop(),
+          photo_id: image.id,
           photo_title: image.alt || image.description,
           photo_src: image.src,
           photo_index: index,

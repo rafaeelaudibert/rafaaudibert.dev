@@ -1,8 +1,14 @@
-import type { ImageMetadata } from "astro"
 import { travelPhotos } from "./travelPhotos"
 
 export type ChangelogPhoto = {
-  src: ImageMetadata
+  id: string
+  originalSrc: string
+  originalName: string
+  originalBytes: number
+  width: number
+  height: number
+  gallerySrc: string
+  gallerySrcSet: string
   placeholderSrc: string
   placeholderGallerySrc: string
   alt: string
@@ -41,7 +47,14 @@ function buildPhotosByEntryKey(): Record<string, ChangelogPhoto[]> {
 
     if (!map[key]) map[key] = []
     map[key].push({
-      src: photo.image,
+      id: photo.id,
+      originalSrc: photo.originalSrc,
+      originalName: photo.originalName,
+      originalBytes: photo.originalBytes,
+      width: photo.width,
+      height: photo.height,
+      gallerySrc: photo.gallerySrc,
+      gallerySrcSet: photo.gallerySrcSet,
       placeholderSrc: photo.placeholderSrc,
       placeholderGallerySrc: photo.placeholderGallerySrc,
       alt: photo.alt,
@@ -55,13 +68,7 @@ function buildPhotosByEntryKey(): Record<string, ChangelogPhoto[]> {
       key,
       photos
         .sort((a, b) => a.date.localeCompare(b.date))
-        .map(({ src, placeholderSrc, placeholderGallerySrc, alt, description }) => ({
-          src,
-          placeholderSrc,
-          placeholderGallerySrc,
-          alt,
-          description,
-        })),
+        .map(({ date: _date, ...photo }) => photo),
     ]),
   )
 }
@@ -87,12 +94,17 @@ export const changelogGalleries = Object.fromEntries(
   Object.entries(photosByEntryKey).map(([key, photos]) => [
     key,
     photos.map((photo) => ({
-      src: photo.src.src,
+      id: photo.id,
+      originalSrc: photo.originalSrc,
+      originalName: photo.originalName,
+      originalBytes: photo.originalBytes,
+      src: photo.gallerySrc,
+      srcSet: photo.gallerySrcSet,
       placeholderSrc: photo.placeholderGallerySrc,
       alt: photo.alt,
       description: photo.description,
-      width: photo.src.width,
-      height: photo.src.height,
+      width: photo.width,
+      height: photo.height,
     })),
   ]),
 )

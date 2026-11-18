@@ -42,10 +42,18 @@ export default function ChangelogGallery({
       onOpen={(galleryId) => capture("gallery opened", { surface: "changelog", entry: galleryId })}
       onClose={(galleryId) => capture("gallery closed", { surface: "changelog", entry: galleryId })}
       onNavigate={(direction) => capture("gallery navigated", { surface: "changelog", direction })}
+      onDownload={(image, index, galleryId) =>
+        capture("photo downloaded", {
+          surface: "changelog",
+          photo_id: image.id,
+          photo_index: index,
+          entry: galleryId,
+        })
+      }
       onViewImage={(image, index, galleryId) =>
         capture("photo viewed", {
           surface: "changelog",
-          photo_id: image.src.split("/").pop(),
+          photo_id: image.id,
           photo_title: image.alt || image.description,
           photo_src: image.src,
           photo_index: index,
